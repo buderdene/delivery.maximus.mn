@@ -12,6 +12,9 @@ out/
 .cache/
 *.tsbuildinfo
 .eslintcache
+api-cache.db
+api-cache.db-wal
+api-cache.db-shm
 
 # Environment files
 .env
