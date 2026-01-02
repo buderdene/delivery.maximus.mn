@@ -1,0 +1,2709 @@
+{
+	"info": {
+		"_postman_id": "089a78ae-1062-4090-a2b3-ab3725b7f5a6",
+		"name": "1C ERP MAXIMUS 20260101",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30857434"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Get user route ID ✅ ✅ ⚡",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"101022501\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/cu/Route",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"cu",
+								"Route"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get user route ID",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"99885599\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api_url}}/cu/Route",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"cu",
+										"Route"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:19:51 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "257"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"routeId\": \"258f28f6-8b8f-11e6-bd8a-000c29909b91\",\n    \"warehouses\": [\n        {\n            \"uuid\": \"5a811d4a-6dc5-11e6-9c23-3085a97c20be\",\n            \"name\": \"UBWH\",\n            \"isSale\": false\n        },\n        {\n            \"uuid\": \"6b5314d6-5c7e-11ec-9463-44a842251a8a\",\n            \"name\": \"UBWH-EX\",\n            \"isSale\": true\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Customer",
+			"item": [
+				{
+					"name": "Get customers ✅ ✅ ⚡",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/cl/Companies/?page=1&pageSize=400&routeId=258f28fa-8b8f-11e6-bd8a-000c29909b91",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"cl",
+								"Companies",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Нутгийн булаг",
+									"description": "✅",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "✅"
+								},
+								{
+									"key": "pageSize",
+									"value": "400",
+									"description": "✅"
+								},
+								{
+									"key": "routeId",
+									"value": "258f28fa-8b8f-11e6-bd8a-000c29909b91",
+									"description": "Route104_Team2"
+								},
+								{
+									"key": "companyCode",
+									"value": "MD-00002590",
+									"disabled": true
+								},
+								{
+									"key": "CustomerSuvagId",
+									"value": "71f7b944-66bc-11ec-9467-44a842251a8b",
+									"disabled": true
+								},
+								{
+									"key": "customerTypeId",
+									"value": "e02627a7-4c16-11ec-9463-44a842251a8a",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get customers",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/cl/Companies/?routeId=258f2904-8b8f-11e6-bd8a-000c29909b91&name=Номин&page=1&pageSize=10",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"cl",
+										"Companies",
+										""
+									],
+									"query": [
+										{
+											"key": "routeId",
+											"value": "258f2904-8b8f-11e6-bd8a-000c29909b91"
+										},
+										{
+											"key": "name",
+											"value": "Номин"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:20:59 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1112"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"count\": 7,\n    \"results\": [\n        {\n            \"uuid\": \"225d39b6-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 11-р хороолол\",\n            \"address\": \"11-р хороолол\"\n        },\n        {\n            \"uuid\": \"225d39e3-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 120\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39e4-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 22\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39d8-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 32\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39b7-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 5 шар\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39b8-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин Аз Жаргал\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39b9-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин Андууд\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39d4-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин Багануур\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39e5-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин БЗ\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39e2-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин бизнес клуб\",\n            \"address\": \"\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Customer Types ✅ ✅ ⚡",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/cf/CustomerTypes",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"cf",
+								"CustomerTypes"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get categories",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/cf/CustomerTypes",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"cf",
+										"CustomerTypes"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:33:09 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1359"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"name\": \"АМТЛАГЧ\",\n        \"uuid\": \"cfe2dcad-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"АРИУН ЦЭВРИЙН ХЭРЭГЛЭЛ\",\n        \"uuid\": \"cfe2dcae-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"АРИУН ЦЭВРИЙН ЦААС\",\n        \"uuid\": \"cfe2dcaf-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БЭЛЭН ГОЙМОН\",\n        \"uuid\": \"cfe2dcb0-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГОЙМОН\",\n        \"uuid\": \"cfe2dcb1-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДАЛАЙН БАЙЦАА\",\n        \"uuid\": \"cfe2dcb2-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖИГНЭМЭГ\",\n        \"uuid\": \"cfe2dcb3-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КОФЕ\",\n        \"uuid\": \"cfe2dcb4-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПИВО\",\n        \"uuid\": \"cfe2dcb5-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СОУС\",\n        \"uuid\": \"cfe2dcb6-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"УНДАА\",\n        \"uuid\": \"cfe2dcb7-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХҮҮХДИЙН ЖИВХ\",\n        \"uuid\": \"cfe2dcb8-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЦАЙ\",\n        \"uuid\": \"cfe2dcb9-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЦЭВЭР УС\",\n        \"uuid\": \"9cd174ad-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЧИПС\",\n        \"uuid\": \"9cd174ac-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШОКОЛАД\",\n        \"uuid\": \"a59eb045-6862-11ec-9468-44a842251a8b\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get Customerg Suvag ✅ ⚡",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/cs/CustomerSuvags",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"cs",
+								"CustomerSuvags"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get categories",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/cs/CustomerSuvags",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"cs",
+										"CustomerSuvags"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:33:09 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1359"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"name\": \"АМТЛАГЧ\",\n        \"uuid\": \"cfe2dcad-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"АРИУН ЦЭВРИЙН ХЭРЭГЛЭЛ\",\n        \"uuid\": \"cfe2dcae-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"АРИУН ЦЭВРИЙН ЦААС\",\n        \"uuid\": \"cfe2dcaf-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БЭЛЭН ГОЙМОН\",\n        \"uuid\": \"cfe2dcb0-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГОЙМОН\",\n        \"uuid\": \"cfe2dcb1-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДАЛАЙН БАЙЦАА\",\n        \"uuid\": \"cfe2dcb2-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖИГНЭМЭГ\",\n        \"uuid\": \"cfe2dcb3-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КОФЕ\",\n        \"uuid\": \"cfe2dcb4-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПИВО\",\n        \"uuid\": \"cfe2dcb5-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СОУС\",\n        \"uuid\": \"cfe2dcb6-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"УНДАА\",\n        \"uuid\": \"cfe2dcb7-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХҮҮХДИЙН ЖИВХ\",\n        \"uuid\": \"cfe2dcb8-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЦАЙ\",\n        \"uuid\": \"cfe2dcb9-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЦЭВЭР УС\",\n        \"uuid\": \"9cd174ad-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЧИПС\",\n        \"uuid\": \"9cd174ac-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШОКОЛАД\",\n        \"uuid\": \"a59eb045-6862-11ec-9468-44a842251a8b\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get customer ✅ ✅⚡",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/cd/Companies/:companyId?routeId=258f28fa-8b8f-11e6-bd8a-000c29909b91",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"cd",
+								"Companies",
+								":companyId"
+							],
+							"query": [
+								{
+									"key": "routeId",
+									"value": "258f28fa-8b8f-11e6-bd8a-000c29909b91",
+									"description": "✅"
+								}
+							],
+							"variable": [
+								{
+									"key": "companyId",
+									"value": "9cfae941-6493-11ec-9467-44a842251a8b"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get customer",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/cd/Companies/225d39b6-66ee-11ec-9467-44a842251a8b",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"cd",
+										"Companies",
+										"225d39b6-66ee-11ec-9467-44a842251a8b"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:21:59 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "560"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"commonName\": \"Номин 11-р хороолол\",\n    \"name\": \"Номин 11-р хороолол\",\n    \"registryNumber\": \"5469929\",\n    \"promotionPoint\": \"\",\n    \"salesChannel\": \"\",\n    \"businessRegion\": \"331\",\n    \"deliveryRegion\": \"Route331\",\n    \"email\": \"\",\n    \"address\": \"11-р хороолол\",\n    \"phoneNumbers\": \"99116789\",\n    \"companyType\": \"SMA\",\n    \"taxPayerType\": true,\n    \"deactived\": false,\n    \"contract\": {\n        \"contractId\": \"8377447c-b962-11e7-9e4e-000c29909b91\",\n        \"priceTypeId\": \"ee731f3b-6e58-11e6-9c23-3085a97c20be\",\n        \"isLoan\": \"Зээл биш\"\n    },\n    \"bankAccounts\": []\n}"
+						}
+					]
+				},
+				{
+					"name": "Get customer plan 👍",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/plan/CustomerPlans?routeId=258f28f4-8b8f-11e6-bd8a-000c29909b91&planDate=2024-04-11&page=1&pageSize=10",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"plan",
+								"CustomerPlans"
+							],
+							"query": [
+								{
+									"key": "routeId",
+									"value": "258f28f4-8b8f-11e6-bd8a-000c29909b91"
+								},
+								{
+									"key": "planDate",
+									"value": "2024-04-11"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get brands",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/br/Brands",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"br",
+										"Brands"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:32:55 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3880"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"name\": \"BAEKSAN\",\n        \"uuid\": \"40ec0ae7-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"BUD\",\n        \"uuid\": \"689a6614-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"CASS\",\n        \"uuid\": \"689a6615-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"CORONA\",\n        \"uuid\": \"689a6616-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"HOEGAARDEN\",\n        \"uuid\": \"689a6617-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"АВС\",\n        \"uuid\": \"689a6627-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БАНАНА ГО\",\n        \"uuid\": \"3757b24b-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"БАРИЛЛА\",\n        \"uuid\": \"689a6618-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БОСОМИ\",\n        \"uuid\": \"689a661e-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ВЭНУС\",\n        \"uuid\": \"55f8b9f5-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГИТА\",\n        \"uuid\": \"689a6635-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГРИЛЛ\",\n        \"uuid\": \"689a662e-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДАЭСАН\",\n        \"uuid\": \"689a6619-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДОКТОР БИДЭТ\",\n        \"uuid\": \"689a661f-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖАВАН\",\n        \"uuid\": \"2a787e13-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖАРДИН\",\n        \"uuid\": \"f3ba5d0e-6861-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖОКЕЙ\",\n        \"uuid\": \"689a6636-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЗИРО\",\n        \"uuid\": \"689a6620-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАКАО\",\n        \"uuid\": \"689a661b-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАНЧО\",\n        \"uuid\": \"689a6628-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАРАМЕЛЬ\",\n        \"uuid\": \"689a6629-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КВАНГ ЧЕОН КИМ\",\n        \"uuid\": \"689a661c-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КИМНОРИ\",\n        \"uuid\": \"689a661d-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КИМЧИ\",\n        \"uuid\": \"689a662f-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КЛИННАРА\",\n        \"uuid\": \"689a6621-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЛЮКС\",\n        \"uuid\": \"689a6622-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"МАРТИНЕЛЬ\",\n        \"uuid\": \"689a662d-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"МЬЮТТОН\",\n        \"uuid\": \"689a6630-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НАЧУРАЛ СОФТ\",\n        \"uuid\": \"689a6623-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НОНГШИМ\",\n        \"uuid\": \"689a6631-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НОНГШИМ СОЛОНГОС\",\n        \"uuid\": \"689a6632-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НУРИ\",\n        \"uuid\": \"689a6637-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ОБ ПРЕМЬЕР\",\n        \"uuid\": \"4b1eee71-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ОНИОН\",\n        \"uuid\": \"3757b249-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПЕПЕРО\",\n        \"uuid\": \"689a662a-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПРЕТЗЭЛ\",\n        \"uuid\": \"40ec0ae5-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"САНФҮҮД\",\n        \"uuid\": \"689a662b-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СУПЕР ГУАРД\",\n        \"uuid\": \"689a6624-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СҮҮНСҮҮ\",\n        \"uuid\": \"689a6625-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТЕСС\",\n        \"uuid\": \"689a6638-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТОРЭН\",\n        \"uuid\": \"55f8b9f4-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТЭЙСТИ\",\n        \"uuid\": \"689a6633-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ФУНЗЕЛ\",\n        \"uuid\": \"222c040d-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХУГАРДЕН\",\n        \"uuid\": \"4b1eee6e-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХУН ЧУ\",\n        \"uuid\": \"689a661a-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЧОКО ПАЙ\",\n        \"uuid\": \"689a662c-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШЕФС КИЧЕН\",\n        \"uuid\": \"689a6626-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШИН\",\n        \"uuid\": \"689a6634-3d1e-11ec-9462-44a842251a8b\"\n    }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Get products ✅ ✅ ⚡",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/pr/Products?page=1&pageSize=100&warehouseId={{regular_warehouse}}&routeId=258f28f6-8b8f-11e6-bd8a-000c29909b91&obcsaleid=28d30984-3d18-11ec-9462-44a842251a8b",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"pr",
+								"Products"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "✅"
+								},
+								{
+									"key": "pageSize",
+									"value": "100",
+									"description": "✅"
+								},
+								{
+									"key": "warehouseId",
+									"value": "{{regular_warehouse}}",
+									"description": "✅"
+								},
+								{
+									"key": "routeId",
+									"value": "258f28f6-8b8f-11e6-bd8a-000c29909b91",
+									"description": "✅"
+								},
+								{
+									"key": "outOfStock",
+									"value": "false",
+									"disabled": true
+								},
+								{
+									"key": "priceTypeId",
+									"value": "ee731f38-6e58-11e6-9c23-3085a97c20be",
+									"description": "✅",
+									"disabled": true
+								},
+								{
+									"key": "brands",
+									"value": "689a6618-3d1e-11ec-9462-44a842251a8b",
+									"description": "✅",
+									"disabled": true
+								},
+								{
+									"key": "categories",
+									"value": "cfe2dcb1-4124-11ec-9462-44a842251a8b",
+									"description": "✅",
+									"disabled": true
+								},
+								{
+									"key": "createdInDays",
+									"value": "90",
+									"description": "✅",
+									"disabled": true
+								},
+								{
+									"key": "expiresInDays",
+									"value": "720",
+									"description": "✅",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "Кимчи ра",
+									"description": "✅",
+									"disabled": true
+								},
+								{
+									"key": "article",
+									"value": "non1123",
+									"disabled": true
+								},
+								{
+									"key": "sortBy",
+									"value": "ARTICLE",
+									"description": "NAME, ARTICLE, STOCK",
+									"disabled": true
+								},
+								{
+									"key": "sortOrder",
+									"value": "ASC",
+									"description": "ASC, DESC",
+									"disabled": true
+								},
+								{
+									"key": "companyId",
+									"value": "1ca77e26-9b50-11ef-9514-44a842251a8a",
+									"description": " 670fbdd7-6493-11ec-9467-44a842251a8b",
+									"disabled": true
+								},
+								{
+									"key": "obcsaleid",
+									"value": "28d30984-3d18-11ec-9462-44a842251a8b"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get product detail ✅ ✅ ⚡",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/pds/Products?warehouseId={{regular_warehouse}}&priceTypeId=ee731f38-6e58-11e6-9c23-3085a97c20be&uuid=783d4afd-4125-11ec-9462-44a842251a8b",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"pds",
+								"Products"
+							],
+							"query": [
+								{
+									"key": "warehouseId",
+									"value": "{{regular_warehouse}}",
+									"description": "✅"
+								},
+								{
+									"key": "priceTypeId",
+									"value": "ee731f38-6e58-11e6-9c23-3085a97c20be",
+									"description": "✅"
+								},
+								{
+									"key": "uuid",
+									"value": "783d4afd-4125-11ec-9462-44a842251a8b"
+								},
+								{
+									"key": "companyId",
+									"value": "670fbdd7-6493-11ec-9467-44a842251a8b",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get product detail",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/pd/Products?uuid=783d4afd-4125-11ec-9462-44a842251a8b&warehouseId=5a811d4a-6dc5-11e6-9c23-3085a97c20be&priceTypeId=ee731f38-6e58-11e6-9c23-3085a97c20be",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"pd",
+										"Products"
+									],
+									"query": [
+										{
+											"key": "uuid",
+											"value": "783d4afd-4125-11ec-9462-44a842251a8b"
+										},
+										{
+											"key": "warehouseId",
+											"value": "5a811d4a-6dc5-11e6-9c23-3085a97c20be"
+										},
+										{
+											"key": "priceTypeId",
+											"value": "ee731f38-6e58-11e6-9c23-3085a97c20be"
+										},
+										{
+											"key": "createdInDays",
+											"value": "30",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:32:10 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "595"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"СПАГЕТТИ\",\n    \"uuid\": \"783d4afd-4125-11ec-9462-44a842251a8b\",\n    \"country\": \"ИТАЛИ\",\n    \"brand\": {\n        \"uuid\": \"689a6618-3d1e-11ec-9462-44a842251a8b\",\n        \"name\": \"БАРИЛЛА\"\n    },\n    \"category\": {\n        \"uuid\": \"cfe2dcb1-4124-11ec-9462-44a842251a8b\",\n        \"name\": \"ГОЙМОН\"\n    },\n    \"price\": 5020,\n    \"deactived\": false,\n    \"stock\": 7423,\n    \"moq\": 10,\n    \"expireDates\": [\n        {\n            \"serialNumber\": \"01.03.24\",\n            \"expireDate\": \"2024-03-01T00:00:00\"\n        },\n        {\n            \"serialNumber\": \"01.04.24\",\n            \"expireDate\": \"2024-04-01T00:00:00\"\n        },\n        {\n            \"serialNumber\": \"01.07.24\",\n            \"expireDate\": \"2024-07-01T00:00:00\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get product detail ✅ ✅ Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/pd/Products?warehouseId={{sales_warehouse}}&companyId=1ca77e26-9b50-11ef-9514-44a842251a8a",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"pd",
+								"Products"
+							],
+							"query": [
+								{
+									"key": "warehouseId",
+									"value": "{{sales_warehouse}}",
+									"description": "✅6b5314d6-5c7e-11ec-9463-44a842251a8a"
+								},
+								{
+									"key": "priceTypeId",
+									"value": "ee731f38-6e58-11e6-9c23-3085a97c20be",
+									"description": "✅",
+									"disabled": true
+								},
+								{
+									"key": "uuid",
+									"value": "287944da-6864-11ec-9468-44a842251a8b",
+									"description": "✅",
+									"disabled": true
+								},
+								{
+									"key": "companyId",
+									"value": "1ca77e26-9b50-11ef-9514-44a842251a8a"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get product detail",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/pd/Products?uuid=783d4afd-4125-11ec-9462-44a842251a8b&warehouseId=5a811d4a-6dc5-11e6-9c23-3085a97c20be&priceTypeId=ee731f38-6e58-11e6-9c23-3085a97c20be",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"pd",
+										"Products"
+									],
+									"query": [
+										{
+											"key": "uuid",
+											"value": "783d4afd-4125-11ec-9462-44a842251a8b"
+										},
+										{
+											"key": "warehouseId",
+											"value": "5a811d4a-6dc5-11e6-9c23-3085a97c20be"
+										},
+										{
+											"key": "priceTypeId",
+											"value": "ee731f38-6e58-11e6-9c23-3085a97c20be"
+										},
+										{
+											"key": "createdInDays",
+											"value": "30",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:32:10 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "595"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"СПАГЕТТИ\",\n    \"uuid\": \"783d4afd-4125-11ec-9462-44a842251a8b\",\n    \"country\": \"ИТАЛИ\",\n    \"brand\": {\n        \"uuid\": \"689a6618-3d1e-11ec-9462-44a842251a8b\",\n        \"name\": \"БАРИЛЛА\"\n    },\n    \"category\": {\n        \"uuid\": \"cfe2dcb1-4124-11ec-9462-44a842251a8b\",\n        \"name\": \"ГОЙМОН\"\n    },\n    \"price\": 5020,\n    \"deactived\": false,\n    \"stock\": 7423,\n    \"moq\": 10,\n    \"expireDates\": [\n        {\n            \"serialNumber\": \"01.03.24\",\n            \"expireDate\": \"2024-03-01T00:00:00\"\n        },\n        {\n            \"serialNumber\": \"01.04.24\",\n            \"expireDate\": \"2024-04-01T00:00:00\"\n        },\n        {\n            \"serialNumber\": \"01.07.24\",\n            \"expireDate\": \"2024-07-01T00:00:00\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get regular products ✅ ✅ ⚡",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/gp/Companies/:companyId/products/regular?routeId=258f28f6-8b8f-11e6-bd8a-000c29909b91&warehouseId={{regular_warehouse}}&page=1&pageSize=3&priceTypeId=ee731f38-6e58-11e6-9c23-3085a97c20be&article=NON1131",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"gp",
+								"Companies",
+								":companyId",
+								"products",
+								"regular"
+							],
+							"query": [
+								{
+									"key": "routeId",
+									"value": "258f28f6-8b8f-11e6-bd8a-000c29909b91",
+									"description": "✅"
+								},
+								{
+									"key": "warehouseId",
+									"value": "{{regular_warehouse}}",
+									"description": "✅"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "✅"
+								},
+								{
+									"key": "pageSize",
+									"value": "3",
+									"description": "✅"
+								},
+								{
+									"key": "priceTypeId",
+									"value": "ee731f38-6e58-11e6-9c23-3085a97c20be",
+									"description": "✅"
+								},
+								{
+									"key": "article",
+									"value": "NON1131"
+								}
+							],
+							"variable": [
+								{
+									"key": "companyId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get recommended products ✅ ✅ ⚡",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/rp/Companies/:companyId/products/recommended?routeId=258f28f6-8b8f-11e6-bd8a-000c29909b91&warehouseId=5a811d4a-6dc5-11e6-9c23-3085a97c20be&page=1&pageSize=10&priceTypeId=ee731f38-6e58-11e6-9c23-3085a97c20be",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"rp",
+								"Companies",
+								":companyId",
+								"products",
+								"recommended"
+							],
+							"query": [
+								{
+									"key": "routeId",
+									"value": "258f28f6-8b8f-11e6-bd8a-000c29909b91",
+									"description": "✅"
+								},
+								{
+									"key": "warehouseId",
+									"value": "5a811d4a-6dc5-11e6-9c23-3085a97c20be",
+									"description": "✅"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "✅"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "✅"
+								},
+								{
+									"key": "priceTypeId",
+									"value": "ee731f38-6e58-11e6-9c23-3085a97c20be",
+									"description": "✅"
+								},
+								{
+									"key": "article",
+									"value": "BAR2007",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "companyId",
+									"value": "{{company_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "Get ClientPaymentDashboard ✅ ⚡",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/clPaymentDashboard/ClientPaymentDashboard/?page=1&pageSize=10&startDate=2025-05-03&endDate=2025-10-30&businessId=80a3a4a5-48e8-11ec-9463-44a842251a8a",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"clPaymentDashboard",
+								"ClientPaymentDashboard",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "✅"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "✅"
+								},
+								{
+									"key": "startDate",
+									"value": "2025-05-03"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-10-30"
+								},
+								{
+									"key": "businessId",
+									"value": "80a3a4a5-48e8-11ec-9463-44a842251a8a"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get customers",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/cl/Companies/?routeId=258f2904-8b8f-11e6-bd8a-000c29909b91&name=Номин&page=1&pageSize=10",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"cl",
+										"Companies",
+										""
+									],
+									"query": [
+										{
+											"key": "routeId",
+											"value": "258f2904-8b8f-11e6-bd8a-000c29909b91"
+										},
+										{
+											"key": "name",
+											"value": "Номин"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:20:59 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1112"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"count\": 7,\n    \"results\": [\n        {\n            \"uuid\": \"225d39b6-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 11-р хороолол\",\n            \"address\": \"11-р хороолол\"\n        },\n        {\n            \"uuid\": \"225d39e3-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 120\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39e4-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 22\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39d8-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 32\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39b7-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 5 шар\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39b8-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин Аз Жаргал\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39b9-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин Андууд\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39d4-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин Багануур\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39e5-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин БЗ\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39e2-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин бизнес клуб\",\n            \"address\": \"\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get ClientPayment ✅ ⚡",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/clPayment/ClientPayment/?page=1&pageSize=10&startDate=2025-05-03&endDate=2025-09-30&businessId=80a3a4a5-48e8-11ec-9463-44a842251a8a",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"clPayment",
+								"ClientPayment",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "✅"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "✅"
+								},
+								{
+									"key": "startDate",
+									"value": "2025-05-03"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-09-30"
+								},
+								{
+									"key": "businessId",
+									"value": "80a3a4a5-48e8-11ec-9463-44a842251a8a"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get customers",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/cl/Companies/?routeId=258f2904-8b8f-11e6-bd8a-000c29909b91&name=Номин&page=1&pageSize=10",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"cl",
+										"Companies",
+										""
+									],
+									"query": [
+										{
+											"key": "routeId",
+											"value": "258f2904-8b8f-11e6-bd8a-000c29909b91"
+										},
+										{
+											"key": "name",
+											"value": "Номин"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:20:59 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1112"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"count\": 7,\n    \"results\": [\n        {\n            \"uuid\": \"225d39b6-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 11-р хороолол\",\n            \"address\": \"11-р хороолол\"\n        },\n        {\n            \"uuid\": \"225d39e3-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 120\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39e4-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 22\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39d8-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 32\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39b7-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 5 шар\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39b8-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин Аз Жаргал\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39b9-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин Андууд\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39d4-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин Багануур\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39e5-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин БЗ\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39e2-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин бизнес клуб\",\n            \"address\": \"\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get ClientPaymentDetail ✅ ⚡",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/clPaymentDetail/ClientPaymentDetail/?page=1&pageSize=10&companyId=76cc1214-f41e-11ef-8fee-000c297c570c",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"clPaymentDetail",
+								"ClientPaymentDetail",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "✅"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "✅"
+								},
+								{
+									"key": "companyId",
+									"value": "76cc1214-f41e-11ef-8fee-000c297c570c"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get customers",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/cl/Companies/?routeId=258f2904-8b8f-11e6-bd8a-000c29909b91&name=Номин&page=1&pageSize=10",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"cl",
+										"Companies",
+										""
+									],
+									"query": [
+										{
+											"key": "routeId",
+											"value": "258f2904-8b8f-11e6-bd8a-000c29909b91"
+										},
+										{
+											"key": "name",
+											"value": "Номин"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:20:59 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1112"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"count\": 7,\n    \"results\": [\n        {\n            \"uuid\": \"225d39b6-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 11-р хороолол\",\n            \"address\": \"11-р хороолол\"\n        },\n        {\n            \"uuid\": \"225d39e3-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 120\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39e4-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 22\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39d8-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 32\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39b7-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 5 шар\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39b8-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин Аз Жаргал\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39b9-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин Андууд\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39d4-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин Багануур\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39e5-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин БЗ\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39e2-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин бизнес клуб\",\n            \"address\": \"\"\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Lavlagaa",
+			"item": [
+				{
+					"name": "Get brands ✅ ✅ ⚡",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/br/Brands",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"br",
+								"Brands"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get brands",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/br/Brands",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"br",
+										"Brands"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:32:55 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3880"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"name\": \"BAEKSAN\",\n        \"uuid\": \"40ec0ae7-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"BUD\",\n        \"uuid\": \"689a6614-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"CASS\",\n        \"uuid\": \"689a6615-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"CORONA\",\n        \"uuid\": \"689a6616-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"HOEGAARDEN\",\n        \"uuid\": \"689a6617-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"АВС\",\n        \"uuid\": \"689a6627-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БАНАНА ГО\",\n        \"uuid\": \"3757b24b-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"БАРИЛЛА\",\n        \"uuid\": \"689a6618-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БОСОМИ\",\n        \"uuid\": \"689a661e-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ВЭНУС\",\n        \"uuid\": \"55f8b9f5-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГИТА\",\n        \"uuid\": \"689a6635-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГРИЛЛ\",\n        \"uuid\": \"689a662e-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДАЭСАН\",\n        \"uuid\": \"689a6619-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДОКТОР БИДЭТ\",\n        \"uuid\": \"689a661f-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖАВАН\",\n        \"uuid\": \"2a787e13-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖАРДИН\",\n        \"uuid\": \"f3ba5d0e-6861-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖОКЕЙ\",\n        \"uuid\": \"689a6636-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЗИРО\",\n        \"uuid\": \"689a6620-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАКАО\",\n        \"uuid\": \"689a661b-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАНЧО\",\n        \"uuid\": \"689a6628-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАРАМЕЛЬ\",\n        \"uuid\": \"689a6629-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КВАНГ ЧЕОН КИМ\",\n        \"uuid\": \"689a661c-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КИМНОРИ\",\n        \"uuid\": \"689a661d-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КИМЧИ\",\n        \"uuid\": \"689a662f-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КЛИННАРА\",\n        \"uuid\": \"689a6621-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЛЮКС\",\n        \"uuid\": \"689a6622-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"МАРТИНЕЛЬ\",\n        \"uuid\": \"689a662d-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"МЬЮТТОН\",\n        \"uuid\": \"689a6630-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НАЧУРАЛ СОФТ\",\n        \"uuid\": \"689a6623-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НОНГШИМ\",\n        \"uuid\": \"689a6631-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НОНГШИМ СОЛОНГОС\",\n        \"uuid\": \"689a6632-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НУРИ\",\n        \"uuid\": \"689a6637-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ОБ ПРЕМЬЕР\",\n        \"uuid\": \"4b1eee71-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ОНИОН\",\n        \"uuid\": \"3757b249-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПЕПЕРО\",\n        \"uuid\": \"689a662a-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПРЕТЗЭЛ\",\n        \"uuid\": \"40ec0ae5-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"САНФҮҮД\",\n        \"uuid\": \"689a662b-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СУПЕР ГУАРД\",\n        \"uuid\": \"689a6624-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СҮҮНСҮҮ\",\n        \"uuid\": \"689a6625-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТЕСС\",\n        \"uuid\": \"689a6638-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТОРЭН\",\n        \"uuid\": \"55f8b9f4-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТЭЙСТИ\",\n        \"uuid\": \"689a6633-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ФУНЗЕЛ\",\n        \"uuid\": \"222c040d-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХУГАРДЕН\",\n        \"uuid\": \"4b1eee6e-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХУН ЧУ\",\n        \"uuid\": \"689a661a-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЧОКО ПАЙ\",\n        \"uuid\": \"689a662c-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШЕФС КИЧЕН\",\n        \"uuid\": \"689a6626-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШИН\",\n        \"uuid\": \"689a6634-3d1e-11ec-9462-44a842251a8b\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get categories ✅ ✅⚡",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/ct/Categories",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"ct",
+								"Categories"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get categories",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/ct/Categories",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"ct",
+										"Categories"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:33:09 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1359"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"name\": \"АМТЛАГЧ\",\n        \"uuid\": \"cfe2dcad-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"АРИУН ЦЭВРИЙН ХЭРЭГЛЭЛ\",\n        \"uuid\": \"cfe2dcae-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"АРИУН ЦЭВРИЙН ЦААС\",\n        \"uuid\": \"cfe2dcaf-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БЭЛЭН ГОЙМОН\",\n        \"uuid\": \"cfe2dcb0-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГОЙМОН\",\n        \"uuid\": \"cfe2dcb1-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДАЛАЙН БАЙЦАА\",\n        \"uuid\": \"cfe2dcb2-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖИГНЭМЭГ\",\n        \"uuid\": \"cfe2dcb3-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КОФЕ\",\n        \"uuid\": \"cfe2dcb4-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПИВО\",\n        \"uuid\": \"cfe2dcb5-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СОУС\",\n        \"uuid\": \"cfe2dcb6-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"УНДАА\",\n        \"uuid\": \"cfe2dcb7-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХҮҮХДИЙН ЖИВХ\",\n        \"uuid\": \"cfe2dcb8-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЦАЙ\",\n        \"uuid\": \"cfe2dcb9-4124-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЦЭВЭР УС\",\n        \"uuid\": \"9cd174ad-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЧИПС\",\n        \"uuid\": \"9cd174ac-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШОКОЛАД\",\n        \"uuid\": \"a59eb045-6862-11ec-9468-44a842251a8b\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get warehouse 👍 ⚡",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/wh/warehouses?routeId=8c263ee9-14b9-11ee-94a5-44a842251a8b",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"wh",
+								"warehouses"
+							],
+							"query": [
+								{
+									"key": "routeId",
+									"value": "8c263ee9-14b9-11ee-94a5-44a842251a8b"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get brands",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/br/Brands",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"br",
+										"Brands"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:32:55 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3880"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"name\": \"BAEKSAN\",\n        \"uuid\": \"40ec0ae7-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"BUD\",\n        \"uuid\": \"689a6614-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"CASS\",\n        \"uuid\": \"689a6615-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"CORONA\",\n        \"uuid\": \"689a6616-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"HOEGAARDEN\",\n        \"uuid\": \"689a6617-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"АВС\",\n        \"uuid\": \"689a6627-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БАНАНА ГО\",\n        \"uuid\": \"3757b24b-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"БАРИЛЛА\",\n        \"uuid\": \"689a6618-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БОСОМИ\",\n        \"uuid\": \"689a661e-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ВЭНУС\",\n        \"uuid\": \"55f8b9f5-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГИТА\",\n        \"uuid\": \"689a6635-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГРИЛЛ\",\n        \"uuid\": \"689a662e-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДАЭСАН\",\n        \"uuid\": \"689a6619-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДОКТОР БИДЭТ\",\n        \"uuid\": \"689a661f-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖАВАН\",\n        \"uuid\": \"2a787e13-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖАРДИН\",\n        \"uuid\": \"f3ba5d0e-6861-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖОКЕЙ\",\n        \"uuid\": \"689a6636-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЗИРО\",\n        \"uuid\": \"689a6620-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАКАО\",\n        \"uuid\": \"689a661b-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАНЧО\",\n        \"uuid\": \"689a6628-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАРАМЕЛЬ\",\n        \"uuid\": \"689a6629-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КВАНГ ЧЕОН КИМ\",\n        \"uuid\": \"689a661c-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КИМНОРИ\",\n        \"uuid\": \"689a661d-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КИМЧИ\",\n        \"uuid\": \"689a662f-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КЛИННАРА\",\n        \"uuid\": \"689a6621-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЛЮКС\",\n        \"uuid\": \"689a6622-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"МАРТИНЕЛЬ\",\n        \"uuid\": \"689a662d-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"МЬЮТТОН\",\n        \"uuid\": \"689a6630-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НАЧУРАЛ СОФТ\",\n        \"uuid\": \"689a6623-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НОНГШИМ\",\n        \"uuid\": \"689a6631-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НОНГШИМ СОЛОНГОС\",\n        \"uuid\": \"689a6632-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НУРИ\",\n        \"uuid\": \"689a6637-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ОБ ПРЕМЬЕР\",\n        \"uuid\": \"4b1eee71-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ОНИОН\",\n        \"uuid\": \"3757b249-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПЕПЕРО\",\n        \"uuid\": \"689a662a-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПРЕТЗЭЛ\",\n        \"uuid\": \"40ec0ae5-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"САНФҮҮД\",\n        \"uuid\": \"689a662b-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СУПЕР ГУАРД\",\n        \"uuid\": \"689a6624-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СҮҮНСҮҮ\",\n        \"uuid\": \"689a6625-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТЕСС\",\n        \"uuid\": \"689a6638-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТОРЭН\",\n        \"uuid\": \"55f8b9f4-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТЭЙСТИ\",\n        \"uuid\": \"689a6633-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ФУНЗЕЛ\",\n        \"uuid\": \"222c040d-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХУГАРДЕН\",\n        \"uuid\": \"4b1eee6e-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХУН ЧУ\",\n        \"uuid\": \"689a661a-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЧОКО ПАЙ\",\n        \"uuid\": \"689a662c-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШЕФС КИЧЕН\",\n        \"uuid\": \"689a6626-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШИН\",\n        \"uuid\": \"689a6634-3d1e-11ec-9462-44a842251a8b\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get RouteList 💪💪",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/route/routelist",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"route",
+								"routelist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Xt 💪💪",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url_maximus_development}}/xt/getXt?uniqueNumberID=279291c4-f0ed-11ef-8fee-000c297c570c",
+							"host": [
+								"{{api_url_maximus_development}}"
+							],
+							"path": [
+								"xt",
+								"getXt"
+							],
+							"query": [
+								{
+									"key": "uniqueNumberID",
+									"value": "279291c4-f0ed-11ef-8fee-000c297c570c"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get brands",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/br/Brands",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"br",
+										"Brands"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:32:55 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3880"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"name\": \"BAEKSAN\",\n        \"uuid\": \"40ec0ae7-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"BUD\",\n        \"uuid\": \"689a6614-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"CASS\",\n        \"uuid\": \"689a6615-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"CORONA\",\n        \"uuid\": \"689a6616-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"HOEGAARDEN\",\n        \"uuid\": \"689a6617-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"АВС\",\n        \"uuid\": \"689a6627-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БАНАНА ГО\",\n        \"uuid\": \"3757b24b-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"БАРИЛЛА\",\n        \"uuid\": \"689a6618-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БОСОМИ\",\n        \"uuid\": \"689a661e-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ВЭНУС\",\n        \"uuid\": \"55f8b9f5-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГИТА\",\n        \"uuid\": \"689a6635-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГРИЛЛ\",\n        \"uuid\": \"689a662e-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДАЭСАН\",\n        \"uuid\": \"689a6619-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДОКТОР БИДЭТ\",\n        \"uuid\": \"689a661f-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖАВАН\",\n        \"uuid\": \"2a787e13-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖАРДИН\",\n        \"uuid\": \"f3ba5d0e-6861-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖОКЕЙ\",\n        \"uuid\": \"689a6636-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЗИРО\",\n        \"uuid\": \"689a6620-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАКАО\",\n        \"uuid\": \"689a661b-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАНЧО\",\n        \"uuid\": \"689a6628-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАРАМЕЛЬ\",\n        \"uuid\": \"689a6629-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КВАНГ ЧЕОН КИМ\",\n        \"uuid\": \"689a661c-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КИМНОРИ\",\n        \"uuid\": \"689a661d-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КИМЧИ\",\n        \"uuid\": \"689a662f-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КЛИННАРА\",\n        \"uuid\": \"689a6621-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЛЮКС\",\n        \"uuid\": \"689a6622-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"МАРТИНЕЛЬ\",\n        \"uuid\": \"689a662d-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"МЬЮТТОН\",\n        \"uuid\": \"689a6630-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НАЧУРАЛ СОФТ\",\n        \"uuid\": \"689a6623-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НОНГШИМ\",\n        \"uuid\": \"689a6631-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НОНГШИМ СОЛОНГОС\",\n        \"uuid\": \"689a6632-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НУРИ\",\n        \"uuid\": \"689a6637-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ОБ ПРЕМЬЕР\",\n        \"uuid\": \"4b1eee71-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ОНИОН\",\n        \"uuid\": \"3757b249-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПЕПЕРО\",\n        \"uuid\": \"689a662a-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПРЕТЗЭЛ\",\n        \"uuid\": \"40ec0ae5-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"САНФҮҮД\",\n        \"uuid\": \"689a662b-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СУПЕР ГУАРД\",\n        \"uuid\": \"689a6624-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СҮҮНСҮҮ\",\n        \"uuid\": \"689a6625-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТЕСС\",\n        \"uuid\": \"689a6638-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТОРЭН\",\n        \"uuid\": \"55f8b9f4-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТЭЙСТИ\",\n        \"uuid\": \"689a6633-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ФУНЗЕЛ\",\n        \"uuid\": \"222c040d-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХУГАРДЕН\",\n        \"uuid\": \"4b1eee6e-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХУН ЧУ\",\n        \"uuid\": \"689a661a-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЧОКО ПАЙ\",\n        \"uuid\": \"689a662c-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШЕФС КИЧЕН\",\n        \"uuid\": \"689a6626-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШИН\",\n        \"uuid\": \"689a6634-3d1e-11ec-9462-44a842251a8b\"\n    }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Get orders ✅ ✅ ⚡",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"page\": 1,\n    \"pageSize\": 20,\n    \"username\": \"110032501\",\n    \"startDate\": \"2025-06-25\",\n    \"endDate\": \"2025-06-28\",\n    \"tabName\": \"active\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/or/Order",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"or",
+								"Order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get order detail ✅ ✅ ⚡",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"110032501\",\n    \"uuid\": \"23da2413-5182-11f0-9003-000c297c570c\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/od/OrderDetail",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"od",
+								"OrderDetail"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get order detail ✅ ✅ ШИНЭЧЛЭХ",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"112032501\",\n    \"uuid\": \"7f0b8482-6493-11ec-9467-44a842251a8b\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/od/OrderDetail",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"od",
+								"OrderDetail"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get order detail odp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"103012501\",\n    \"uuid\": \"46145f6f-b3d4-11f0-9025-000c297c5720\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/odp/OrderDetailPromo",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odp",
+								"OrderDetailPromo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create order ✅ ✅ Устгах",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"uuid\": \"\",\n    \"username\": \"11202250\",\n    \"imei\": \"a6b37ff03abe81ad\",\n    \"companyId\": \"670fbdd7-6493-11ec-9467-44a842251a8b\",\n    \"contractId\": \"db05d0d6-9c37-11e5-9beb-3085a97c20be\",\n    \"paymentType\": 1,\n    \"cashAmount\": null,\n    \"warehouseId\": \"5a811d4a-6dc5-11e6-9c23-3085a97c20be\",\n    \"deliveryType\": 1,\n    \"deliveryDatetime\": \"2025-04-11 12:00:00\",\n    \"deliveryAdditionalInfo\": \"\",\n    \"description\": \"\",\n    \"orderProducts\": [\n        {\n            \"productId\": \"2b887da9-4202-11ec-9462-44a842251a8b\",\n            \"stock\": [\n                {\n                    \"typeId\": \"d114bb13-9c37-11e5-9beb-3085a97c20be\",\n                    \"count\": 1\n                }\n            ],\n            \"priceType\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n            \"sale\": 70.0,\n            \"promotions\": []\n        }\n    ],\n    \"paymentcheck\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/co/Order",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"co",
+								"Order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create order ✅ ✅ 2025.04.11",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"uuid\": \"622229be-16bf-11f0-8ff4-000c297c570c\",\n    \"username\": \"11202250\",\n    \"imei\": \"B0155ECC-047E-4C1F-B15F-2C83A967FF82\",\n    \"companyId\": \"670fbdd7-6493-11ec-9467-44a842251a8b\",\n    \"contractId\": \"db05d0d6-9c37-11e5-9beb-3085a97c20be\",\n    \"paymentType\": 1,\n    \"cashAmount\": null,\n    \"warehouseId\": \"5a811d4a-6dc5-11e6-9c23-3085a97c20be\",\n    \"deliveryType\": 1,\n    \"deliveryDatetime\": \"2025-04-11 12:00:00\",\n    \"deliveryAdditionalInfo\": \"\",\n    \"description\": \"\",\n    \"orderProducts\": [\n        {\n            \"productId\": \"287944c3-6864-11ec-9468-44a842251a8b\",\n            \"stock\": [\n                {\n                    \"typeId\": \"b914d55b-068b-11ef-94d8-44a842251a8a\",\n                    \"count\": 8\n                }\n            ],\n            \n            \"priceType\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n            \"sale\": 0,\n            \"promotions\": []\n        },\n        {\n            \"productId\": \"287944c3-6864-11ec-9468-44a842251a8b\",\n            \"stock\": [\n                {\n                    \"typeId\": \"e322494f-244d-11ed-9490-44a842251a8a\",\n                    \"count\": 5\n                }\n            ],\n            \n            \"priceType\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n            \"sale\": 0,\n            \"promotions\": []\n        }\n    ],\n    \"paymentcheck\": true,\n    \"priceTypeId\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/co/Order",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"co",
+								"Order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create order ✅ ✅ Copy 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"uuid\": \"\",\n    \"username\": \"99885599\",\n    \"imei\": \"B0155ECC-047E-4C1F-B15F-2C83A967FF82\",\n    \"companyId\": \"670fbdd7-6493-11ec-9467-44a842251a8b\",\n    \"contractId\": \"db05d0d6-9c37-11e5-9beb-3085a97c20be\",\n    \"paymentType\": 1,\n    \"cashAmount\": null,\n    \"warehouseId\": \"5a811d4a-6dc5-11e6-9c23-3085a97c20be\",\n    \"deliveryType\": 1,\n    \"deliveryDatetime\": \"2024-10-31 12:00:00\",\n    \"deliveryAdditionalInfo\": \"\",\n    \"description\": \"\",\n    \"orderProducts\": [\n        {\n            \"productId\": \"2b887dac-4202-11ec-9462-44a842251a8b\",\n            \"stock\": [\n                {\n                    \"typeId\": \"e322494f-244d-11ed-9490-44a842251a8a\",\n                    \"count\": 6\n                }\n            ],\n            \n            \"priceType\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n            \"sale\": 0,\n            \"promotions\": []\n        }\n    ],\n    \"paymentcheck\": true,\n    \"priceTypeId\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/co/Order",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"co",
+								"Order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create order ✅ ✅ ⚡",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\n/*\n{\n    \"uuid\": \"\",\n    \"username\": \"11202250\",\n    \"imei\": \"B0155ECC-047E-4C1F-B15F-2C83A967FF82\",\n    \"companyId\": \"670fbdd7-6493-11ec-9467-44a842251a8b\",\n    \"contractId\": \"db05d0d6-9c37-11e5-9beb-3085a97c20be\",\n    \"paymentType\": 1,\n    \"cashAmount\": null,\n    \"warehouseId\": \"5a811d4a-6dc5-11e6-9c23-3085a97c20be\",\n    \"deliveryType\": 1,\n    \"deliveryDatetime\": \"2025-08-15 12:00:00\",\n    \"deliveryAdditionalInfo\": \"\",\n    \"description\": \"\",\n    \"orderProducts\": [\n        {\n            \"productId\": \"2b887d84-4202-11ec-9462-44a842251a8b\",\n            \"stock\": [\n                {\n                    \"typeId\": \"d114bb13-9c37-11e5-9beb-3085a97c20be\",\n                    \"count\": 10\n                }\n            ],\n            \"priceType\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n            \"sale\": 0,\n            \"promotions\": []\n        },\n                {\n            \"productId\": \"4922af97-068b-11ef-94d8-44a842251a8a\",\n            \"stock\": [\n                {\n                    \"typeId\": \"d114bb13-9c37-11e5-9beb-3085a97c20be\",\n                    \"count\": 15\n                }\n            ],\n            \"priceType\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n            \"sale\": 0,\n            \"promotions\": []\n        },\n        {\n            \"productId\": \"783d4afd-4125-11ec-9462-44a842251a8b\",\n            \"stock\": [\n                {\n                    \"typeId\": \"d114bb13-9c37-11e5-9beb-3085a97c20be\",\n                    \"count\": 2\n                }\n            ],\n            \"priceType\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n            \"sale\": 0,\n            \"promotions\": []\n        },\n        {\n            \"productId\": \"287944c3-6864-11ec-9468-44a842251a8b\",\n            \"stock\": [\n                {\n                    \"typeId\": \"d114bb13-9c37-11e5-9beb-3085a97c20be\",\n                    \"count\": 25\n                }\n            ],\n            \"priceType\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n            \"sale\": 0,\n            \"promotions\": []\n        }\n\n    ],\n    \"paymentcheck\": true,\n    \"priceTypeId\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n    \"start_date\": \"\"\n    //НЭМЭЛТЭЭР ХИЙГДЭХ: Core deer default -r хэлэлцүүлгэнд байх ёстой\n} **/",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/v2co/Order",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"v2co",
+								"Order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finalize order ✅ ✅ ⚡",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"uuid\": \"dbdb8f79-79f0-11f0-9015-000c297c5720\",\n    \"username\": \"112022501\",\n    \"imei\": \"B0155ECC-047E-4C1F-B15F-2C83A967FF82\",\n    \"companyId\": \"670fbdd7-6493-11ec-9467-44a842251a8b\",\n    \"contractId\": \"db05d0d6-9c37-11e5-9beb-3085a97c20be\",\n    \"paymentcheck\": true, //  нэмнэ\n    \"useDiscount\": true,\n    \"deliveryType\": 1,\n    \"deliveryDatetime\": \"2025-08-15 12:00:00\",\n    \"orderProducts\": [\n        {\n            \"productId\": \"2b887d84-4202-11ec-9462-44a842251a8b\",\n            \"stock\": [\n                {\n                    \"typeId\": \"d114bb13-9c37-11e5-9beb-3085a97c20be\",\n                    \"count\": 10\n                }\n            ],\n            \"priceType\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n            \"sale\": 0,\n            \"promotions\": []\n        },\n                {\n            \"productId\": \"4922af97-068b-11ef-94d8-44a842251a8a\",\n            \"stock\": [\n                {\n                    \"typeId\": \"d114bb13-9c37-11e5-9beb-3085a97c20be\",\n                    \"count\": 15\n                }\n            ],\n            \"priceType\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n            \"sale\": 0,\n            \"promotions\": []\n        },\n        {\n            \"productId\": \"783d4afd-4125-11ec-9462-44a842251a8b\",\n            \"stock\": [\n                {\n                    \"typeId\": \"d114bb13-9c37-11e5-9beb-3085a97c20be\",\n                    \"count\": 2\n                }\n            ],\n            \"priceType\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n            \"sale\": 0,\n            \"promotions\": []\n        },\n        {\n            \"productId\": \"287944c3-6864-11ec-9468-44a842251a8b\",\n            \"stock\": [\n                {\n                    \"typeId\": \"d114bb13-9c37-11e5-9beb-3085a97c20be\",\n                    \"count\": 25\n                }\n            ],\n            \"priceType\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n            \"sale\": 0,\n            \"promotions\": []\n        }\n\n    ],\n    \"end_date\" : \"2025-06-05 15:00:04\",\n    //2025-20-28 add\n\t\"loan\": true,\n\t\"loanDescription\": \"\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/v2finishco/Order",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"v2finishco",
+								"Order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create order Direct✅ ✅ ⚡",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"uuid\": \"\",\n  \"username\": \"103012501\",\n  \"imei\": \"8F8CCBE8-F459-4109-92F2-35BDC2972252\",\n  \"companyId\": \"a2f81108-6493-11ec-9467-44a842251a8b\",\n  \"contractId\": \"db05d0d6-9c37-11e5-9beb-3085a97c20be\",\n  \"paymentType\": 1,\n  \"cashAmount\": null,\n  \"warehouseId\": \"5a811d4a-6dc5-11e6-9c23-3085a97c20be\",\n  \"deliveryType\": 1,\n  \"deliveryDatetime\": \"2025-10-31 00:48:22\",\n  \"deliveryAdditionalInfo\": \"\",\n  \"description\": \"\",\n  \"orderProducts\": [{\n    \"productId\": \"2b887d99-4202-11ec-9462-44a842251a8b\",\n    \"stock\": [{\"typeId\": \"d114bb13-9c37-11e5-9beb-3085a97c20be\", \"count\": 10}],\n    \"priceType\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n    \"sale\": 0.0,\n    \"promotions\": []\n  }],\n  \"priceTypeId\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n  \"paymentcheck\": false,\n  \"latitude\": 47.899943,\n  \"longitude\": 106.893723,\n  \"useDiscount\": true,\n  \"customerPriceTypeId\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n  \"deliveryDate\": null,\n  \"isSale\": false,\n  \"start_date\": \"2025-10-31 00:48:22\",\n  \"end_date\": \"2025-10-31 00:48:22\",\n  //2025-10-31 \n  \"mobileVersion\": \"1.2.12\"\n}\n\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/direct/Order",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"direct",
+								"Order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finalize order ✅ ✅ ⚡ Direct",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"uuid\": \"c6a27372-b5e9-11f0-9026-000c297c5720\",\n  \"finishStep\": true, // finish Step \n  \"mobileVersion\": \"1.2.26\",\n  \"username\": \"110032501\",\n  \"imei\": \"8F8CCBE8-F459-4109-92F2-35BDC2972252\",\n  \"companyId\": \"a2f81108-6493-11ec-9467-44a842251a8b\",\n  \"contractId\": \"db05d0d6-9c37-11e5-9beb-3085a97c20be\",\n  \"paymentType\": 1,\n  \"cashAmount\": null,\n  \"warehouseId\": \"5a811d4a-6dc5-11e6-9c23-3085a97c20be\",\n  \"deliveryType\": 1,\n  \"deliveryDatetime\": \"2025-10-31 00:48:22\",\n  \"deliveryAdditionalInfo\": \"\",\n  \"description\": \"\",\n  \"orderProducts\": [{\n    \"productId\": \"2b887d99-4202-11ec-9462-44a842251a8b\",\n    \"stock\": [{\"typeId\": \"d114bb13-9c37-11e5-9beb-3085a97c20be\", \"count\": 10}],\n    \"priceType\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n    \"sale\": 0.0,\n    \"promotions\": []\n  }],\n  \"priceTypeId\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n  \"customerPriceTypeId\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n  \"deliveryDate\": null,\n  \"isSale\": false,\n  \"start_date\": \"2025-10-31 00:48:22\",\n        //2025-10-31 Finish add\n   \"latitudeFinish\": 47.89994322,\n   \"longitudeFinish\": 106.8937231,\n   \"paymentcheck\": true, //  нэмнэ\n   \"useDiscount\": true,\n   \"end_date\" : \"2025-10-31 23:48:22\",\n   \"loan\": true,\n   \"loanDescription\": \"add changed 123 dfsfsf\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/direct/Order",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"direct",
+								"Order"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Visitor",
+			"item": [
+				{
+					"name": "Get visotor 👍 ⚡",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/vs/Visitors?routeID=258f28f4-8b8f-11e6-bd8a-000c29909b91&page=1&=",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"vs",
+								"Visitors"
+							],
+							"query": [
+								{
+									"key": "routeID",
+									"value": "258f28f4-8b8f-11e6-bd8a-000c29909b91"
+								},
+								{
+									"key": "customers",
+									"value": "1d635a53-16a3-11f0-8ff4-000c297c570c",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": null,
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get brands",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/br/Brands",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"br",
+										"Brands"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:32:55 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3880"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"name\": \"BAEKSAN\",\n        \"uuid\": \"40ec0ae7-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"BUD\",\n        \"uuid\": \"689a6614-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"CASS\",\n        \"uuid\": \"689a6615-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"CORONA\",\n        \"uuid\": \"689a6616-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"HOEGAARDEN\",\n        \"uuid\": \"689a6617-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"АВС\",\n        \"uuid\": \"689a6627-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БАНАНА ГО\",\n        \"uuid\": \"3757b24b-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"БАРИЛЛА\",\n        \"uuid\": \"689a6618-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БОСОМИ\",\n        \"uuid\": \"689a661e-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ВЭНУС\",\n        \"uuid\": \"55f8b9f5-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГИТА\",\n        \"uuid\": \"689a6635-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГРИЛЛ\",\n        \"uuid\": \"689a662e-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДАЭСАН\",\n        \"uuid\": \"689a6619-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДОКТОР БИДЭТ\",\n        \"uuid\": \"689a661f-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖАВАН\",\n        \"uuid\": \"2a787e13-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖАРДИН\",\n        \"uuid\": \"f3ba5d0e-6861-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖОКЕЙ\",\n        \"uuid\": \"689a6636-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЗИРО\",\n        \"uuid\": \"689a6620-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАКАО\",\n        \"uuid\": \"689a661b-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАНЧО\",\n        \"uuid\": \"689a6628-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАРАМЕЛЬ\",\n        \"uuid\": \"689a6629-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КВАНГ ЧЕОН КИМ\",\n        \"uuid\": \"689a661c-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КИМНОРИ\",\n        \"uuid\": \"689a661d-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КИМЧИ\",\n        \"uuid\": \"689a662f-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КЛИННАРА\",\n        \"uuid\": \"689a6621-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЛЮКС\",\n        \"uuid\": \"689a6622-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"МАРТИНЕЛЬ\",\n        \"uuid\": \"689a662d-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"МЬЮТТОН\",\n        \"uuid\": \"689a6630-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НАЧУРАЛ СОФТ\",\n        \"uuid\": \"689a6623-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НОНГШИМ\",\n        \"uuid\": \"689a6631-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НОНГШИМ СОЛОНГОС\",\n        \"uuid\": \"689a6632-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НУРИ\",\n        \"uuid\": \"689a6637-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ОБ ПРЕМЬЕР\",\n        \"uuid\": \"4b1eee71-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ОНИОН\",\n        \"uuid\": \"3757b249-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПЕПЕРО\",\n        \"uuid\": \"689a662a-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПРЕТЗЭЛ\",\n        \"uuid\": \"40ec0ae5-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"САНФҮҮД\",\n        \"uuid\": \"689a662b-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СУПЕР ГУАРД\",\n        \"uuid\": \"689a6624-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СҮҮНСҮҮ\",\n        \"uuid\": \"689a6625-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТЕСС\",\n        \"uuid\": \"689a6638-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТОРЭН\",\n        \"uuid\": \"55f8b9f4-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТЭЙСТИ\",\n        \"uuid\": \"689a6633-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ФУНЗЕЛ\",\n        \"uuid\": \"222c040d-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХУГАРДЕН\",\n        \"uuid\": \"4b1eee6e-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХУН ЧУ\",\n        \"uuid\": \"689a661a-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЧОКО ПАЙ\",\n        \"uuid\": \"689a662c-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШЕФС КИЧЕН\",\n        \"uuid\": \"689a6626-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШИН\",\n        \"uuid\": \"689a6634-3d1e-11ec-9462-44a842251a8b\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Create visotor 👍 ⚡",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customerId\": \"2d0956dc-3a14-11f0-8ffa-000c297c570c\",\n    \"routeId\": \"6ea9a117-14b9-11ee-94a5-44a842251a8b\",\n    \"latitude\": \"10000\",\n    \"longitude\": \"20000\",\n    \"imei\": \"32288622-6FCF-480A-AA6D-D8375908F7FA\",\n    \"visitorDescriptionList\": \"7cfe103e-1924-11f0-8ff4-000c297c570c\",\n    \"visitorDescription\": \"Duka test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/cvs/Visitor",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"cvs",
+								"Visitor"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get brands",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/br/Brands",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"br",
+										"Brands"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:32:55 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3880"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"name\": \"BAEKSAN\",\n        \"uuid\": \"40ec0ae7-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"BUD\",\n        \"uuid\": \"689a6614-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"CASS\",\n        \"uuid\": \"689a6615-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"CORONA\",\n        \"uuid\": \"689a6616-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"HOEGAARDEN\",\n        \"uuid\": \"689a6617-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"АВС\",\n        \"uuid\": \"689a6627-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БАНАНА ГО\",\n        \"uuid\": \"3757b24b-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"БАРИЛЛА\",\n        \"uuid\": \"689a6618-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БОСОМИ\",\n        \"uuid\": \"689a661e-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ВЭНУС\",\n        \"uuid\": \"55f8b9f5-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГИТА\",\n        \"uuid\": \"689a6635-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГРИЛЛ\",\n        \"uuid\": \"689a662e-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДАЭСАН\",\n        \"uuid\": \"689a6619-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДОКТОР БИДЭТ\",\n        \"uuid\": \"689a661f-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖАВАН\",\n        \"uuid\": \"2a787e13-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖАРДИН\",\n        \"uuid\": \"f3ba5d0e-6861-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖОКЕЙ\",\n        \"uuid\": \"689a6636-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЗИРО\",\n        \"uuid\": \"689a6620-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАКАО\",\n        \"uuid\": \"689a661b-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАНЧО\",\n        \"uuid\": \"689a6628-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАРАМЕЛЬ\",\n        \"uuid\": \"689a6629-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КВАНГ ЧЕОН КИМ\",\n        \"uuid\": \"689a661c-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КИМНОРИ\",\n        \"uuid\": \"689a661d-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КИМЧИ\",\n        \"uuid\": \"689a662f-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КЛИННАРА\",\n        \"uuid\": \"689a6621-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЛЮКС\",\n        \"uuid\": \"689a6622-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"МАРТИНЕЛЬ\",\n        \"uuid\": \"689a662d-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"МЬЮТТОН\",\n        \"uuid\": \"689a6630-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НАЧУРАЛ СОФТ\",\n        \"uuid\": \"689a6623-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НОНГШИМ\",\n        \"uuid\": \"689a6631-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НОНГШИМ СОЛОНГОС\",\n        \"uuid\": \"689a6632-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НУРИ\",\n        \"uuid\": \"689a6637-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ОБ ПРЕМЬЕР\",\n        \"uuid\": \"4b1eee71-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ОНИОН\",\n        \"uuid\": \"3757b249-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПЕПЕРО\",\n        \"uuid\": \"689a662a-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПРЕТЗЭЛ\",\n        \"uuid\": \"40ec0ae5-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"САНФҮҮД\",\n        \"uuid\": \"689a662b-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СУПЕР ГУАРД\",\n        \"uuid\": \"689a6624-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СҮҮНСҮҮ\",\n        \"uuid\": \"689a6625-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТЕСС\",\n        \"uuid\": \"689a6638-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТОРЭН\",\n        \"uuid\": \"55f8b9f4-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТЭЙСТИ\",\n        \"uuid\": \"689a6633-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ФУНЗЕЛ\",\n        \"uuid\": \"222c040d-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХУГАРДЕН\",\n        \"uuid\": \"4b1eee6e-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХУН ЧУ\",\n        \"uuid\": \"689a661a-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЧОКО ПАЙ\",\n        \"uuid\": \"689a662c-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШЕФС КИЧЕН\",\n        \"uuid\": \"689a6626-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШИН\",\n        \"uuid\": \"689a6634-3d1e-11ec-9462-44a842251a8b\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get VisitorBackLists ✅ ✅ ⚡",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/back/VisitorBackLists",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"back",
+								"VisitorBackLists"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get brands",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/br/Brands",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"br",
+										"Brands"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:32:55 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3880"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"name\": \"BAEKSAN\",\n        \"uuid\": \"40ec0ae7-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"BUD\",\n        \"uuid\": \"689a6614-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"CASS\",\n        \"uuid\": \"689a6615-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"CORONA\",\n        \"uuid\": \"689a6616-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"HOEGAARDEN\",\n        \"uuid\": \"689a6617-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"АВС\",\n        \"uuid\": \"689a6627-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БАНАНА ГО\",\n        \"uuid\": \"3757b24b-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"БАРИЛЛА\",\n        \"uuid\": \"689a6618-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БОСОМИ\",\n        \"uuid\": \"689a661e-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ВЭНУС\",\n        \"uuid\": \"55f8b9f5-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГИТА\",\n        \"uuid\": \"689a6635-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГРИЛЛ\",\n        \"uuid\": \"689a662e-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДАЭСАН\",\n        \"uuid\": \"689a6619-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДОКТОР БИДЭТ\",\n        \"uuid\": \"689a661f-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖАВАН\",\n        \"uuid\": \"2a787e13-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖАРДИН\",\n        \"uuid\": \"f3ba5d0e-6861-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖОКЕЙ\",\n        \"uuid\": \"689a6636-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЗИРО\",\n        \"uuid\": \"689a6620-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАКАО\",\n        \"uuid\": \"689a661b-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАНЧО\",\n        \"uuid\": \"689a6628-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАРАМЕЛЬ\",\n        \"uuid\": \"689a6629-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КВАНГ ЧЕОН КИМ\",\n        \"uuid\": \"689a661c-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КИМНОРИ\",\n        \"uuid\": \"689a661d-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КИМЧИ\",\n        \"uuid\": \"689a662f-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КЛИННАРА\",\n        \"uuid\": \"689a6621-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЛЮКС\",\n        \"uuid\": \"689a6622-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"МАРТИНЕЛЬ\",\n        \"uuid\": \"689a662d-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"МЬЮТТОН\",\n        \"uuid\": \"689a6630-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НАЧУРАЛ СОФТ\",\n        \"uuid\": \"689a6623-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НОНГШИМ\",\n        \"uuid\": \"689a6631-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НОНГШИМ СОЛОНГОС\",\n        \"uuid\": \"689a6632-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НУРИ\",\n        \"uuid\": \"689a6637-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ОБ ПРЕМЬЕР\",\n        \"uuid\": \"4b1eee71-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ОНИОН\",\n        \"uuid\": \"3757b249-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПЕПЕРО\",\n        \"uuid\": \"689a662a-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПРЕТЗЭЛ\",\n        \"uuid\": \"40ec0ae5-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"САНФҮҮД\",\n        \"uuid\": \"689a662b-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СУПЕР ГУАРД\",\n        \"uuid\": \"689a6624-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СҮҮНСҮҮ\",\n        \"uuid\": \"689a6625-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТЕСС\",\n        \"uuid\": \"689a6638-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТОРЭН\",\n        \"uuid\": \"55f8b9f4-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТЭЙСТИ\",\n        \"uuid\": \"689a6633-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ФУНЗЕЛ\",\n        \"uuid\": \"222c040d-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХУГАРДЕН\",\n        \"uuid\": \"4b1eee6e-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХУН ЧУ\",\n        \"uuid\": \"689a661a-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЧОКО ПАЙ\",\n        \"uuid\": \"689a662c-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШЕФС КИЧЕН\",\n        \"uuid\": \"689a6626-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШИН\",\n        \"uuid\": \"689a6634-3d1e-11ec-9462-44a842251a8b\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Visitor Reports",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/VisitorReport/reports?dateStart=2025-11-17&dateEnd=2025-11-18&page=1&pageSize=100&ХТ=1fb60eeb-6c1f-11f0-9007-000c297c570c",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"VisitorReport",
+								"reports"
+							],
+							"query": [
+								{
+									"key": "routeID",
+									"value": "1fb60eeb-6c1f-11f0-9007-000c297c570c",
+									"disabled": true
+								},
+								{
+									"key": "dateStart",
+									"value": "2025-11-17"
+								},
+								{
+									"key": "dateEnd",
+									"value": "2025-11-18"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "100"
+								},
+								{
+									"key": "channel",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "salesRep",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "region",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "partnerUUID",
+									"value": "e0ded351-6df6-11ec-9468-44a842251a8b",
+									"disabled": true
+								},
+								{
+									"key": "ХТ",
+									"value": "1fb60eeb-6c1f-11f0-9007-000c297c570c"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Task",
+			"item": [
+				{
+					"name": "New task",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/clr/Company/?page=1&pageSize=10&routeId=258f28f6-8b8f-11e6-bd8a-000c29909b91&name=1000",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"clr",
+								"Company",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "routeId",
+									"value": "258f28f6-8b8f-11e6-bd8a-000c29909b91"
+								},
+								{
+									"key": "companyCode",
+									"value": "MD-00002590",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "1000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get tasks ✅ ✅",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/ts/Tasks?day=3&username=101012501",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"ts",
+								"Tasks"
+							],
+							"query": [
+								{
+									"key": "day",
+									"value": "3",
+									"description": "✅"
+								},
+								{
+									"key": "username",
+									"value": "101012501",
+									"description": "✅"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get tasks",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/ts/Tasks?day=2&username=99885599",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"ts",
+										"Tasks"
+									],
+									"query": [
+										{
+											"key": "day",
+											"value": "2"
+										},
+										{
+											"key": "username",
+											"value": "99885599"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:33:24 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "705"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"companyName\": \"Чандмань мишээл \",\n        \"companyAddress\": \"Б3Д 5-р хороо  1000 оюутан байр зүүн талд\",\n        \"companyId\": \"30276edc-71fa-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"companyName\": \"Хаппи март 16-р хороолол\",\n        \"companyAddress\": \"Улаанбаатар Баянзүрх 16 61а байр 6 тоот  16-р хороолол\",\n        \"companyId\": \"8ab21eb8-7284-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"companyName\": \"Хөгжил 2 \",\n        \"companyAddress\": \"Улаанбаатар Баянзүрх 22 15-р хороолол 102 байрны 102 тоот 15-р хороолол БЗД- ийн эмнэлэг\",\n        \"companyId\": \"f9a846e4-7284-11ec-9468-44a842251a8b\"\n    }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Promotion",
+			"item": [
+				{
+					"name": "Get promotions ШИНЭ API ХИЙХ",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/v2promo/Promos/?page=1&pageSize=10&companyId=8c263ee9-14b9-11ee-94a5-44a842251a8b&type=brand",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"v2promo",
+								"Promos",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Бичил 21",
+									"description": "✅",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "✅"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "✅"
+								},
+								{
+									"key": "routeId",
+									"value": "8c263ee9-14b9-11ee-94a5-44a842251a8b",
+									"description": "Route104_Team2",
+									"disabled": true
+								},
+								{
+									"key": "companyId",
+									"value": "8c263ee9-14b9-11ee-94a5-44a842251a8b",
+									"description": "companyId"
+								},
+								{
+									"key": "CustomerSuvagId",
+									"value": "71f7b944-66bc-11ec-9467-44a842251a8b",
+									"disabled": true
+								},
+								{
+									"key": "customerTypeId",
+									"value": "e02627a7-4c16-11ec-9463-44a842251a8a",
+									"disabled": true
+								},
+								{
+									"key": "type",
+									"value": "brand",
+									"description": "Өгөхгүй бол бүгд өгвөл \n1. plan\n2. хоосон\n3. brand\n"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get customers",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/cl/Companies/?routeId=258f2904-8b8f-11e6-bd8a-000c29909b91&name=Номин&page=1&pageSize=10",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"cl",
+										"Companies",
+										""
+									],
+									"query": [
+										{
+											"key": "routeId",
+											"value": "258f2904-8b8f-11e6-bd8a-000c29909b91"
+										},
+										{
+											"key": "name",
+											"value": "Номин"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 24 Feb 2022 04:20:59 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.49 (Win32)"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1112"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"count\": 7,\n    \"results\": [\n        {\n            \"uuid\": \"225d39b6-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 11-р хороолол\",\n            \"address\": \"11-р хороолол\"\n        },\n        {\n            \"uuid\": \"225d39e3-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 120\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39e4-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 22\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39d8-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 32\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39b7-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин 5 шар\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39b8-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин Аз Жаргал\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39b9-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин Андууд\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39d4-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин Багануур\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39e5-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин БЗ\",\n            \"address\": \"\"\n        },\n        {\n            \"uuid\": \"225d39e2-66ee-11ec-9467-44a842251a8b\",\n            \"name\": \"Номин бизнес клуб\",\n            \"address\": \"\"\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "BBMXO",
+			"item": [
+				{
+					"name": "Create BBMXO ⚡",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"uuid\": \"770915ae-8b29-11ec-946b-44a842251a8b\",\n  \"counterpartyId\": \"5c59e735-66a8-11ec-9467-44a842251a8b\", //Харилцагчийн ид\n  \"amount\": 200,\n  \"bankAccount\": \"d121fd95-1cb2-11ea-9402-44a842251a8b\",  //Ямар дансны хуулга вэ\n  \"date\": \"20250728\",   //Now Date\n  \"dateBankProcessing\": \"20250728\", //Bank Date\n  \"bankaprov\": true,    //Статик\n  \"salesDocId\": \"b40ec4ce-8b23-11ec-946b-44a842251a8b\", //Борлуулалтын баримт\n  \"linkedOrderId\": \"73af14e2-89c0-4ead-91a4-611a4261719d\", //Харилцагчийн захалга\n  \"description\": \"20250728 desc4\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/bbo/Bbmxo",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"bbo",
+								"Bbmxo"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Completion",
+			"item": [
+				{
+					"name": "Get brand completion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"99885599\",\n    \"startDate\": \"2023-04-01\",\n    \"endDate\": \"2023-04-30\",\n    \"duration\": \"MONTH\",\n    \"brands\": [\n        {\n            \"brandId\": \"689a6618-3d1e-11ec-9462-44a842251a8b\"\n        }\n    ],\n    \"customers\": [],\n    \"promotions\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/ao/Allorder",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"ao",
+								"Allorder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get promotion completion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"99885599\",\n    \"startDate\": \"2023-04-01\",\n    \"endDate\": \"2023-04-30\",\n    \"duration\": null,\n    \"brands\": [],\n    \"customers\": [],\n    \"promotions\": [\n        {\n            \"promotionId\": \"26b21fc1-2278-4ff5-91c8-8bca1ec78424\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/ao/Allorder",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"ao",
+								"Allorder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get customer completion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"99885599\",\n    \"startDate\": \"2023-04-01\",\n    \"endDate\": \"2023-04-30\",\n    \"duration\": \"MONTH\",\n    \"brands\": [],\n    \"customers\": [\n        {\n            \"customerId\": \"MD-00006505\"\n        }\n    ],\n    \"promotions\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/ao/Allorder",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"ao",
+								"Allorder"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Return",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"99885599\",\n    \"imei\": \"3242345345345345345345345\",\n    \"salesDocumentUUid\": \"ea7eac8d-dfc9-11ec-9481-44a842251a8b\",\n    \"status\": 2,\n    \"companyId\": \"670fbdd7-6493-11ec-9467-44a842251a8b\",\n    \"contractId\": \"db05d0d6-9c37-11e5-9beb-3085a97c20be\",\n    \"priceTypeId\": \"ee731f38-6e58-11e6-9c23-3085a97c20be\",\n    \"description\": \"Тайлбар\",\n    \"correctionProducts\": [\n        {\n            \"productId\": \"783d4afd-4125-11ec-9462-44a842251a8b\",\n            \"stock\": [\n                {\n                    \"typeId\": \"a46ec746-4dab-11ec-9463-44a842251a8a\",\n                    \"count\": 1\n                }\n            ]\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_url}}/cr/Return",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"cr",
+						"Return"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order Promo List",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/plan/CustomerPlans?routeId=258f28f4-8b8f-11e6-bd8a-000c29909b91&planDate=2024-04-11&page=1&pageSize=10",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"plan",
+						"CustomerPlans"
+					],
+					"query": [
+						{
+							"key": "routeId",
+							"value": "258f28f4-8b8f-11e6-bd8a-000c29909b91"
+						},
+						{
+							"key": "planDate",
+							"value": "2024-04-11"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get brands",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/br/Brands",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"br",
+								"Brands"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 24 Feb 2022 04:32:55 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.49 (Win32)"
+						},
+						{
+							"key": "Content-Length",
+							"value": "3880"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5, max=100"
+						},
+						{
+							"key": "Connection",
+							"value": "Keep-Alive"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"name\": \"BAEKSAN\",\n        \"uuid\": \"40ec0ae7-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"BUD\",\n        \"uuid\": \"689a6614-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"CASS\",\n        \"uuid\": \"689a6615-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"CORONA\",\n        \"uuid\": \"689a6616-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"HOEGAARDEN\",\n        \"uuid\": \"689a6617-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"АВС\",\n        \"uuid\": \"689a6627-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БАНАНА ГО\",\n        \"uuid\": \"3757b24b-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"БАРИЛЛА\",\n        \"uuid\": \"689a6618-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"БОСОМИ\",\n        \"uuid\": \"689a661e-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ВЭНУС\",\n        \"uuid\": \"55f8b9f5-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГИТА\",\n        \"uuid\": \"689a6635-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ГРИЛЛ\",\n        \"uuid\": \"689a662e-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДАЭСАН\",\n        \"uuid\": \"689a6619-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ДОКТОР БИДЭТ\",\n        \"uuid\": \"689a661f-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖАВАН\",\n        \"uuid\": \"2a787e13-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖАРДИН\",\n        \"uuid\": \"f3ba5d0e-6861-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЖОКЕЙ\",\n        \"uuid\": \"689a6636-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЗИРО\",\n        \"uuid\": \"689a6620-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАКАО\",\n        \"uuid\": \"689a661b-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАНЧО\",\n        \"uuid\": \"689a6628-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КАРАМЕЛЬ\",\n        \"uuid\": \"689a6629-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КВАНГ ЧЕОН КИМ\",\n        \"uuid\": \"689a661c-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КИМНОРИ\",\n        \"uuid\": \"689a661d-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КИМЧИ\",\n        \"uuid\": \"689a662f-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"КЛИННАРА\",\n        \"uuid\": \"689a6621-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЛЮКС\",\n        \"uuid\": \"689a6622-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"МАРТИНЕЛЬ\",\n        \"uuid\": \"689a662d-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"МЬЮТТОН\",\n        \"uuid\": \"689a6630-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НАЧУРАЛ СОФТ\",\n        \"uuid\": \"689a6623-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НОНГШИМ\",\n        \"uuid\": \"689a6631-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НОНГШИМ СОЛОНГОС\",\n        \"uuid\": \"689a6632-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"НУРИ\",\n        \"uuid\": \"689a6637-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ОБ ПРЕМЬЕР\",\n        \"uuid\": \"4b1eee71-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ОНИОН\",\n        \"uuid\": \"3757b249-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПЕПЕРО\",\n        \"uuid\": \"689a662a-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ПРЕТЗЭЛ\",\n        \"uuid\": \"40ec0ae5-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"САНФҮҮД\",\n        \"uuid\": \"689a662b-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СУПЕР ГУАРД\",\n        \"uuid\": \"689a6624-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"СҮҮНСҮҮ\",\n        \"uuid\": \"689a6625-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТЕСС\",\n        \"uuid\": \"689a6638-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТОРЭН\",\n        \"uuid\": \"55f8b9f4-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ТЭЙСТИ\",\n        \"uuid\": \"689a6633-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ФУНЗЕЛ\",\n        \"uuid\": \"222c040d-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХУГАРДЕН\",\n        \"uuid\": \"4b1eee6e-6862-11ec-9468-44a842251a8b\"\n    },\n    {\n        \"name\": \"ХУН ЧУ\",\n        \"uuid\": \"689a661a-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ЧОКО ПАЙ\",\n        \"uuid\": \"689a662c-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШЕФС КИЧЕН\",\n        \"uuid\": \"689a6626-3d1e-11ec-9462-44a842251a8b\"\n    },\n    {\n        \"name\": \"ШИН\",\n        \"uuid\": \"689a6634-3d1e-11ec-9462-44a842251a8b\"\n    }\n]"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "username",
+				"value": "TestAPI",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "jI9da0zu",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "api_url",
+			"value": "http://122.201.23.182:8181/API/hs",
+			"disabled": true
+		},
+		{
+			"key": "api_url_maximu_trade",
+			"value": "http://122.201.23.182:8181/maximus_io/hs"
+		},
+		{
+			"key": "api_url_maximus_development",
+			"value": "http://203.21.120.60:8080/maximus_trade/hs"
+		},
+		{
+			"key": "api_url",
+			"value": "http://203.21.120.60:8080/maximus_trade_test/hs"
+		},
+		{
+			"key": "sales_warehouse",
+			"value": "6b5314d6-5c7e-11ec-9463-44a842251a8a"
+		},
+		{
+			"key": "regular_warehouse",
+			"value": "5a811d4a-6dc5-11e6-9c23-3085a97c20be"
+		},
+		{
+			"key": "company_id",
+			"value": "670fbdd7-6493-11ec-9467-44a842251a8b"
+		}
+	]
+}
