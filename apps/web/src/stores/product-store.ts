@@ -3,9 +3,15 @@
  * Zustand store for managing products state
  */
 import { create } from 'zustand';
-import { getProducts, getCategories } from '@/services/api';
+import { getProducts, getCategories, getBrands } from '@/services/api';
 import { getToken, getDefaultWarehouse } from '@/lib/auth';
 import type { Product, Category, PaginatorInfo } from '@/types';
+
+export interface Brand {
+  id: string;
+  uuid: string;
+  name: string;
+}
 
 const IMAGE_BASE_URL = 'https://cloud.maximus.mn';
 
@@ -81,6 +87,8 @@ function mapProduct(raw: {
 interface ProductFilters {
   search: string;
   categoryId: string | null;
+  categoryIds: string[];
+  brandIds: string[];
   warehouseId: string | null;
 }
 
@@ -95,15 +103,22 @@ interface ProductState {
   categories: Category[];
   categoriesLoading: boolean;
 
+  // Brands
+  brands: Brand[];
+  brandsLoading: boolean;
+
   // Filters
   filters: ProductFilters;
 
   // Actions
   fetchProducts: (page?: number) => Promise<void>;
   fetchCategories: () => Promise<void>;
+  fetchBrands: (categoryId?: string) => Promise<void>;
   loadMore: () => Promise<void>;
   setSearch: (search: string) => void;
   setCategory: (categoryId: string | null) => void;
+  setCategories: (categoryIds: string[]) => void;
+  setBrands: (brandIds: string[]) => void;
   setWarehouse: (warehouseId: string | null) => void;
   clearFilters: () => void;
   refresh: () => Promise<void>;
@@ -119,9 +134,14 @@ export const useProductStore = create<ProductState>((set, get) => ({
   categories: [],
   categoriesLoading: false,
 
+  brands: [],
+  brandsLoading: false,
+
   filters: {
     search: '',
     categoryId: null,
+    categoryIds: [],
+    brandIds: [],
     warehouseId: null,
   },
 
@@ -143,6 +163,8 @@ export const useProductStore = create<ProductState>((set, get) => ({
       const result = await getProducts(token || '', {
         search: filters.search || undefined,
         categoryId: filters.categoryId || undefined,
+        categoryIds: filters.categoryIds.length > 0 ? filters.categoryIds : undefined,
+        brandIds: filters.brandIds.length > 0 ? filters.brandIds : undefined,
         warehouseId: warehouse.uuid,
         priceTypeId: warehouse.priceTypeId,
         page,
@@ -195,6 +217,31 @@ export const useProductStore = create<ProductState>((set, get) => ({
     }
   },
 
+  // Fetch brands (optionally filtered by category)
+  fetchBrands: async (categoryId?: string) => {
+    const token = getToken();
+    if (!token) return;
+
+    set({ brandsLoading: true });
+
+    try {
+      const result = await getBrands(token, categoryId);
+
+      if (result.success && result.data) {
+        const brands: Brand[] = result.data.map((b) => ({
+          id: b.id,
+          uuid: b.uuid,
+          name: b.name,
+        }));
+        set({ brands, brandsLoading: false });
+      } else {
+        set({ brandsLoading: false });
+      }
+    } catch {
+      set({ brandsLoading: false });
+    }
+  },
+
   // Load more products
   loadMore: async () => {
     const { paginatorInfo, isLoading } = get();
@@ -210,10 +257,38 @@ export const useProductStore = create<ProductState>((set, get) => ({
     }));
   },
 
-  // Set category filter
+  // Set category filter (single)
   setCategory: (categoryId: string | null) => {
     set((state) => ({
       filters: { ...state.filters, categoryId },
+    }));
+    // Fetch brands for the selected category
+    if (categoryId) {
+      get().fetchBrands(categoryId);
+    } else {
+      get().fetchBrands();
+    }
+    get().fetchProducts(1);
+  },
+
+  // Set multiple categories filter
+  setCategories: (categoryIds: string[]) => {
+    set((state) => ({
+      filters: { ...state.filters, categoryIds, categoryId: categoryIds[0] || null },
+    }));
+    // Fetch brands for the first selected category
+    if (categoryIds.length > 0) {
+      get().fetchBrands(categoryIds[0]);
+    } else {
+      get().fetchBrands();
+    }
+    get().fetchProducts(1);
+  },
+
+  // Set multiple brands filter
+  setBrands: (brandIds: string[]) => {
+    set((state) => ({
+      filters: { ...state.filters, brandIds },
     }));
     get().fetchProducts(1);
   },
@@ -232,9 +307,12 @@ export const useProductStore = create<ProductState>((set, get) => ({
       filters: {
         search: '',
         categoryId: null,
+        categoryIds: [],
+        brandIds: [],
         warehouseId: null,
       },
     });
+    get().fetchBrands();
     get().fetchProducts(1);
   },
 

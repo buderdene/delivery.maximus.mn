@@ -2,17 +2,62 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Package, Search, Grid, List, Loader2, ShoppingCart, Check } from 'lucide-react';
+import Link from 'next/link';
+import { Package, Search, Grid, List, Loader2, ShoppingCart, Check, Filter, AlertCircle, Users, Building2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useProductStore } from '@/stores/product-store';
 import { useCartStore } from '@/stores/cart-store';
 import { QuantityKeypad } from '@/components/cart/QuantityKeypad';
 import { toast } from 'sonner';
 import type { Category, Product } from '@/types';
+import { CategoryFilterSheet, type FilterState } from '@/components/shadcn-studio/blocks/category-filter-04';
+
+// Selected Partner Banner
+function SelectedPartnerBanner() {
+  const { selectedPartner, hasPartner } = useCartStore();
+  
+  if (!hasPartner || !selectedPartner) {
+    return (
+      <Alert className="mb-4 border-amber-200 bg-amber-50">
+        <AlertCircle className="h-4 w-4 text-amber-600" />
+        <AlertDescription className="flex items-center justify-between gap-4">
+          <span className="text-amber-800">
+            Бараа сагслахын тулд эхлээд харилцагч сонгоно уу
+          </span>
+          <Button variant="outline" size="sm" asChild className="shrink-0">
+            <Link href="/dashboard/partners">
+              <Users className="h-4 w-4 mr-1.5" />
+              Харилцагч сонгох
+            </Link>
+          </Button>
+        </AlertDescription>
+      </Alert>
+    );
+  }
+  
+  return (
+    <div className="mb-4 p-3 rounded-lg bg-primary/5 border border-primary/20 flex items-center gap-3">
+      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+        <Building2 className="h-5 w-5 text-primary" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs text-muted-foreground">Захиалга үүсгэж байна:</p>
+        <p className="font-medium truncate">{selectedPartner.name}</p>
+      </div>
+      <Button variant="outline" size="sm" asChild className="shrink-0">
+        <Link href="/dashboard/cart">
+          <ShoppingCart className="h-4 w-4 mr-1.5" />
+          Сагс
+        </Link>
+      </Button>
+    </div>
+  );
+}
 
 // Category Grid Component - 9 items per row
 function CategoryGrid({ 
@@ -305,27 +350,65 @@ export default function ProductsPage() {
   const [isKeypadOpen, setIsKeypadOpen] = useState(false);
   const [keypadKey, setKeypadKey] = useState(0);
   
-  const { addItem } = useCartStore();
+  const { addItem, hasPartner, selectedPartner } = useCartStore();
   
   const {
     products,
     categories,
+    brands,
     isLoading,
     categoriesLoading,
+    brandsLoading,
     error,
     filters,
     paginatorInfo,
     fetchProducts,
     fetchCategories,
+    fetchBrands,
     setSearch,
     setCategory,
+    setCategories,
+    setBrands,
     loadMore,
   } = useProductStore();
 
   useEffect(() => {
     fetchCategories();
+    fetchBrands();
     fetchProducts();
-  }, [fetchCategories, fetchProducts]);
+  }, [fetchCategories, fetchBrands, fetchProducts]);
+
+  // Handle advanced filter apply
+  const handleFilterApply = (newFilters: FilterState) => {
+    // Apply category and brand filters
+    setCategories(newFilters.categories);
+    setBrands(newFilters.brands);
+  };
+
+  // Handle category change in filter sheet (to load related brands)
+  const handleCategoryChange = (categoryIds: string[]) => {
+    if (categoryIds.length > 0) {
+      fetchBrands(categoryIds[0]);
+    } else {
+      fetchBrands();
+    }
+  };
+
+  // Convert categories to filter format
+  const filterCategories = categories.map(cat => ({
+    id: cat.id,
+    name: cat.name,
+    count: cat.productsCount
+  }));
+
+  // Convert brands to filter format
+  const filterBrands = brands.map(brand => ({
+    id: brand.id,
+    name: brand.name
+  }));
+
+  // Calculate active filters count
+  const activeFiltersCount = filters.categoryIds.length + filters.brandIds.length;
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -333,6 +416,18 @@ export default function ProductsPage() {
   };
 
   const handleProductClick = (product: Product) => {
+    // Check if partner is selected
+    if (!hasPartner) {
+      toast.error('Эхлээд харилцагч сонгоно уу', {
+        description: 'Бараа сагслахын тулд захиалах харилцагчаа сонгоно уу',
+        action: {
+          label: 'Харилцагч сонгох',
+          onClick: () => window.location.href = '/dashboard/partners'
+        }
+      });
+      return;
+    }
+    
     if (product.stock_status === 'out_of_stock' || product.current_stock <= 0) {
       toast.error('Бараа дууссан байна');
       return;
@@ -343,10 +438,10 @@ export default function ProductsPage() {
   };
 
   const handleQuantityConfirm = (quantity: number) => {
-    if (selectedProduct) {
+    if (selectedProduct && hasPartner) {
       addItem(selectedProduct, quantity);
       toast.success(`"${selectedProduct.name}" сагсанд нэмэгдлээ`, {
-        description: `${quantity} ширхэг`,
+        description: `${quantity} ширхэг - ${selectedPartner?.name}`,
         duration: 2000,
       });
     }
@@ -355,6 +450,9 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen">
       <div className="px-3 py-4 sm:px-4 sm:py-6 lg:px-6 lg:py-8">
+        {/* Selected Partner Banner */}
+        <SelectedPartnerBanner />
+        
         {/* Header */}
         <div className="flex items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
           <div className="min-w-0 flex-1">
@@ -383,18 +481,44 @@ export default function ProductsPage() {
           </div>
         </div>
 
-        {/* Search */}
-        <form onSubmit={handleSearch} className="mb-4 sm:mb-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Бараа хайх..."
-              value={filters.search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 h-10 sm:h-11 rounded-xl border-gray-200 bg-white shadow-sm w-full sm:max-w-md"
-            />
-          </div>
-        </form>
+        {/* Search & Filter */}
+        <div className="flex gap-2 mb-4 sm:mb-6">
+          <form onSubmit={handleSearch} className="flex-1 sm:flex-initial">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Бараа хайх..."
+                value={filters.search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-10 h-10 sm:h-11 rounded-xl border-gray-200 bg-white shadow-sm w-full sm:w-80"
+              />
+            </div>
+          </form>
+          
+          <CategoryFilterSheet
+            categories={filterCategories}
+            brands={filterBrands}
+            categoriesLoading={categoriesLoading}
+            brandsLoading={brandsLoading}
+            initialFilters={{ 
+              categories: filters.categoryIds, 
+              brands: filters.brandIds 
+            }}
+            onApply={handleFilterApply}
+            onCategoryChange={handleCategoryChange}
+            trigger={
+              <Button variant="outline" className="gap-2 h-10 sm:h-11 px-3 sm:px-4 rounded-xl">
+                <Filter className="h-4 w-4" />
+                <span className="hidden sm:inline">Шүүлтүүр</span>
+                {activeFiltersCount > 0 && (
+                  <Badge className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                    {activeFiltersCount}
+                  </Badge>
+                )}
+              </Button>
+            }
+          />
+        </div>
 
         {/* Categories */}
         {!categoriesLoading && categories.length > 0 && (

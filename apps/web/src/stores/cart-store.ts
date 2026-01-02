@@ -5,7 +5,7 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { Product } from '@/types';
+import type { Product, Partner } from '@/types';
 
 // Cart Item type
 export interface CartItem {
@@ -20,6 +20,18 @@ export interface CartItem {
   imageUrl: string | null;
   category: string | null;
   addedAt: string;
+}
+
+// Selected Partner for order
+export interface SelectedPartner {
+  id: string;
+  name: string;
+  phone: string | null;
+  street1: string | null;
+  city: string | null;
+  routeName: string | null;
+  balance: number | null;
+  debtLimit: number | null;
 }
 
 // Cart validation result
@@ -57,6 +69,7 @@ const calculateTotals = (items: CartItem[]) => {
 // Cart State
 interface CartState {
   items: CartItem[];
+  selectedPartner: SelectedPartner | null;
   isLoading: boolean;
   
   // Computed
@@ -65,6 +78,7 @@ interface CartState {
   totalAmount: number;
   formattedTotal: string;
   isEmpty: boolean;
+  hasPartner: boolean;
   
   // Actions
   addItem: (product: Product, quantity?: number) => void;
@@ -73,6 +87,10 @@ interface CartState {
   incrementQuantity: (productId: string) => void;
   decrementQuantity: (productId: string) => void;
   clearCart: () => void;
+  
+  // Partner Actions
+  setSelectedPartner: (partner: Partner) => void;
+  clearSelectedPartner: () => void;
   
   // Helpers
   getItemByProductId: (productId: string) => CartItem | undefined;
@@ -87,6 +105,7 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      selectedPartner: null,
       isLoading: false,
       
       // Computed values (recalculated on rehydration)
@@ -95,9 +114,45 @@ export const useCartStore = create<CartState>()(
       totalAmount: 0,
       formattedTotal: '0₮',
       isEmpty: true,
+      hasPartner: false,
+      
+      // Set selected partner for order
+      setSelectedPartner: (partner: Partner) => {
+        const selectedPartner: SelectedPartner = {
+          id: partner.id,
+          name: partner.name,
+          phone: partner.phone,
+          street1: partner.street1,
+          city: partner.city,
+          routeName: partner.routeName,
+          balance: partner.balance,
+          debtLimit: partner.debtLimit,
+        };
+        set({ selectedPartner, hasPartner: true });
+      },
+      
+      // Clear selected partner (also clears cart)
+      clearSelectedPartner: () => {
+        set({
+          selectedPartner: null,
+          hasPartner: false,
+          items: [],
+          itemCount: 0,
+          totalItems: 0,
+          totalAmount: 0,
+          formattedTotal: '0₮',
+          isEmpty: true,
+        });
+      },
       
       // Add item to cart
       addItem: (product: Product, quantity = 1) => {
+        // Check if partner is selected
+        if (!get().selectedPartner) {
+          console.warn('Cannot add item without selected partner');
+          return;
+        }
+        
         if (product.stock_status === 'out_of_stock' || product.current_stock <= 0) {
           console.warn('Cannot add out of stock product');
           return;
@@ -223,9 +278,13 @@ export const useCartStore = create<CartState>()(
 
       // Validate cart before checkout
       validateCart: () => {
-        const { items, totalAmount } = get();
+        const { items, totalAmount, selectedPartner } = get();
         const errors: string[] = [];
         const warnings: string[] = [];
+
+        if (!selectedPartner) {
+          errors.push('Харилцагч сонгоогүй байна');
+        }
 
         if (items.length === 0) {
           errors.push('Сагс хоосон байна');
@@ -256,11 +315,13 @@ export const useCartStore = create<CartState>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         items: state.items,
+        selectedPartner: state.selectedPartner,
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {
           const totals = calculateTotals(state.items);
           Object.assign(state, totals);
+          state.hasPartner = !!state.selectedPartner;
         }
       },
     }
@@ -271,3 +332,4 @@ export const useCartStore = create<CartState>()(
 export const selectCartItemCount = (state: CartState) => state.itemCount;
 export const selectCartTotal = (state: CartState) => state.totalAmount;
 export const selectCartIsEmpty = (state: CartState) => state.isEmpty;
+export const selectSelectedPartner = (state: CartState) => state.selectedPartner;

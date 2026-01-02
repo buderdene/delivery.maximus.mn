@@ -21,6 +21,12 @@ export interface Partner {
   salesLimit: number | null;
   routeId: string | null;
   routeName: string | null;
+  // Company info
+  companyCode: string | null;
+  headCompanyName: string | null;
+  headCompanyRegister: string | null;
+  image: string | null;
+  // Timestamps
   created_at: string | null;
   updated_at: string | null;
 }

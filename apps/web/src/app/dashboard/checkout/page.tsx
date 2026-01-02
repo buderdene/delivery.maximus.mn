@@ -12,7 +12,9 @@ import {
   MapPin,
   CheckCircle2,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Phone,
+  Users
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -82,7 +84,7 @@ const formatPrice = (price: number): string => {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, totalAmount, formattedTotal, totalItems, clearCart, validateCart } = useCartStore();
+  const { items, totalAmount, formattedTotal, totalItems, clearCart, validateCart, selectedPartner, hasPartner, clearSelectedPartner } = useCartStore();
   
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash');
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>('pickup');
@@ -94,12 +96,12 @@ export default function CheckoutPage() {
     setMounted(true);
   }, []);
   
-  // Redirect if cart is empty
+  // Redirect if cart is empty or no partner selected
   useEffect(() => {
-    if (mounted && items.length === 0) {
+    if (mounted && (items.length === 0 || !hasPartner)) {
       router.replace('/dashboard/cart');
     }
-  }, [mounted, items.length, router]);
+  }, [mounted, items.length, hasPartner, router]);
   
   const validation = validateCart();
   
@@ -109,14 +111,21 @@ export default function CheckoutPage() {
       return;
     }
     
+    if (!selectedPartner) {
+      toast.error('Харилцагч сонгоогүй байна');
+      return;
+    }
+    
     setIsSubmitting(true);
     
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
       
-      // Create order object
+      // Create order object with partner info
       const order = {
+        partnerId: selectedPartner.id,
+        partnerName: selectedPartner.name,
         items: items.map((item) => ({
           productId: item.productId,
           name: item.name,
@@ -132,10 +141,12 @@ export default function CheckoutPage() {
       
       console.log('Order submitted:', order);
       
-      // Clear cart and show success
+      // Clear cart and partner after successful order
       clearCart();
+      clearSelectedPartner();
+      
       toast.success('Захиалга амжилттай илгээгдлээ!', {
-        description: 'Таны захиалга хүлээн авагдлаа',
+        description: `${selectedPartner.name} дээр захиалга хүлээн авагдлаа`,
         duration: 5000,
       });
       
@@ -174,6 +185,46 @@ export default function CheckoutPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column - Options */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Selected Partner */}
+          {selectedPartner && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2">
+                  <Building2 className="h-5 w-5" />
+                  Захиалах харилцагч
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                    <Users className="h-6 w-6 text-muted-foreground" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold">{selectedPartner.name}</p>
+                    {selectedPartner.routeName && (
+                      <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-1">
+                        <MapPin className="h-3.5 w-3.5" />
+                        {selectedPartner.routeName}
+                      </div>
+                    )}
+                    {selectedPartner.phone && (
+                      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                        <Phone className="h-3.5 w-3.5" />
+                        {selectedPartner.phone}
+                      </div>
+                    )}
+                    {selectedPartner.street1 && (
+                      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                        <MapPin className="h-3.5 w-3.5" />
+                        {selectedPartner.street1}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
           {/* Delivery Method */}
           <Card>
             <CardHeader>

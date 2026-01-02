@@ -11,7 +11,10 @@ import {
   ShoppingCart, 
   Settings, 
   LogOut,
-  Menu
+  Menu,
+  Building2,
+  X,
+  AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -20,6 +23,16 @@ import AuthGuard from '@/components/auth/AuthGuard';
 import { useAuth } from '@/hooks/useAuth';
 import { useCartStore } from '@/stores/cart-store';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 // Hook for hydration-safe client-side rendering
 function useHydrated() {
@@ -38,10 +51,85 @@ const navigation = [
   { name: 'Тохиргоо', href: '/dashboard/settings', icon: Settings },
 ];
 
+// Selected Partner Badge Component
+function SelectedPartnerBadge({ onClear }: { onClear: () => void }) {
+  const { selectedPartner, hasPartner, totalItems } = useCartStore();
+  const isHydrated = useHydrated();
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  
+  if (!isHydrated || !hasPartner || !selectedPartner) return null;
+
+  const handleClearClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // If cart has items, show confirmation dialog
+    if (totalItems > 0) {
+      setShowConfirmDialog(true);
+    } else {
+      onClear();
+    }
+  };
+
+  const handleConfirmClear = () => {
+    setShowConfirmDialog(false);
+    onClear();
+  };
+  
+  return (
+    <>
+      <div className="mx-3 mb-2 p-3 rounded-lg bg-primary/10 border border-primary/20">
+        <div className="flex items-start gap-2">
+          <Building2 className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-muted-foreground">Захиалга:</p>
+            <p className="text-sm font-medium truncate">{selectedPartner.name}</p>
+            {selectedPartner.routeName && (
+              <p className="text-xs text-muted-foreground truncate">{selectedPartner.routeName}</p>
+            )}
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 shrink-0 text-muted-foreground hover:text-destructive"
+            onClick={handleClearClick}
+          >
+            <X className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Confirmation Dialog */}
+      <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              Харилцагч хасах уу?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              <span className="font-medium text-foreground">{selectedPartner.name}</span> харилцагчийг хасахад 
+              таны сагсанд байгаа <span className="font-medium text-foreground">{totalItems} бараа</span> устах болно. 
+              Та үргэлжлүүлэх үү?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Үгүй, буцах</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleConfirmClear}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Тийм, хасах
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}
+
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const { logout, user } = useAuth();
-  const { totalItems } = useCartStore();
+  const { totalItems, clearSelectedPartner } = useCartStore();
   const isHydrated = useHydrated();
 
   return (
@@ -61,6 +149,9 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           </div>
         </Link>
       </div>
+
+      {/* Selected Partner */}
+      <SelectedPartnerBadge onClear={clearSelectedPartner} />
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1 px-3 py-4">

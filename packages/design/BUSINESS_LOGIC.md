@@ -163,81 +163,327 @@ function formatBalance(balance: number): string {
 
 ---
 
-## 🛒 Cart & Order Logic (Future)
+## 🛒 Cart & Order Logic
+
+### Partner-Based Ordering
+
+Захиалга бүр нэг харилцагчид холбогдоно. Бараа сагслахын өмнө заавал харилцагч сонгосон байх ёстой.
+
+```typescript
+interface SelectedPartner {
+  id: string;
+  name: string;
+  routeName: string | null;
+  phone: string | null;
+  balance: number | null;
+  street1: string | null;
+}
+```
 
 ### Cart Structure
 
 ```typescript
 interface CartItem {
+  id: string;
   productId: string;
-  product: Product;
+  name: string;
+  article: string | null;
+  price: number;
+  formattedPrice: string;
   quantity: number;
-  unitPrice: number;
-  totalPrice: number;
+  maxQuantity: number;
+  imageUrl: string | null;
+  category: string | null;
 }
 
-interface Cart {
-  partnerId: string;
-  partner: Partner;
+interface CartStore {
   items: CartItem[];
-  subtotal: number;
-  discount: number;
-  total: number;
+  selectedPartner: SelectedPartner | null;
+  
+  // Computed
+  totalItems: number;
+  totalPrice: number;
+  formattedTotal: string;
+  isEmpty: boolean;
+  hasPartner: boolean;
+  
+  // Actions
+  addItem: (product, quantity) => void;
+  removeItem: (productId) => void;
+  updateQuantity: (productId, quantity) => void;
+  incrementQuantity: (productId) => void;
+  decrementQuantity: (productId) => void;
+  clearCart: () => void;
+  setSelectedPartner: (partner) => void;
+  clearSelectedPartner: () => void;
 }
 ```
 
-### Order Validation Rules
+### Partner-Cart Relationship
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Харилцагч сонгох → Бараа нэмэх → Сагс → Checkout → Захиалга│
+└─────────────────────────────────────────────────────────────┘
+
+1. Харилцагч сонгох (Partner Detail → "Захиалга үүсгэх")
+   └── setSelectedPartner() → redirect /products
+
+2. Бараа сагслах (Products page)
+   └── hasPartner шалгах → addItem()
+
+3. Сагс (Cart page)
+   └── selectedPartner харуулах + items
+
+4. Checkout
+   └── Partner info + items → Create order
+
+5. Захиалга амжилттай
+   └── clearCart() + clearSelectedPartner()
+```
+
+### Partner Change Confirmation
+
+Хэрвээ сагсанд бараа байхад өөр харилцагч сонгох гэвэл:
 
 ```typescript
-const validationRules = {
-  // Хамгийн бага захиалгын дүн
-  minOrderAmount: 50000,  // 50,000₮
+// partners/[id]/page.tsx
+if (selectedPartner && selectedPartner.id !== newPartnerId && totalItems > 0) {
+  showConfirmDialog({
+    title: 'Харилцагч солих уу?',
+    description: `Одоогоор ${selectedPartner.name} дээр ${totalItems} бараа сонгогдсон байна.`,
+    onConfirm: () => {
+      clearCart();
+      setSelectedPartner(newPartner);
+    }
+  });
+}
+```
+
+### Partner Remove Confirmation
+
+Харилцагч хасахад сагс хоосон эсэхийг шалгах:
+
+```typescript
+// layout.tsx, cart/page.tsx
+if (totalItems > 0) {
+  showConfirmDialog({
+    title: 'Харилцагч хасах уу?',
+    description: `${selectedPartner.name} хасахад ${totalItems} бараа устах болно.`,
+    onConfirm: clearSelectedPartner  // clears cart too
+  });
+} else {
+  clearSelectedPartner();
+}
+```
+
+### Cart Item Remove Confirmation
+
+```typescript
+// cart/page.tsx - CartItemRow
+showConfirmDialog({
+  title: 'Бараа хасах уу?',
+  description: `${item.name} (${item.quantity} ширхэг) барааг сагснаас хасах уу?`,
+  onConfirm: () => removeItem(item.productId)
+});
+```
+
+### Cart Clear Confirmation
+
+```typescript
+// cart/page.tsx - CartSummary
+showConfirmDialog({
+  title: 'Сагс хоослох уу?',
+  description: `${totalItems} бараа устах болно. Мөн ${selectedPartner?.name} хасагдана.`,
+  onConfirm: clearCart
+});
+```
+
+### Product Add Validation
+
+```typescript
+// products/page.tsx
+function handleProductClick(product: Product) {
+  // 1. Partner check
+  if (!hasPartner) {
+    toast.error('Эхлээд харилцагч сонгоно уу');
+    return;
+  }
   
-  // Нэг барааны хамгийн их тоо
-  maxItemQuantity: 1000,
+  // 2. Stock check
+  if (product.stock_status === 'out_of_stock' || product.current_stock <= 0) {
+    toast.error('Бараа дууссан байна');
+    return;
+  }
   
-  // Нийт барааны төрөл
-  maxItemCount: 100,
+  // 3. Open quantity keypad
+  openKeypad(product);
+}
+```
+
+### Quantity Keypad
+
+Тоо ширхэг оруулах интерфэйс:
+
+```typescript
+interface QuantityKeypadProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: (quantity: number) => void;
+  maxQuantity: number;
+  productName: string;
+  resetKey: number;  // Reset keypad on open
+}
+
+// Features:
+// - 0-9 numpad
+// - Backspace
+// - Quick quantities: +1, +5, +10
+// - Max quantity validation
+// - Shake animation on invalid input
+```
+
+### Cart Validation Rules
+
+```typescript
+function validateCart(): ValidationResult {
+  const errors: string[] = [];
+  const warnings: string[] = [];
   
-  // Үлдэгдэл шалгах
-  checkStock: true,
-};
+  // Partner required
+  if (!selectedPartner) {
+    errors.push('Харилцагч сонгоогүй байна');
+  }
+  
+  // Cart not empty
+  if (items.length === 0) {
+    errors.push('Сагс хоосон байна');
+  }
+  
+  // Check each item
+  items.forEach(item => {
+    if (item.quantity > item.maxQuantity) {
+      errors.push(`${item.name}: үлдэгдэл хүрэлцэхгүй`);
+    }
+    if (item.maxQuantity <= 5) {
+      warnings.push(`${item.name}: үлдэгдэл цөөн (${item.maxQuantity})`);
+    }
+  });
+  
+  return { isValid: errors.length === 0, errors, warnings };
+}
+```
+
+### LocalStorage Persistence
+
+```typescript
+// Cart and Partner persist to localStorage
+const STORAGE_KEY = 'maximus-cart';
+
+// On store init
+const persisted = localStorage.getItem(STORAGE_KEY);
+if (persisted) {
+  const { items, selectedPartner } = JSON.parse(persisted);
+  // Restore state
+}
+
+// On state change
+localStorage.setItem(STORAGE_KEY, JSON.stringify({ items, selectedPartner }));
 ```
 
 ### Order Creation Flow
 
 ```
-1. Validate cart items
-   - Check stock availability
-   - Check min order amount
-   - Check partner status
+1. Validate cart
+   ├── Check selectedPartner exists
+   ├── Check items not empty
+   └── Check stock availability
 
 2. Create order in ERP
-   - POST /ord/Orders
-   - Include all items
-   - Include partner info
+   POST /ord/Orders
+   {
+     partnerId: selectedPartner.id,
+     partnerName: selectedPartner.name,
+     items: [...],
+     subtotal,
+     discount,
+     total
+   }
 
 3. On Success:
-   - Clear cart
-   - Show confirmation
-   - Generate order number
+   ├── clearCart()
+   ├── clearSelectedPartner()
+   ├── Show success message
+   └── Redirect to order confirmation
 
 4. On Error:
-   - Show error message
-   - Keep cart items
-   - Allow retry
+   ├── Show error message
+   ├── Keep cart items
+   └── Allow retry
 ```
 
-### Order Statuses
+### UI Flow Summary
 
-| Status | Description | Color |
-|--------|-------------|-------|
-| pending | Хүлээгдэж буй | Yellow |
-| confirmed | Баталгаажсан | Blue |
-| processing | Бэлтгэж буй | Orange |
-| shipped | Хүргэгдэж буй | Purple |
-| delivered | Хүргэгдсэн | Green |
-| cancelled | Цуцлагдсан | Red |
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                        SIDEBAR                                   │
+│  ┌──────────────────────────────────────┐                       │
+│  │ 📦 Захиалга: COMPANY_NAME            │ ← SelectedPartnerBadge │
+│  │    Route: Маршрут нэр           [X]  │                       │
+│  └──────────────────────────────────────┘                       │
+│                                                                  │
+│  - Хяналтын самбар                                              │
+│  - Бараа материал                                                │
+│  - Харилцагчид                                                   │
+│  - Сагс (3)                                                      │
+└──────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────┐
+│                    PRODUCTS PAGE                                  │
+│  ┌──────────────────────────────────────────────────────────────┐│
+│  │ ⚠️ Бараа сагслахын тулд эхлээд харилцагч сонгоно уу          ││
+│  │                                    [Харилцагч сонгох]        ││
+│  └──────────────────────────────────────────────────────────────┘│
+│                            OR                                     │
+│  ┌──────────────────────────────────────────────────────────────┐│
+│  │ 🏢 Захиалга үүсгэж байна: COMPANY_NAME          [Сагс]       ││
+│  └──────────────────────────────────────────────────────────────┘│
+└──────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────┐
+│                      CART PAGE                                    │
+│  ┌─────────────────────────────────────┐                        │
+│  │ 🏢 Захиалах харилцагч          [X]  │                        │
+│  │    COMPANY_NAME                      │                        │
+│  │    📍 Route                          │                        │
+│  │    📞 Phone                          │                        │
+│  │    💰 Үлдэгдэл: 500,000₮            │                        │
+│  └─────────────────────────────────────┘                        │
+│                                                                  │
+│  [CART ITEMS...]                                                 │
+│                                                                  │
+│  ┌─────────────────────────────────────┐                        │
+│  │ Захиалгын дүн           3 бараа     │                        │
+│  │ ─────────────────────────           │                        │
+│  │ Дүн:                   125,000₮     │                        │
+│  │ Хүргэлт:               Үнэгүй       │                        │
+│  │ ─────────────────────────           │                        │
+│  │ Нийт:                  125,000₮     │                        │
+│  │ [Захиалга баталгаажуулах →]         │                        │
+│  │ [Сагс хоослох]                      │                        │
+│  └─────────────────────────────────────┘                        │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### Confirmation Dialogs
+
+| Action | Condition | Dialog Message |
+|--------|-----------|----------------|
+| Partner X (sidebar) | cart has items | "Харилцагч хасах уу?" + item count |
+| Partner X (cart) | cart has items | "Харилцагч хасах уу?" + item count |
+| Change partner | cart has items | "Харилцагч солих уу?" + old partner + item count |
+| Remove cart item | always | "Бараа хасах уу?" + item name |
+| Clear cart | always | "Сагс хоослох уу?" + item count + partner |
 
 ---
 
@@ -358,4 +604,5 @@ const cacheConfig = {
 
 ---
 
-*Last Updated: January 2026*
+*Last Updated: January 2, 2026*
+*Version: 2.0 - Partner-Based Order Flow Implemented*

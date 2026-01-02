@@ -120,6 +120,8 @@ export async function getProducts(
   filters?: {
     search?: string;
     categoryId?: string;
+    categoryIds?: string[];
+    brandIds?: string[];
     warehouseId?: string;
     priceTypeId?: string;
     page?: number;
@@ -145,8 +147,20 @@ export async function getProducts(
   // warehouseId and priceTypeId are required for ERP
   if (filters?.warehouseId) params.append('warehouseId', filters.warehouseId);
   if (filters?.priceTypeId) params.append('priceTypeId', filters.priceTypeId);
-  if (filters?.categoryId) params.append('categoryId', filters.categoryId);
-  if (filters?.search) params.append('article', filters.search);
+  
+  // Support multi-category filter (comma separated)
+  if (filters?.categoryIds && filters.categoryIds.length > 0) {
+    params.append('categories', filters.categoryIds.join(','));
+  } else if (filters?.categoryId) {
+    params.append('categories', filters.categoryId);
+  }
+  
+  // Support multi-brand filter (comma separated)
+  if (filters?.brandIds && filters.brandIds.length > 0) {
+    params.append('brands', filters.brandIds.join(','));
+  }
+  
+  if (filters?.search) params.append('name', filters.search);
 
   try {
     const response = await fetch(`${ERP_URL}/pr/Products?${params}`, {
@@ -188,7 +202,7 @@ export async function getCategories(token: string): Promise<{
   error?: string;
 }> {
   try {
-    const response = await fetch(`${ERP_URL}/pr/Categories`, {
+    const response = await fetch(`${ERP_URL}/ct/Categories`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -200,15 +214,58 @@ export async function getCategories(token: string): Promise<{
       return { success: false, error: `HTTP ${response.status}: ${response.statusText}` };
     }
 
-    const data: ERPCategoriesResponse = await response.json();
+    // Categories API returns array directly
+    const data: Array<{ uuid: string; name: string }> = await response.json();
 
     return {
       success: true,
-      data: data.results.map(cat => ({
+      data: data.map(cat => ({
         id: cat.uuid,
         uuid: cat.uuid,
         name: cat.name,
         productsCount: null,
+      })),
+    };
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : 'Сүлжээний алдаа' };
+  }
+}
+
+// Get brands from ERP
+export async function getBrands(token: string, categoryId?: string): Promise<{
+  success: boolean;
+  data?: Array<{ id: string; uuid: string; name: string }>;
+  error?: string;
+}> {
+  try {
+    const params = new URLSearchParams();
+    if (categoryId) params.append('categoryId', categoryId);
+    
+    const url = params.toString() 
+      ? `${ERP_URL}/br/Brands?${params}` 
+      : `${ERP_URL}/br/Brands`;
+      
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      return { success: false, error: `HTTP ${response.status}: ${response.statusText}` };
+    }
+
+    // Brands API returns array directly
+    const data: Array<{ uuid: string; name: string }> = await response.json();
+
+    return {
+      success: true,
+      data: data.map(brand => ({
+        id: brand.uuid,
+        uuid: brand.uuid,
+        name: brand.name,
       })),
     };
   } catch (error) {
@@ -258,6 +315,10 @@ export interface PartnerData {
   salesLimit: number | null;
   routeId: string | null;
   routeName: string | null;
+  companyCode: string | null;
+  headCompanyName: string | null;
+  headCompanyRegister: string | null;
+  image: string | null;
   created_at: string | null;
   updated_at: string | null;
 }
@@ -280,6 +341,10 @@ function mapERPCompany(raw: ERPCompany): PartnerData {
     salesLimit: null,
     routeId: raw.routeID || null,
     routeName: null,
+    companyCode: raw.companyCode || null,
+    headCompanyName: raw.headCompanyName || null,
+    headCompanyRegister: raw.headCompanyRegister || null,
+    image: null,
     created_at: null,
     updated_at: null,
   };

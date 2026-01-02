@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Users, Search, Phone, Mail, MapPin, Loader2, Building2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Table,
   TableBody,
@@ -17,13 +19,30 @@ import {
 import { usePartnerStore } from '@/stores/partner-store';
 import type { Partner } from '@/types';
 import { getToken } from '@/lib/auth';
+import CustomerAddDialog, { type CustomerFormData } from '@/components/shadcn-studio/blocks/dashboard-dialog-14/customer-add-dialog';
+
+// Weekday route tabs - Monday to Friday abbreviated in Mongolian
+const WEEKDAYS = [
+  { id: 'monday', label: 'Да', fullName: 'Даваа' },
+  { id: 'tuesday', label: 'Мя', fullName: 'Мягмар' },
+  { id: 'wednesday', label: 'Лх', fullName: 'Лхагва' },
+  { id: 'thursday', label: 'Пү', fullName: 'Пүрэв' },
+  { id: 'friday', label: 'Ба', fullName: 'Баасан' },
+];
+
+// Sub-filter options
+const SUB_FILTERS = [
+  { id: 'all', label: 'Бүгд' },
+  { id: 'arrived', label: 'Ирсэн' },
+  { id: 'far', label: 'Зай хол' },
+];
 
 // Partner Row Component
-function PartnerRow({ partner, onSelect }: { partner: Partner; onSelect: (p: Partner) => void }) {
+function PartnerRow({ partner, onClick }: { partner: Partner; onClick: () => void }) {
   return (
     <TableRow 
       className="cursor-pointer hover:bg-muted/50"
-      onClick={() => onSelect(partner)}
+      onClick={onClick}
     >
       <TableCell>
         <div className="flex items-center gap-3">
@@ -139,6 +158,7 @@ function PartnerDetail({ partner, onClose }: { partner: Partner; onClose: () => 
 }
 
 export default function PartnersPage() {
+  const router = useRouter();
   const {
     partners,
     selectedPartner,
@@ -151,6 +171,23 @@ export default function PartnersPage() {
   } = usePartnerStore();
 
   const [searchInput, setSearchInput] = useState('');
+  const [selectedDay, setSelectedDay] = useState('monday');
+  const [subFilter, setSubFilter] = useState('all');
+
+  // Get current weekday and set it as default
+  useEffect(() => {
+    const today = new Date().getDay();
+    const dayMap: { [key: number]: string } = {
+      1: 'monday',
+      2: 'tuesday',
+      3: 'wednesday',
+      4: 'thursday',
+      5: 'friday',
+    };
+    if (dayMap[today]) {
+      setSelectedDay(dayMap[today]);
+    }
+  }, []);
 
   useEffect(() => {
     fetchPartners();
@@ -161,21 +198,68 @@ export default function PartnersPage() {
     setSearch(searchInput);
   };
 
+  const handleAddCustomer = (data: CustomerFormData) => {
+    console.log('New customer data:', data);
+    // TODO: Call API to add customer
+    // After successful add, refresh the list
+    fetchPartners();
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-3xl font-bold">Харилцагчид</h1>
             <p className="text-muted-foreground mt-1">
               Нийт {partners.length} харилцагч
             </p>
           </div>
-          <Button>
-            <Users className="mr-2 h-4 w-4" />
-            Шинэ харилцагч
-          </Button>
+          <CustomerAddDialog
+            trigger={
+              <Button>
+                <Users className="mr-2 h-4 w-4" />
+                Шинэ харилцагч
+              </Button>
+            }
+            onSubmit={handleAddCustomer}
+          />
+        </div>
+
+        {/* Weekday Route Tabs */}
+        <div className="mb-4">
+          <p className="text-sm text-muted-foreground mb-2">Маршрут</p>
+          <Tabs value={selectedDay} onValueChange={setSelectedDay}>
+            <TabsList className="bg-muted p-1 rounded-lg">
+              {WEEKDAYS.map((day) => (
+                <TabsTrigger
+                  key={day.id}
+                  value={day.id}
+                  className="min-w-[48px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md px-4 py-2 text-sm font-medium transition-all"
+                >
+                  {day.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </div>
+
+        {/* Sub-filter Tabs */}
+        <div className="mb-6">
+          <Tabs value={subFilter} onValueChange={setSubFilter}>
+            <TabsList className="bg-transparent p-0 h-auto gap-2">
+              {SUB_FILTERS.map((filter) => (
+                <TabsTrigger
+                  key={filter.id}
+                  value={filter.id}
+                  className="data-[state=active]:bg-secondary data-[state=active]:text-secondary-foreground data-[state=inactive]:bg-muted/50 rounded-full px-4 py-1.5 text-sm font-medium border-0 shadow-none"
+                >
+                  {filter.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
         </div>
 
         {/* Search */}
@@ -226,7 +310,7 @@ export default function PartnersPage() {
                   <PartnerRow 
                     key={partner.id} 
                     partner={partner} 
-                    onSelect={selectPartner}
+                    onClick={() => router.push(`/dashboard/partners/${partner.id}`)}
                   />
                 ))}
               </TableBody>
