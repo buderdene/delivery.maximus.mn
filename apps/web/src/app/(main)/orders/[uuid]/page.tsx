@@ -348,11 +348,6 @@ export default function OrderDetailPage() {
                         <Printer className="h-4 w-4 mr-2" />
                         {t('orders.detail.receipt')}
                     </Button>
-                    <Button variant="outline" size="sm" onClick={handleShare}>
-                        <Share2 className="h-4 w-4 mr-2" />
-                        {t('orders.detail.share')}
-                        {t('orders.detail.share')}
-                    </Button>
                 </div>
             </div>
 

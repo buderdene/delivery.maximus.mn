@@ -1,21 +1,52 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Package, Search, Grid, List, Loader2, ShoppingCart, Check, Building2, Tag } from 'lucide-react';
+import { Package, Search, Grid, List, Loader2, ShoppingCart, Check, Building2, Tag, Info, X, Boxes, PackageOpen, Hash, FileText, Layers, Bookmark, Scale, Gift, Percent, AlertTriangle, Barcode } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { useProductStore } from '@/stores/product-store';
 import { useCartStore } from '@/stores/cart-store';
+import { useWarehouseStore } from '@/stores/warehouse-store';
 import { useTranslation } from '@/hooks/useTranslation';
 import { QuantityKeypad } from '@/components/cart/QuantityKeypad';
 import { toast } from 'sonner';
 import type { Product } from '@/types';
 import { CategorySidebar } from '@/components/products/CategorySidebar';
+
+// Product detail type from API
+interface ProductDetail {
+  uuid: string;
+  name: string;
+  article: string;
+  price: number;
+  barcode?: string;
+  brand?: { uuid: string; name: string };
+  category?: { uuid: string; name: string };
+  uom?: { uuid: string; name: string };
+  imgUrl?: string;
+  image?: string;
+  imageUrl?: string;
+  main_image_url?: string;
+  stock?: Array<{ typeId: string; count: number }>;
+  stockTypes?: Array<{ uuid: string; name: string; pcs: number }>;
+  description?: string;
+  moq?: number;
+  isUnderStock?: boolean;
+  promotions?: Array<{ uuid: string; name: string }>;
+  discountPoint?: Array<{ discountPointID: string; discountPointName: string; discountPointAmount: number }>;
+  expireDates?: Array<{ serialNumber: string | null; expireDate: string }>;
+}
 
 // Product Loading Skeleton
 function ProductSkeleton() {
@@ -80,7 +111,11 @@ function SelectedPartnerBanner() {
 }
 
 // Product Card Component
-function ProductCard({ product, onProductClick }: { product: Product; onProductClick: (product: Product) => void }) {
+function ProductCard({ product, onProductClick, onDetailClick }: { 
+  product: Product; 
+  onProductClick: (product: Product) => void;
+  onDetailClick: (productId: string) => void;
+}) {
   const items = useCartStore((state) => state.items);
   const { t } = useTranslation();
   
@@ -104,6 +139,11 @@ function ProductCard({ product, onProductClick }: { product: Product; onProductC
   const formatStock = (stock: number) => {
     if (stock >= 1000) return '1000+';
     return new Intl.NumberFormat('mn-MN').format(stock);
+  };
+
+  const handleDetailClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDetailClick(product.id);
   };
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -180,31 +220,44 @@ function ProductCard({ product, onProductClick }: { product: Product; onProductC
             </div>
           </div>
 
-          {/* Add to Cart Button */}
-          <Button 
-            onClick={handleAddToCart}
-            size="sm"
-            className={`w-full mt-1.5 sm:mt-2 text-white rounded-lg sm:rounded-xl h-8 sm:h-9 text-xs sm:text-sm font-medium transition-all duration-200 ${
-              inCart 
-                ? 'bg-blue-500 hover:bg-blue-600' 
-                : 'bg-primary hover:bg-primary/90'
-            }`}
-            disabled={product.stock_status === 'out_of_stock'}
-          >
-            {inCart ? (
-              <>
-                <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
-                <span className="hidden sm:inline">{t('products.inCart')} ({cartQuantity})</span>
-                <span className="sm:hidden">+1</span>
-              </>
-            ) : (
-              <>
-                <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
-                <span className="hidden sm:inline">{t('products.addToCart')}</span>
-                <span className="sm:hidden">{t('common.add')}</span>
-              </>
-            )}
-          </Button>
+          {/* Action Buttons */}
+          <div className="flex gap-1.5 sm:gap-2 mt-1.5 sm:mt-2">
+            {/* Detail Button - Icon only */}
+            <Button 
+              onClick={handleDetailClick}
+              size="icon"
+              variant="outline"
+              className="rounded-lg sm:rounded-xl h-8 w-8 sm:h-9 sm:w-9 flex-shrink-0"
+            >
+              <Info className="w-4 h-4" />
+            </Button>
+            
+            {/* Add to Cart Button */}
+            <Button 
+              onClick={handleAddToCart}
+              size="sm"
+              className={`flex-1 text-white rounded-lg sm:rounded-xl h-8 sm:h-9 text-xs sm:text-sm font-medium transition-all duration-200 ${
+                inCart 
+                  ? 'bg-blue-500 hover:bg-blue-600' 
+                  : 'bg-primary hover:bg-primary/90'
+              }`}
+              disabled={product.stock_status === 'out_of_stock'}
+            >
+              {inCart ? (
+                <>
+                  <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5" />
+                  <span className="hidden sm:inline">{t('products.inCart')} ({cartQuantity})</span>
+                  <span className="sm:hidden">+1</span>
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5" />
+                  <span className="hidden sm:inline">{t('products.addToCart')}</span>
+                  <span className="sm:hidden">{t('common.add')}</span>
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -212,7 +265,11 @@ function ProductCard({ product, onProductClick }: { product: Product; onProductC
 }
 
 // List View Card Component
-function ProductListCard({ product, onProductClick }: { product: Product; onProductClick: (product: Product) => void }) {
+function ProductListCard({ product, onProductClick, onDetailClick }: { 
+  product: Product; 
+  onProductClick: (product: Product) => void;
+  onDetailClick: (productId: string) => void;
+}) {
   const items = useCartStore((state) => state.items);
   const { t } = useTranslation();
   
@@ -241,6 +298,11 @@ function ProductListCard({ product, onProductClick }: { product: Product; onProd
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     onProductClick(product);
+  };
+
+  const handleDetailClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDetailClick(product.id);
   };
 
   const handleCardClick = () => {
@@ -297,7 +359,7 @@ function ProductListCard({ product, onProductClick }: { product: Product; onProd
         </div>
 
         {/* Price & Cart */}
-        <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           <div className="text-right hidden sm:block">
             <p className="text-[10px] text-gray-400">{t('products.stock')}</p>
             <p className="text-sm font-bold text-gray-600">{formatStock(product.current_stock)}</p>
@@ -308,6 +370,14 @@ function ProductListCard({ product, onProductClick }: { product: Product; onProd
               <p className="text-xs text-blue-600 font-medium">{t('products.inCart')}: {cartQuantity}</p>
             )}
           </div>
+          <Button 
+            onClick={handleDetailClick}
+            size="icon"
+            variant="outline"
+            className="rounded-lg h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0"
+          >
+            <Info className="w-4 h-4" />
+          </Button>
           <Button 
             onClick={handleAddToCart}
             size="icon"
@@ -332,8 +402,14 @@ export default function ProductsPage() {
   const [isKeypadOpen, setIsKeypadOpen] = useState(false);
   const [keypadKey, setKeypadKey] = useState(0);
   
+  // Product detail modal state
+  const [detailProduct, setDetailProduct] = useState<ProductDetail | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isDetailLoading, setIsDetailLoading] = useState(false);
+  
   const { t } = useTranslation();
   const { addItem, hasPartner, selectedPartner } = useCartStore();
+  const { selectedWarehouse } = useWarehouseStore();
   
   const {
     products,
@@ -353,6 +429,53 @@ export default function ProductsPage() {
     setBrands,
     loadMore,
   } = useProductStore();
+
+  // Fetch product detail from API
+  const fetchProductDetail = useCallback(async (productId: string) => {
+    if (!selectedWarehouse) {
+      toast.error(t('products.warehouseNotSelected'));
+      return;
+    }
+    
+    // Find product in list to get image URL (API doesn't return image)
+    const productFromList = products.find(p => p.id === productId);
+    const productImageUrl = productFromList?.main_image_url || productFromList?.images?.[0];
+    
+    console.log('[ProductDetail] Product from list:', productFromList?.name, 'Image URL:', productImageUrl, 'main_image_url:', productFromList?.main_image_url, 'images:', productFromList?.images);
+    
+    setIsDetailLoading(true);
+    setIsDetailOpen(true);
+    
+    try {
+      const params = new URLSearchParams({
+        warehouseId: selectedWarehouse.uuid,
+        priceTypeId: selectedWarehouse.priceTypeId,
+        uuid: productId,
+      });
+      
+      const response = await fetch(`/api/products/detail?${params.toString()}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch product detail');
+      }
+      
+      const data = await response.json();
+      console.log('[ProductDetail] API response imgUrl:', data.imgUrl, 'main_image_url:', data.main_image_url);
+      
+      // Add image URL from product list if API doesn't return one
+      if (!data.imgUrl && !data.main_image_url && productImageUrl) {
+        data.imgUrl = productImageUrl;
+        console.log('[ProductDetail] Using image from list:', productImageUrl);
+      }
+      setDetailProduct(data);
+    } catch (err) {
+      console.error('Error fetching product detail:', err);
+      toast.error(t('products.detailError'));
+      setIsDetailOpen(false);
+    } finally {
+      setIsDetailLoading(false);
+    }
+  }, [selectedWarehouse, t, products]);
 
   useEffect(() => {
     fetchCategories();
@@ -619,13 +742,13 @@ export default function ProductsPage() {
               {viewMode === 'grid' ? (
                 <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5">
                   {products.map((product) => (
-                    <ProductCard key={product.id} product={product} onProductClick={handleProductClick} />
+                    <ProductCard key={product.id} product={product} onProductClick={handleProductClick} onDetailClick={fetchProductDetail} />
                   ))}
                 </div>
               ) : (
                 <div className="flex flex-col gap-2 sm:gap-3">
                   {products.map((product) => (
-                    <ProductListCard key={product.id} product={product} onProductClick={handleProductClick} />
+                    <ProductListCard key={product.id} product={product} onProductClick={handleProductClick} onDetailClick={fetchProductDetail} />
                   ))}
                 </div>
               )}
@@ -665,6 +788,217 @@ export default function ProductsPage() {
         productName={selectedProduct?.name}
         resetKey={keypadKey}
       />
+      
+      {/* Product Detail Modal */}
+      <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
+        <DialogContent className="!max-w-4xl !w-[90vw] max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Info className="h-5 w-5 text-primary" />
+              {t('products.productDetail')}
+            </DialogTitle>
+          </DialogHeader>
+          
+          {isDetailLoading ? (
+            <div className="flex flex-col items-center justify-center py-16">
+              <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+              <p className="text-muted-foreground">{t('products.loadingDetail')}</p>
+            </div>
+          ) : detailProduct ? (
+            <div className="space-y-6">
+              {/* Product Header */}
+              <div className="flex gap-6">
+                {/* Image - larger, check multiple possible image fields */}
+                <div className="w-80 h-80 flex-shrink-0 relative bg-gray-50 rounded-2xl overflow-hidden border-2 border-gray-100">
+                  {(() => {
+                    const imageUrl = detailProduct.imgUrl || detailProduct.image || detailProduct.imageUrl || detailProduct.main_image_url;
+                    console.log('[ProductDetail Modal] Rendering image URL:', imageUrl);
+                    if (imageUrl) {
+                      return (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={imageUrl}
+                          alt={detailProduct.name}
+                          className="w-full h-full object-contain p-4"
+                        />
+                      );
+                    }
+                    return (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Package className="w-28 h-28 text-gray-300" />
+                      </div>
+                    );
+                  })()}
+                </div>
+                
+                {/* Basic Info */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">{detailProduct.name}</h3>
+                  
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {detailProduct.article && (
+                      <Badge variant="outline" className="font-mono text-sm px-3 py-1">
+                        <Hash className="h-3.5 w-3.5 mr-1.5 text-gray-500" />
+                        {detailProduct.article}
+                      </Badge>
+                    )}
+                    {detailProduct.barcode && (
+                      <Badge variant="outline" className="font-mono text-sm px-3 py-1">
+                        <Barcode className="h-3.5 w-3.5 mr-1.5 text-gray-500" />
+                        {detailProduct.barcode}
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  <div className="bg-primary/5 rounded-xl p-4 inline-block mb-4">
+                    <p className="text-3xl font-bold text-primary">
+                      {new Intl.NumberFormat('mn-MN').format(detailProduct.price)}₮
+                    </p>
+                  </div>
+                  
+                  {/* Details - Category, Brand, UOM, MOQ */}
+                  <div className="flex flex-wrap gap-2">
+                    {/* Category */}
+                    {detailProduct.category && (
+                      <Badge className="bg-blue-100 text-blue-700 border-blue-200 px-3 py-1.5 text-sm">
+                        <Layers className="h-4 w-4 mr-1.5" />
+                        {detailProduct.category.name}
+                      </Badge>
+                    )}
+                    
+                    {/* Brand */}
+                    {detailProduct.brand && (
+                      <Badge className="bg-purple-100 text-purple-700 border-purple-200 px-3 py-1.5 text-sm">
+                        <Bookmark className="h-4 w-4 mr-1.5" />
+                        {detailProduct.brand.name}
+                      </Badge>
+                    )}
+                    
+                    {/* UOM */}
+                    {detailProduct.uom && (
+                      <Badge className="bg-teal-100 text-teal-700 border-teal-200 px-3 py-1.5 text-sm">
+                        <Scale className="h-4 w-4 mr-1.5" />
+                        {detailProduct.uom.name}
+                      </Badge>
+                    )}
+                    
+                    {/* MOQ */}
+                    {detailProduct.moq && detailProduct.moq > 0 && (
+                      <Badge className="bg-amber-100 text-amber-700 border-amber-200 px-3 py-1.5 text-sm">
+                        <PackageOpen className="h-4 w-4 mr-1.5" />
+                        MOQ: {detailProduct.moq}
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  {/* Stock Types - PCS, PACK, BOX on new line */}
+                  {detailProduct.stockTypes && detailProduct.stockTypes.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {detailProduct.stockTypes.map((stockType) => (
+                        <Badge key={stockType.uuid} className="bg-gray-100 text-gray-700 border-gray-200 px-3 py-1.5 text-sm">
+                          {stockType.name.toLowerCase().includes('box') && <Boxes className="h-4 w-4 mr-1.5" />}
+                          {stockType.name.toLowerCase().includes('pack') && <PackageOpen className="h-4 w-4 mr-1.5" />}
+                          {stockType.name.toLowerCase().includes('pcs') && <Package className="h-4 w-4 mr-1.5" />}
+                          {!stockType.name.toLowerCase().includes('box') && !stockType.name.toLowerCase().includes('pack') && !stockType.name.toLowerCase().includes('pcs') && <Package className="h-4 w-4 mr-1.5" />}
+                          {stockType.name}: <span className="font-bold ml-1">{stockType.pcs >= 1000 ? '1000+' : stockType.pcs}</span>
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              {/* Promotions */}
+              {detailProduct.promotions && detailProduct.promotions.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {detailProduct.promotions.map((promo) => (
+                    <Badge key={promo.uuid} className="bg-orange-100 text-orange-700 border-orange-200 px-3 py-1.5 text-sm">
+                      <Gift className="h-4 w-4 mr-1.5" />
+                      {promo.name}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+              
+              {/* Discount Points */}
+              {detailProduct.discountPoint && detailProduct.discountPoint.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {detailProduct.discountPoint.map((dp) => (
+                    <Badge key={dp.discountPointID} className="bg-green-100 text-green-700 border-green-200 px-3 py-1.5 text-sm">
+                      <Percent className="h-4 w-4 mr-1.5" />
+                      {dp.discountPointName}: {dp.discountPointAmount}%
+                    </Badge>
+                  ))}
+                </div>
+              )}
+              
+              {/* Expire Dates */}
+              {detailProduct.expireDates && detailProduct.expireDates.length > 0 && (
+                <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                  <div className="flex items-center gap-2 mb-3">
+                    <svg className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span className="font-semibold text-blue-900">Дуусах хугацаа</span>
+                  </div>
+                  <div className="space-y-2">
+                    {detailProduct.expireDates.map((item, index) => {
+                      const expDate = new Date(item.expireDate);
+                      const now = new Date();
+                      const daysLeft = Math.ceil((expDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+                      const isExpiringSoon = daysLeft <= 90;
+                      const isExpired = daysLeft <= 0;
+                      // Format date as YYYY-MM-DD
+                      const formattedDate = `${expDate.getFullYear()}-${String(expDate.getMonth() + 1).padStart(2, '0')}-${String(expDate.getDate()).padStart(2, '0')}`;
+                      return (
+                        <div 
+                          key={index} 
+                          className={`rounded-lg px-4 py-2 border flex items-center justify-between ${
+                            isExpired ? 'bg-red-100 border-red-300' : 
+                            isExpiringSoon ? 'bg-amber-100 border-amber-300' : 
+                            'bg-white border-gray-200'
+                          }`}
+                        >
+                          <span className={`font-semibold ${
+                            isExpired ? 'text-red-700' : 
+                            isExpiringSoon ? 'text-amber-700' : 
+                            'text-gray-900'
+                          }`}>
+                            {formattedDate}
+                          </span>
+                          <span className={`text-sm font-medium ${
+                            isExpired ? 'text-red-600' : 
+                            isExpiringSoon ? 'text-amber-600' : 
+                            'text-gray-500'
+                          }`}>
+                            {isExpired ? 'Хугацаа дууссан' : `${daysLeft} хоног үлдсэн`}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+              
+              {/* Description */}
+              {detailProduct.description && (
+                <div className="bg-gray-50 rounded-xl p-4 border flex gap-3">
+                  <FileText className="h-5 w-5 text-gray-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-gray-600">{detailProduct.description}</p>
+                </div>
+              )}
+              
+              {/* Under Stock Warning */}
+              {detailProduct.isUnderStock && (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-3">
+                  <AlertTriangle className="h-5 w-5 text-amber-600" />
+                  <span className="text-amber-700 font-medium">{t('products.underStock')}</span>
+                </div>
+              )}
+            </div>
+          ) : null}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

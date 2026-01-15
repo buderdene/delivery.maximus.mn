@@ -72,6 +72,23 @@ export const mn = {
       lowStock: 'Цөөн',
       outOfStock: 'Дууссан',
     },
+    // Product detail
+    detail: 'Дэлгэрэнгүй',
+    detailShort: 'Инфо',
+    productDetail: 'Барааны дэлгэрэнгүй',
+    loadingDetail: 'Мэдээлэл ачаалж байна...',
+    detailError: 'Барааны мэдээлэл ачаалахад алдаа гарлаа',
+    warehouseNotSelected: 'Агуулах сонгогдоогүй байна',
+    barcode: 'Баркод',
+    category: 'Ангилал',
+    brand: 'Брэнд',
+    uom: 'Хэмжих нэгж',
+    moq: 'Захиалах доод хэмжээ',
+    stockInfo: 'Үлдэгдлийн мэдээлэл',
+    promotions: 'Урамшуулал',
+    discountPoints: 'Хөнгөлөлтийн хувь',
+    description: 'Тайлбар',
+    underStock: 'Үлдэгдэл бага байна',
     // Filter sheet
     filterSheet: {
       title: 'Шүүлтүүр',

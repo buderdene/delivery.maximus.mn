@@ -72,6 +72,23 @@ export const en = {
       lowStock: 'Low stock',
       outOfStock: 'Out of stock',
     },
+    // Product detail
+    detail: 'Details',
+    detailShort: 'Info',
+    productDetail: 'Product Details',
+    loadingDetail: 'Loading details...',
+    detailError: 'Failed to load product details',
+    warehouseNotSelected: 'Warehouse not selected',
+    barcode: 'Barcode',
+    category: 'Category',
+    brand: 'Brand',
+    uom: 'Unit',
+    moq: 'Min. Order Qty',
+    stockInfo: 'Stock Information',
+    promotions: 'Promotions',
+    discountPoints: 'Discount %',
+    description: 'Description',
+    underStock: 'Low stock warning',
     // Filter sheet
     filterSheet: {
       title: 'Filter',

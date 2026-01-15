@@ -70,6 +70,23 @@ export const ko = {
       lowStock: '재고 부족',
       outOfStock: '품절',
     },
+    // Product detail
+    detail: '상세보기',
+    detailShort: '정보',
+    productDetail: '상품 상세정보',
+    loadingDetail: '정보 로딩 중...',
+    detailError: '상품 정보를 불러오지 못했습니다',
+    warehouseNotSelected: '창고가 선택되지 않았습니다',
+    barcode: '바코드',
+    category: '카테고리',
+    brand: '브랜드',
+    uom: '단위',
+    moq: '최소 주문 수량',
+    stockInfo: '재고 정보',
+    promotions: '프로모션',
+    discountPoints: '할인율',
+    description: '설명',
+    underStock: '재고 부족 경고',
     // Filter sheet
     filterSheet: {
       title: '필터',
