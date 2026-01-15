@@ -3,21 +3,19 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Package, Search, Grid, List, Loader2, ShoppingCart, Check, Filter, AlertCircle, Users, Building2 } from 'lucide-react';
+import { Package, Search, Grid, List, Loader2, ShoppingCart, Check, Building2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useProductStore } from '@/stores/product-store';
 import { useCartStore } from '@/stores/cart-store';
 import { useTranslation } from '@/hooks/useTranslation';
 import { QuantityKeypad } from '@/components/cart/QuantityKeypad';
 import { toast } from 'sonner';
-import type { Category, Product } from '@/types';
-import { CategoryFilterSheet, type FilterState } from '@/components/shadcn-studio/blocks/category-filter-04';
+import type { Product } from '@/types';
+import { CategorySidebar } from '@/components/products/CategorySidebar';
 
 // Product Loading Skeleton
 function ProductSkeleton() {
@@ -77,53 +75,6 @@ function SelectedPartnerBanner() {
           {t('nav.cart')}
         </Link>
       </Button>
-    </div>
-  );
-}
-
-// Category Grid Component - 9 items per row
-function CategoryGrid({ 
-  categories, 
-  selectedId, 
-  onSelect 
-}: { 
-  categories: Category[]; 
-  selectedId: string | null;
-  onSelect: (id: string | null) => void;
-}) {
-  const { t } = useTranslation();
-  return (
-    <div className="mb-6">
-      <h3 className="text-lg font-semibold mb-3">{t('products.categories')}</h3>
-      <ScrollArea className="w-full whitespace-nowrap">
-        <div className="flex gap-2 pb-3">
-          <Button
-            variant={selectedId === null ? "default" : "outline"}
-            size="sm"
-            onClick={() => onSelect(null)}
-            className="shrink-0"
-          >
-            {t('common.all')}
-          </Button>
-          {categories.map((cat) => (
-            <Button
-              key={cat.id}
-              variant={selectedId === cat.id ? "default" : "outline"}
-              size="sm"
-              onClick={() => onSelect(cat.id)}
-              className="shrink-0"
-            >
-              {cat.name}
-              {cat.productsCount > 0 && (
-                <Badge variant="secondary" className="ml-1 text-xs">
-                  {cat.productsCount}
-                </Badge>
-              )}
-            </Button>
-          ))}
-        </div>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
     </div>
   );
 }
@@ -392,7 +343,6 @@ export default function ProductsPage() {
     fetchCategories,
     fetchBrands,
     setSearch,
-    setCategory,
     setCategories,
     setBrands,
     loadMore,
@@ -404,20 +354,36 @@ export default function ProductsPage() {
     fetchProducts();
   }, [fetchCategories, fetchBrands, fetchProducts]);
 
-  // Handle advanced filter apply
-  const handleFilterApply = (newFilters: FilterState) => {
-    // Apply category and brand filters
-    setCategories(newFilters.categories);
-    setBrands(newFilters.brands);
-  };
-
-  // Handle category change in filter sheet (to load related brands)
-  const handleCategoryChange = (categoryIds: string[]) => {
-    if (categoryIds.length > 0) {
-      fetchBrands(categoryIds[0]);
+  // Handle category toggle in sidebar
+  const handleCategoryToggle = (categoryId: string) => {
+    const newCategories = filters.categoryIds.includes(categoryId)
+      ? filters.categoryIds.filter(id => id !== categoryId)
+      : [...filters.categoryIds, categoryId];
+    
+    setCategories(newCategories);
+    
+    // Load related brands when category changes
+    if (newCategories.length > 0) {
+      fetchBrands(newCategories[0]);
     } else {
       fetchBrands();
     }
+  };
+
+  // Handle brand toggle in sidebar
+  const handleBrandToggle = (brandId: string) => {
+    const newBrands = filters.brandIds.includes(brandId)
+      ? filters.brandIds.filter(id => id !== brandId)
+      : [...filters.brandIds, brandId];
+    
+    setBrands(newBrands);
+  };
+
+  // Clear all filters
+  const handleClearFilters = () => {
+    setCategories([]);
+    setBrands([]);
+    fetchBrands();
   };
 
   // Convert categories to filter format
@@ -432,9 +398,6 @@ export default function ProductsPage() {
     id: brand.id,
     name: brand.name
   }));
-
-  // Calculate active filters count
-  const activeFiltersCount = filters.categoryIds.length + filters.brandIds.length;
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -474,146 +437,129 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="min-h-screen">
-      <div className="px-3 py-4 sm:px-4 sm:py-6 lg:px-6 lg:py-8">
-        {/* Selected Partner Banner */}
-        <SelectedPartnerBanner />
-        
-        {/* Header */}
-        <div className="flex items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
-          <div className="min-w-0 flex-1">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 truncate">{t('products.title')}</h1>
-            <p className="text-sm text-gray-500 mt-0.5">
-              {paginatorInfo ? t('products.totalCount', { count: paginatorInfo.total.toLocaleString() }) : t('products.loading')}
-            </p>
-          </div>
-          <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 bg-gray-100 p-1 rounded-lg">
-            <Button 
-              variant={viewMode === 'grid' ? 'default' : 'ghost'}
-              size="icon" 
-              className={`rounded-md h-8 w-8 ${viewMode === 'grid' ? 'bg-white shadow-sm' : 'hover:bg-gray-200'}`}
-              onClick={() => setViewMode('grid')}
-            >
-              <Grid className="h-4 w-4" />
-            </Button>
-            <Button 
-              variant={viewMode === 'list' ? 'default' : 'ghost'}
-              size="icon" 
-              className={`rounded-md h-8 w-8 ${viewMode === 'list' ? 'bg-white shadow-sm' : 'hover:bg-gray-200'}`}
-              onClick={() => setViewMode('list')}
-            >
-              <List className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+    <div className="min-h-screen flex">
+      {/* Left Sidebar - Categories */}
+      <CategorySidebar
+        categories={filterCategories}
+        brands={filterBrands}
+        categoriesLoading={categoriesLoading}
+        brandsLoading={brandsLoading}
+        selectedCategories={filters.categoryIds}
+        selectedBrands={filters.brandIds}
+        onCategoryToggle={handleCategoryToggle}
+        onBrandToggle={handleBrandToggle}
+        onClearAll={handleClearFilters}
+      />
 
-        {/* Search & Filter */}
-        <div className="flex gap-2 mb-4 sm:mb-6">
-          <form onSubmit={handleSearch} className="flex-1 sm:flex-initial">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder={t('products.searchPlaceholder')}
-                value={filters.search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 h-10 sm:h-11 rounded-xl border-gray-200 bg-white shadow-sm w-full sm:w-80"
-              />
-            </div>
-          </form>
+      {/* Main Content */}
+      <div className="flex-1 min-w-0">
+        <div className="px-3 py-4 sm:px-4 sm:py-6 lg:px-6 lg:py-8">
+          {/* Selected Partner Banner */}
+          <SelectedPartnerBanner />
           
-          <CategoryFilterSheet
-            categories={filterCategories}
-            brands={filterBrands}
-            categoriesLoading={categoriesLoading}
-            brandsLoading={brandsLoading}
-            initialFilters={{ 
-              categories: filters.categoryIds, 
-              brands: filters.brandIds 
-            }}
-            onApply={handleFilterApply}
-            onCategoryChange={handleCategoryChange}
-            trigger={
-              <Button variant="outline" className="gap-2 h-10 sm:h-11 px-3 sm:px-4 rounded-xl">
-                <Filter className="h-4 w-4" />
-                <span className="hidden sm:inline">{t('products.filter')}</span>
-                {activeFiltersCount > 0 && (
-                  <Badge className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                    {activeFiltersCount}
-                  </Badge>
-                )}
+          {/* Header */}
+          <div className="flex items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 truncate">{t('products.title')}</h1>
+              <p className="text-sm text-gray-500 mt-0.5">
+                {paginatorInfo ? t('products.totalCount', { count: paginatorInfo.total.toLocaleString() }) : t('products.loading')}
+              </p>
+            </div>
+            <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 bg-gray-100 p-1 rounded-lg">
+              <Button 
+                variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                size="icon" 
+                className={`rounded-md h-8 w-8 ${viewMode === 'grid' ? 'bg-white shadow-sm' : 'hover:bg-gray-200'}`}
+                onClick={() => setViewMode('grid')}
+              >
+                <Grid className="h-4 w-4" />
               </Button>
-            }
-          />
+              <Button 
+                variant={viewMode === 'list' ? 'default' : 'ghost'}
+                size="icon" 
+                className={`rounded-md h-8 w-8 ${viewMode === 'list' ? 'bg-white shadow-sm' : 'hover:bg-gray-200'}`}
+                onClick={() => setViewMode('list')}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Search */}
+          <div className="mb-4 sm:mb-6">
+            <form onSubmit={handleSearch} className="max-w-md">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder={t('products.searchPlaceholder')}
+                  value={filters.search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-10 h-10 sm:h-11 rounded-xl border-gray-200 bg-white shadow-sm w-full"
+                />
+              </div>
+            </form>
+          </div>
+
+          {/* Error */}
+          {error && (
+            <div className="bg-destructive/15 text-destructive p-4 rounded-md mb-6">
+              {error}
+            </div>
+          )}
+
+          {/* Products Grid */}
+          {isLoading && products.length === 0 ? (
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <ProductSkeleton key={i} />
+              ))}
+            </div>
+          ) : products.length === 0 ? (
+            <div className="text-center py-16">
+              <Package className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+              <h3 className="text-lg font-medium text-gray-900">{t('products.noProducts')}</h3>
+              <p className="text-gray-500">{t('products.noSearchResults')}</p>
+            </div>
+          ) : (
+            <>
+              {viewMode === 'grid' ? (
+                <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+                  {products.map((product) => (
+                    <ProductCard key={product.id} product={product} onProductClick={handleProductClick} />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2 sm:gap-3">
+                  {products.map((product) => (
+                    <ProductListCard key={product.id} product={product} onProductClick={handleProductClick} />
+                  ))}
+                </div>
+              )}
+
+              {/* Load More */}
+              {paginatorInfo?.hasMorePages && (
+                <div className="flex justify-center mt-10">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={loadMore}
+                    disabled={isLoading}
+                    className="px-8"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {t('products.loading')}
+                      </>
+                    ) : (
+                      t('products.loadMore')
+                    )}
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
         </div>
-
-        {/* Categories */}
-        {!categoriesLoading && categories.length > 0 && (
-          <CategoryGrid
-            categories={categories}
-            selectedId={filters.categoryId}
-            onSelect={setCategory}
-          />
-        )}
-
-        {/* Error */}
-        {error && (
-          <div className="bg-destructive/15 text-destructive p-4 rounded-md mb-6">
-            {error}
-          </div>
-        )}
-
-        {/* Products Grid */}
-        {isLoading && products.length === 0 ? (
-          <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <ProductSkeleton key={i} />
-            ))}
-          </div>
-        ) : products.length === 0 ? (
-          <div className="text-center py-16">
-            <Package className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900">{t('products.noProducts')}</h3>
-            <p className="text-gray-500">{t('products.noSearchResults')}</p>
-          </div>
-        ) : (
-          <>
-            {viewMode === 'grid' ? (
-              <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-                {products.map((product) => (
-                  <ProductCard key={product.id} product={product} onProductClick={handleProductClick} />
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2 sm:gap-3">
-                {products.map((product) => (
-                  <ProductListCard key={product.id} product={product} onProductClick={handleProductClick} />
-                ))}
-              </div>
-            )}
-
-            {/* Load More */}
-            {paginatorInfo?.hasMorePages && (
-              <div className="flex justify-center mt-10">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={loadMore}
-                  disabled={isLoading}
-                  className="px-8"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {t('products.loading')}
-                    </>
-                  ) : (
-                    t('products.loadMore')
-                  )}
-                </Button>
-              </div>
-            )}
-          </>
-        )}
       </div>
       
       {/* Quantity Keypad Dialog */}
