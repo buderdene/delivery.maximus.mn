@@ -695,7 +695,7 @@ export default function ProductsScreen() {
           </Text>
           {cartItemCount > 0 && (
             <View style={styles.partnerCartInfo}>
-              <ShoppingCart size={12} color="#059669" />
+              <ShoppingCart size={12} color="#e17100" />
               <Text style={styles.partnerCartText}>{cartItemCount}</Text>
             </View>
           )}
@@ -1071,7 +1071,7 @@ const styles = StyleSheet.create({
   partnerCartText: {
     fontSize: 11,
     fontFamily: 'GIP-Bold',
-    color: '#059669',
+    color: '#e17100',
   },
   searchContainer: {
     padding: 12,
@@ -1505,7 +1505,7 @@ const styles = StyleSheet.create({
   gridPrice: {
     fontSize: 14,
     fontFamily: 'GIP-Bold',
-    color: '#059669',
+    color: '#e17100',
   },
   gridAddButton: {
     width: 28,
@@ -1516,11 +1516,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   gridAddButtonInCart: {
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
   },
   gridItemInCart: {
     borderWidth: 2,
-    borderColor: '#10B981',
+    borderColor: '#f59e0b',
   },
   gridItemInTemplate: {
     borderWidth: 2,
@@ -1601,7 +1601,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   listItemInCart: {
-    borderColor: '#10B981',
+    borderColor: '#f59e0b',
     borderWidth: 2,
     backgroundColor: '#F0FDF4',
   },
@@ -1632,7 +1632,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   listAddButtonInCart: {
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
   },
   moqBadge: {
     backgroundColor: '#FEF3C7',
@@ -1677,7 +1677,7 @@ const styles = StyleSheet.create({
   listPrice: {
     fontSize: 14,
     fontFamily: 'GIP-Bold',
-    color: '#059669',
+    color: '#e17100',
   },
   stockBadgeSmall: {
     backgroundColor: 'rgba(251, 191, 36, 0.25)',

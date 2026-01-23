@@ -610,7 +610,7 @@ export default function PartnerDetailScreen() {
                   <View style={styles.gridItem}>
                     <View style={styles.gridItemInner}>
                       <View style={[styles.iconBoxSmall, { backgroundColor: '#ECFDF5' }]}>
-                        <FileText size={14} color="#059669" />
+                        <FileText size={14} color="#e17100" />
                       </View>
                       <VStack className="flex-1 ml-2">
                         <Text size="xs" className="text-typography-500">Регистр</Text>
@@ -758,7 +758,7 @@ export default function PartnerDetailScreen() {
                 {partnerDetail.address && (
                   <TouchableOpacity style={styles.listItem} onPress={handleNavigate}>
                     <View style={[styles.iconBox, { backgroundColor: '#ECFDF5' }]}>
-                      <MapPin size={18} color="#059669" />
+                      <MapPin size={18} color="#e17100" />
                     </View>
                     <VStack className="flex-1 ml-3">
                       <Text size="xs" className="text-typography-500">Хаяг</Text>
@@ -1296,10 +1296,10 @@ export default function PartnerDetailScreen() {
         {/* Distance indicator */}
         {userLocation && partnerDetail.latitude && partnerDetail.longitude && (
           <Box style={styles.distanceIndicator}>
-            <Navigation size={12} color={isWithinRange() ? '#059669' : '#DC2626'} />
+            <Navigation size={12} color={isWithinRange() ? '#e17100' : '#DC2626'} />
             <Text style={[
               styles.distanceText,
-              { color: isWithinRange() ? '#059669' : '#DC2626' }
+              { color: isWithinRange() ? '#e17100' : '#DC2626' }
             ]}>
               {(() => {
                 const R = 6371000;
@@ -1351,13 +1351,13 @@ export default function PartnerDetailScreen() {
                 disabled={!canVisit || visitorCreating}
               >
                 {visitorCreating ? (
-                  <ActivityIndicator size="small" color="#10B981" />
+                  <ActivityIndicator size="small" color="#f59e0b" />
                 ) : (
-                  <MapPin size={20} color={isVisited ? '#10B981' : canVisit ? '#1F2937' : '#D1D5DB'} />
+                  <MapPin size={20} color={isVisited ? '#f59e0b' : canVisit ? '#1F2937' : '#D1D5DB'} />
                 )}
                 <ButtonText style={{
                   marginLeft: 8,
-                  color: isVisited ? '#10B981' : canVisit ? '#1F2937' : '#D1D5DB'
+                  color: isVisited ? '#f59e0b' : canVisit ? '#1F2937' : '#D1D5DB'
                 }}>
                   {isVisited ? 'Зочилсон ✓' : 'Зочилсон'}
                 </ButtonText>
@@ -1484,13 +1484,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 14,
     borderLeftWidth: 4,
-    borderLeftColor: '#10B981',
+    borderLeftColor: '#f59e0b',
   },
   ticketLeftSection: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#10B981',
+    backgroundColor: '#f59e0b',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -1501,7 +1501,7 @@ const styles = StyleSheet.create({
   ticketAmount: {
     fontSize: 22,
     fontFamily: 'GIP-Bold',
-    color: '#10B981',
+    color: '#f59e0b',
     marginTop: 2,
   },
   ticketBadge: {
@@ -1575,7 +1575,7 @@ const styles = StyleSheet.create({
     borderColor: '#E5E7EB',
   },
   visitedButton: {
-    borderColor: '#10B981',
+    borderColor: '#f59e0b',
     backgroundColor: '#ECFDF5',
   },
   primaryButton: {

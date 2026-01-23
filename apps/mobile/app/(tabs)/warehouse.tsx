@@ -1,3 +1,9 @@
+/**
+ * АГУУЛАХ ТУЛГАЛТ ДЭЛГЭЦ
+ * 
+ * Тулгалт хүлээж буй багцуудын жагсаалт
+ */
+
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
@@ -9,14 +15,14 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+// @ts-ignore - expo-router exports router in v6
+import { router } from 'expo-router';
 import { Package, Calendar, ChevronRight, Box, CheckCircle2, Clock, Truck, Warehouse } from 'lucide-react-native';
 import { useAuthStore } from '../../stores/delivery-auth-store';
 import { getWorkerPackages, PackageListItem } from '../../services/delivery-api';
 
 export default function WarehouseScreen() {
   const { worker } = useAuthStore();
-  const router = useRouter();
   
   const [packages, setPackages] = useState<PackageListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,12 +33,9 @@ export default function WarehouseScreen() {
       const result = await getWorkerPackages(worker?.id);
       
       if (result.success && result.data) {
-        // Filter: Only show packages that have warehouse_pending > 0
-        // These are packages that haven't been fully checked and moved to LOADED
-        const warehousePackages = result.data.packages.filter(
-          (pkg) => pkg.warehouse_pending > 0
-        );
-        setPackages(warehousePackages);
+        // Show all packages (no filter) - let user see full list
+        // Packages with warehouse_pending > 0 need checking
+        setPackages(result.data.packages);
       } else {
         Alert.alert('Алдаа', result.message || 'Багц татахад алдаа гарлаа');
       }
@@ -60,23 +63,35 @@ export default function WarehouseScreen() {
   const renderPackageItem = ({ item }: { item: PackageListItem }) => {
     const today = new Date().toISOString().split('T')[0];
     const isToday = item.delivery_date === today;
+    const needsChecking = item.warehouse_pending > 0;
+    const isCompleted = item.warehouse_pending === 0 && item.total_orders > 0;
     
     return (
       <TouchableOpacity
-        style={[styles.packageCard, isToday && styles.packageCardToday]}
+        style={[
+          styles.packageCard, 
+          isToday && styles.packageCardToday,
+          needsChecking && styles.packageCardPending,
+          isCompleted && styles.packageCardCompleted,
+        ]}
         onPress={() => router.push(`/package/${item.id}` as any)}
         activeOpacity={0.7}
       >
         {/* Header */}
         <View style={styles.packageHeader}>
           <View style={styles.packageTitleRow}>
-            <Package size={20} color={isToday ? '#2563EB' : '#6B7280'} />
-            <Text style={[styles.packageName, isToday && styles.packageNameToday]}>
+            <Package size={20} color={needsChecking ? '#F59E0B' : isCompleted ? '#10B981' : '#6B7280'} />
+            <Text style={[styles.packageName, needsChecking && styles.packageNamePending]}>
               {item.name}
             </Text>
-            {isToday && (
-              <View style={styles.todayBadge}>
-                <Text style={styles.todayBadgeText}>Өнөөдөр</Text>
+            {needsChecking && (
+              <View style={styles.pendingBadge}>
+                <Text style={styles.pendingBadgeText}>Тулгах</Text>
+              </View>
+            )}
+            {isCompleted && (
+              <View style={styles.completedBadge}>
+                <Text style={styles.completedBadgeText}>Дууссан</Text>
               </View>
             )}
           </View>
@@ -91,28 +106,24 @@ export default function WarehouseScreen() {
 
         {/* Stats Grid */}
         <View style={styles.statsGrid}>
-          {/* Total Orders */}
           <View style={styles.statBox}>
             <Box size={18} color="#3B82F6" />
             <Text style={styles.statValue}>{item.total_orders}</Text>
             <Text style={styles.statLabel}>Нийт</Text>
           </View>
 
-          {/* Warehouse Pending */}
           <View style={styles.statBox}>
             <Clock size={18} color="#F59E0B" />
             <Text style={styles.statValue}>{item.warehouse_pending}</Text>
-            <Text style={styles.statLabel}>Агуулах</Text>
+            <Text style={styles.statLabel}>Тулгах</Text>
           </View>
 
-          {/* Delivery Pending */}
           <View style={styles.statBox}>
             <Truck size={18} color="#8B5CF6" />
             <Text style={styles.statValue}>{item.delivery_pending}</Text>
             <Text style={styles.statLabel}>Хүргэлт</Text>
           </View>
 
-          {/* Delivered */}
           <View style={styles.statBox}>
             <CheckCircle2 size={18} color="#10B981" />
             <Text style={styles.statValue}>{item.delivered}</Text>
@@ -144,7 +155,7 @@ export default function WarehouseScreen() {
       <View style={styles.header}>
         <View style={styles.headerIconRow}>
           <Warehouse size={24} color="#2563EB" />
-          <Text style={styles.headerTitle}>Агуулах - Тулгалт</Text>
+          <Text style={styles.headerTitle}>Агуулах тулгалт</Text>
         </View>
         <Text style={styles.headerSubtitle}>
           {packages.length > 0 
@@ -209,7 +220,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontFamily: 'GIP-Bold',
     color: '#1F2937',
   },
@@ -217,7 +228,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'GIP-Regular',
     color: '#6B7280',
-    marginTop: 2,
+    marginTop: 4,
   },
   listContent: {
     padding: 16,
@@ -236,6 +247,16 @@ const styles = StyleSheet.create({
   packageCardToday: {
     borderWidth: 2,
     borderColor: '#2563EB',
+  },
+  packageCardPending: {
+    borderWidth: 2,
+    borderColor: '#F59E0B',
+    backgroundColor: '#FFFBEB',
+  },
+  packageCardCompleted: {
+    borderWidth: 2,
+    borderColor: '#10B981',
+    backgroundColor: '#ECFDF5',
   },
   packageHeader: {
     flexDirection: 'row',
@@ -257,6 +278,9 @@ const styles = StyleSheet.create({
   packageNameToday: {
     color: '#2563EB',
   },
+  packageNamePending: {
+    color: '#B45309',
+  },
   todayBadge: {
     backgroundColor: '#DBEAFE',
     paddingHorizontal: 8,
@@ -267,6 +291,28 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontFamily: 'GIP-SemiBold',
     color: '#2563EB',
+  },
+  pendingBadge: {
+    backgroundColor: '#FEF3C7',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  pendingBadgeText: {
+    fontSize: 11,
+    fontFamily: 'GIP-SemiBold',
+    color: '#B45309',
+  },
+  completedBadge: {
+    backgroundColor: '#D1FAE5',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  completedBadgeText: {
+    fontSize: 11,
+    fontFamily: 'GIP-SemiBold',
+    color: '#059669',
   },
   dateRow: {
     flexDirection: 'row',
@@ -330,13 +376,13 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     fontFamily: 'GIP-SemiBold',
-    color: '#6B7280',
+    color: '#1F2937',
     marginTop: 16,
   },
   emptySubtext: {
     fontSize: 14,
     fontFamily: 'GIP-Regular',
-    color: '#9CA3AF',
+    color: '#6B7280',
     marginTop: 4,
   },
 });

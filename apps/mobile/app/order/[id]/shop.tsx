@@ -57,6 +57,7 @@ import {
   savePayment,
   createEbarimt,
   completeOrderDelivery,
+  startDelivery,
   DeliveryOrder,
   OrderProduct,
   ReturnReason,
@@ -64,12 +65,13 @@ import {
   EbarimtType,
 } from '../../../services/delivery-api';
 import SignatureScreen from '@/components/SignatureScreen';
+import * as Location from 'expo-location';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Payment method options
 const PAYMENT_METHODS = [
-  { id: 'cash', label: 'Бэлэн мөнгө', icon: Banknote, color: '#059669' },
+  { id: 'cash', label: 'Бэлэн мөнгө', icon: Banknote, color: '#e17100' },
   { id: 'card', label: 'Карт (POS)', icon: CreditCard, color: '#2563EB' },
   { id: 'qpay', label: 'QPay', icon: Smartphone, color: '#8B5CF6' },
   { id: 'transfer', label: 'Дансаар', icon: Building2, color: '#F59E0B' },
@@ -111,6 +113,12 @@ export default function ShopDeliveryScreen() {
   const [selectedProductForReturn, setSelectedProductForReturn] = useState<number | null>(null);
   const [returnReasonModalVisible, setReturnReasonModalVisible] = useState(false);
   
+  // Numpad modal state
+  const [numpadModalVisible, setNumpadModalVisible] = useState(false);
+  const [numpadProduct, setNumpadProduct] = useState<OrderProduct | null>(null);
+  const [numpadField, setNumpadField] = useState<'delivered' | 'returned'>('delivered');
+  const [numpadValue, setNumpadValue] = useState<string>('');
+  
   // Step 2: Payment state
   const [paymentMethod, setPaymentMethod] = useState<string>('cash');
   const [paymentAmount, setPaymentAmount] = useState<string>('');
@@ -141,6 +149,9 @@ export default function ShopDeliveryScreen() {
       if (orderResult.success && orderResult.data) {
         setOrder(orderResult.data.order);
         setProducts(orderResult.data.products || []);
+        
+        // Record delivery start time
+        startDelivery(id).catch(err => console.log('startDelivery error:', err));
         
         // Initialize product states
         const initialStates = new Map<number, ProductDeliveryState>();
@@ -227,8 +238,8 @@ export default function ShopDeliveryScreen() {
           returned_quantity: newReturned,
         });
         
-        // If returning, show reason modal
-        if (newReturned > 0 && delta < 0) {
+        // If returning and no reason selected yet, show reason modal
+        if (newReturned > 0 && delta < 0 && !current.return_reason_id) {
           setSelectedProductForReturn(productId);
           setReturnReasonModalVisible(true);
         }
@@ -241,8 +252,8 @@ export default function ShopDeliveryScreen() {
           returned_quantity: newReturned,
         });
         
-        // If returning, show reason modal
-        if (newReturned > 0 && delta > 0) {
+        // If returning and no reason selected yet, show reason modal
+        if (newReturned > 0 && delta > 0 && !current.return_reason_id) {
           setSelectedProductForReturn(productId);
           setReturnReasonModalVisible(true);
         }
@@ -269,6 +280,86 @@ export default function ShopDeliveryScreen() {
     
     setReturnReasonModalVisible(false);
     setSelectedProductForReturn(null);
+  };
+
+  // Open numpad modal
+  const openNumpad = (product: OrderProduct, field: 'delivered' | 'returned') => {
+    const state = productStates.get(product.id);
+    const currentValue = field === 'delivered' 
+      ? (state?.delivered_quantity ?? product.quantity)
+      : (state?.returned_quantity ?? 0);
+    
+    setNumpadProduct(product);
+    setNumpadField(field);
+    setNumpadValue(currentValue.toString());
+    setNumpadModalVisible(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
+  // Numpad input handler
+  const handleNumpadPress = (key: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    
+    if (key === 'backspace') {
+      setNumpadValue(prev => prev.slice(0, -1) || '0');
+    } else if (key === 'clear') {
+      setNumpadValue('0');
+    } else {
+      setNumpadValue(prev => {
+        if (prev === '0') return key;
+        return prev + key;
+      });
+    }
+  };
+
+  // Confirm numpad value
+  const confirmNumpadValue = () => {
+    if (!numpadProduct) return;
+    
+    const value = parseInt(numpadValue) || 0;
+    const maxQty = numpadProduct.quantity;
+    const clampedValue = Math.max(0, Math.min(maxQty, value));
+    
+    setProductStates(prev => {
+      const newMap = new Map(prev);
+      const current = newMap.get(numpadProduct.id) || {
+        product_id: numpadProduct.id,
+        delivered_quantity: numpadProduct.quantity,
+        returned_quantity: 0,
+      };
+      
+      if (numpadField === 'delivered') {
+        newMap.set(numpadProduct.id, {
+          ...current,
+          delivered_quantity: clampedValue,
+          returned_quantity: maxQty - clampedValue,
+        });
+        
+        // Show return reason if returning and no reason selected yet
+        if (maxQty - clampedValue > 0 && !current.return_reason_id) {
+          setSelectedProductForReturn(numpadProduct.id);
+          setTimeout(() => setReturnReasonModalVisible(true), 300);
+        }
+      } else {
+        newMap.set(numpadProduct.id, {
+          ...current,
+          returned_quantity: clampedValue,
+          delivered_quantity: maxQty - clampedValue,
+        });
+        
+        // Show return reason if returning and no reason selected yet
+        if (clampedValue > 0 && !current.return_reason_id) {
+          setSelectedProductForReturn(numpadProduct.id);
+          setTimeout(() => setReturnReasonModalVisible(true), 300);
+        }
+      }
+      
+      return newMap;
+    });
+    
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    setNumpadModalVisible(false);
+    setNumpadProduct(null);
   };
 
   // Bulk deliver all
@@ -335,13 +426,19 @@ export default function ShopDeliveryScreen() {
     return true;
   };
 
-  const canComplete = () => {
+  const canComplete = (): { valid: boolean; message?: string } => {
     // Signature is required
-    if (!signatureImage) return false;
-    // Ebarimt validation
-    if (ebarimtType === 'person' && !ebarimtPhone) return false;
-    if (ebarimtType === 'organization' && !ebarimtRegistry) return false;
-    return true;
+    if (!signatureImage) {
+      return { valid: false, message: 'Гарын үсэг шаардлагатай' };
+    }
+    // Ebarimt validation (only for person or organization)
+    if (ebarimtType === 'person' && !ebarimtPhone) {
+      return { valid: false, message: 'Утасны дугаар оруулна уу' };
+    }
+    if (ebarimtType === 'organization' && !ebarimtRegistry) {
+      return { valid: false, message: 'Байгууллагын регистр оруулна уу' };
+    }
+    return { valid: true };
   };
 
   // Submit handlers
@@ -365,8 +462,9 @@ export default function ShopDeliveryScreen() {
   };
 
   const handleComplete = async () => {
-    if (!canComplete()) {
-      Alert.alert('Анхааруулга', 'Гарын үсэг болон баримтын мэдээлэл шаардлагатай');
+    const validation = canComplete();
+    if (!validation.valid) {
+      Alert.alert('Анхааруулга', validation.message || 'Мэдээлэл дутуу байна');
       return;
     }
     
@@ -383,6 +481,23 @@ export default function ShopDeliveryScreen() {
             setSubmitting(true);
             
             try {
+              // Get current GPS location
+              let latitude: number | undefined;
+              let longitude: number | undefined;
+              
+              try {
+                const { status } = await Location.requestForegroundPermissionsAsync();
+                if (status === 'granted') {
+                  const location = await Location.getCurrentPositionAsync({
+                    accuracy: Location.Accuracy.High,
+                  });
+                  latitude = location.coords.latitude;
+                  longitude = location.coords.longitude;
+                }
+              } catch (locError) {
+                console.log('Location error:', locError);
+              }
+              
               // 1. Update product deliveries
               for (const [productId, state] of productStates) {
                 await updateProductDelivery({
@@ -410,7 +525,7 @@ export default function ShopDeliveryScreen() {
               
               await savePayment(paymentData);
               
-              // 3. Complete delivery with signature and photo
+              // 3. Complete delivery with signature, photo and GPS coordinates
               const result = await completeOrderDelivery(id, {
                 delivery_notes: deliveryNotes,
                 signature_image: signatureImage || undefined,
@@ -421,13 +536,21 @@ export default function ShopDeliveryScreen() {
                 payment_type: paymentData.payment_type,
                 payment_method: paymentMethod,
                 payment_amount: paymentData.payment_amount,
+                latitude,
+                longitude,
               });
               
               if (result.success) {
                 Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                
+                // Show success with delivery duration if available
+                const durationText = result.data?.delivery_duration_minutes 
+                  ? `\nХүргэлтийн хугацаа: ${result.data.delivery_duration_minutes} минут` 
+                  : '';
+                
                 Alert.alert(
                   'Амжилттай',
-                  'Захиалга амжилттай хүргэгдлээ!',
+                  `Захиалга амжилттай хүргэгдлээ!${durationText}`,
                   [{ text: 'OK', onPress: () => router.back() }]
                 );
               } else {
@@ -479,7 +602,7 @@ export default function ShopDeliveryScreen() {
   const renderStep1 = () => (
     <ScrollView style={styles.stepContent} showsVerticalScrollIndicator={false}>
       <View style={styles.stepHeader}>
-        <Package size={24} color="#059669" />
+        <Package size={24} color="#e17100" />
         <Text style={styles.stepTitle}>Бараа хүлээлгэх</Text>
       </View>
       
@@ -521,16 +644,20 @@ export default function ShopDeliveryScreen() {
                   >
                     <Minus size={18} color="#DC2626" />
                   </TouchableOpacity>
-                  <View style={[styles.quantityValue, delivered === product.quantity && styles.quantityValueFull]}>
+                  <TouchableOpacity
+                    style={[styles.quantityValue, delivered === product.quantity && styles.quantityValueFull]}
+                    onPress={() => openNumpad(product, 'delivered')}
+                    activeOpacity={0.7}
+                  >
                     <Text style={[styles.quantityValueText, delivered === product.quantity && styles.quantityValueTextFull]}>
                       {delivered}
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.quantityButton}
                     onPress={() => updateProductQuantity(product.id, 'delivered', 1)}
                   >
-                    <Plus size={18} color="#059669" />
+                    <Plus size={18} color="#e17100" />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -544,11 +671,15 @@ export default function ShopDeliveryScreen() {
                   >
                     <Minus size={18} color="#DC2626" />
                   </TouchableOpacity>
-                  <View style={[styles.quantityValue, returned > 0 && styles.quantityValueReturn]}>
+                  <TouchableOpacity
+                    style={[styles.quantityValue, returned > 0 && styles.quantityValueReturn]}
+                    onPress={() => openNumpad(product, 'returned')}
+                    activeOpacity={0.7}
+                  >
                     <Text style={[styles.quantityValueText, returned > 0 && styles.quantityValueTextReturn]}>
                       {returned}
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.quantityButton}
                     onPress={() => updateProductQuantity(product.id, 'returned', 1)}
@@ -607,6 +738,14 @@ export default function ShopDeliveryScreen() {
         <Text style={styles.paymentTotalLabel}>Төлөх дүн:</Text>
         <Text style={styles.paymentTotalValue}>{deliveredAmount.toLocaleString()}₮</Text>
       </View>
+      
+      {/* Гүйлгээний утга (Corporate ID) */}
+      {order?.corporate_id && (
+        <View style={styles.corporateIdCard}>
+          <Text style={styles.corporateIdLabel}>Гүйлгээний утга:</Text>
+          <Text style={styles.corporateIdValue}>{order.corporate_id}</Text>
+        </View>
+      )}
       
       <Text style={styles.sectionLabel}>Төлбөрийн арга:</Text>
       <View style={styles.paymentMethods}>
@@ -807,7 +946,7 @@ export default function ShopDeliveryScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#059669" />
+          <ActivityIndicator size="large" color="#e17100" />
           <Text style={styles.loadingText}>Ачааллаж байна...</Text>
         </View>
       </SafeAreaView>
@@ -815,21 +954,23 @@ export default function ShopDeliveryScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <Stack.Screen
-        options={{
-          title: 'Дэлгүүрт хүлээлгэх',
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()} style={styles.headerBackButton}>
-              <ArrowLeft size={24} color="#111827" />
-            </TouchableOpacity>
-          ),
-        }}
-      />
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+      <Stack.Screen options={{ headerShown: false }} />
       
-      {/* Order Info */}
-      <View style={styles.orderInfo}>
-        <Text style={styles.orderCode}>{order?.order_code}</Text>
+      {/* Custom Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <ArrowLeft size={24} color="#111827" />
+        </TouchableOpacity>
+        <View style={styles.headerCenter}>
+          <Text style={styles.headerTitle}>Дэлгүүрт хүлээлгэх</Text>
+          <Text style={styles.headerSubtitle}>{order?.order_code}</Text>
+        </View>
+        <View style={styles.headerRight} />
+      </View>
+      
+      {/* Customer Info */}
+      <View style={styles.customerInfo}>
         <Text style={styles.customerName}>{order?.customer?.name}</Text>
       </View>
       
@@ -847,6 +988,7 @@ export default function ShopDeliveryScreen() {
       <KeyboardAvoidingView
         style={styles.content}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={0}
       >
         {currentStep === 1 && renderStep1()}
         {currentStep === 2 && renderStep2()}
@@ -865,6 +1007,7 @@ export default function ShopDeliveryScreen() {
         <TouchableOpacity
           style={[
             styles.nextButton,
+            currentStep === 1 && styles.nextButtonFull,
             currentStep === 3 && styles.completeButton,
             submitting && styles.buttonDisabled,
           ]}
@@ -931,6 +1074,103 @@ export default function ShopDeliveryScreen() {
           onCancel={() => setShowSignatureModal(false)}
         />
       </Modal>
+      
+      {/* Numpad Modal */}
+      <Modal
+        visible={numpadModalVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setNumpadModalVisible(false)}
+      >
+        <View style={styles.numpadModalOverlay}>
+          <View style={styles.numpadModalContent}>
+            {/* Header */}
+            <View style={styles.numpadHeader}>
+              <Text style={styles.numpadProductName} numberOfLines={2}>
+                {numpadProduct?.name}
+              </Text>
+              <TouchableOpacity onPress={() => setNumpadModalVisible(false)}>
+                <X size={24} color="#6B7280" />
+              </TouchableOpacity>
+            </View>
+            
+            {/* Info */}
+            <View style={styles.numpadInfo}>
+              <Text style={styles.numpadInfoText}>
+                Нийт тоо: <Text style={styles.numpadInfoBold}>{numpadProduct?.quantity}ш</Text>
+              </Text>
+              <Text style={[styles.numpadFieldLabel, numpadField === 'returned' && { color: '#DC2626' }]}>
+                {numpadField === 'delivered' ? 'Хүлээлгэх тоо:' : 'Буцаах тоо:'}
+              </Text>
+            </View>
+            
+            {/* Value Display */}
+            <View style={[
+              styles.numpadValueDisplay,
+              numpadField === 'returned' && styles.numpadValueDisplayReturn
+            ]}>
+              <Text style={[
+                styles.numpadValueText,
+                numpadField === 'returned' && styles.numpadValueTextReturn
+              ]}>
+                {numpadValue || '0'}
+              </Text>
+            </View>
+            
+            {/* Numpad Grid */}
+            <View style={styles.numpadGrid}>
+              {['1', '2', '3', '4', '5', '6', '7', '8', '9', 'clear', '0', 'backspace'].map((key) => (
+                <TouchableOpacity
+                  key={key}
+                  style={[
+                    styles.numpadKey,
+                    key === 'clear' && styles.numpadKeyClear,
+                    key === 'backspace' && styles.numpadKeyBackspace,
+                  ]}
+                  onPress={() => handleNumpadPress(key)}
+                  activeOpacity={0.7}
+                >
+                  {key === 'backspace' ? (
+                    <ArrowLeft size={24} color="#DC2626" />
+                  ) : key === 'clear' ? (
+                    <Text style={styles.numpadKeyClearText}>C</Text>
+                  ) : (
+                    <Text style={styles.numpadKeyText}>{key}</Text>
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
+            
+            {/* Quick buttons */}
+            <View style={styles.numpadQuickButtons}>
+              <TouchableOpacity
+                style={styles.numpadQuickButton}
+                onPress={() => setNumpadValue('0')}
+              >
+                <Text style={styles.numpadQuickText}>Бүгд буцаах</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.numpadQuickButton, styles.numpadQuickButtonFull]}
+                onPress={() => setNumpadValue(numpadProduct?.quantity.toString() || '0')}
+              >
+                <Text style={[styles.numpadQuickText, styles.numpadQuickTextFull]}>Бүгд хүлээлгэх</Text>
+              </TouchableOpacity>
+            </View>
+            
+            {/* Confirm Button */}
+            <TouchableOpacity
+              style={[
+                styles.numpadConfirmButton,
+                numpadField === 'returned' && styles.numpadConfirmButtonReturn
+              ]}
+              onPress={confirmNumpadValue}
+            >
+              <Check size={20} color="#FFFFFF" />
+              <Text style={styles.numpadConfirmText}>Батлах</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -951,32 +1191,61 @@ const styles = StyleSheet.create({
     fontFamily: 'GIP-Medium',
     color: '#6B7280',
   },
-  headerBackButton: {
-    padding: 8,
-    marginLeft: -8,
-  },
-  orderInfo: {
+  // Header styles
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     backgroundColor: '#FFFFFF',
-    padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
   },
-  orderCode: {
-    fontSize: 18,
-    fontFamily: 'GIP-Bold',
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#F3F4F6',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerCenter: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 16,
+    fontFamily: 'GIP-SemiBold',
     color: '#111827',
+  },
+  headerSubtitle: {
+    fontSize: 12,
+    fontFamily: 'GIP-Medium',
+    color: '#e17100',
+    marginTop: 2,
+  },
+  headerRight: {
+    width: 40,
+  },
+  customerInfo: {
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
   },
   customerName: {
     fontSize: 14,
-    fontFamily: 'GIP-Regular',
+    fontFamily: 'GIP-Medium',
     color: '#6B7280',
-    marginTop: 4,
+    textAlign: 'center',
   },
   stepIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 20,
+    paddingVertical: 16,
+    paddingHorizontal: 40,
     backgroundColor: '#FFFFFF',
   },
   stepCircle: {
@@ -988,11 +1257,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   stepCircleActive: {
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
   },
   stepCircleCurrent: {
     borderWidth: 3,
-    borderColor: '#D1FAE5',
+    borderColor: '#FEF3C7',
   },
   stepNumber: {
     fontSize: 14,
@@ -1009,7 +1278,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   stepLineActive: {
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
   },
   stepLabels: {
     flexDirection: 'row',
@@ -1025,7 +1294,7 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
   },
   stepLabelActive: {
-    color: '#059669',
+    color: '#e17100',
     fontFamily: 'GIP-SemiBold',
   },
   content: {
@@ -1050,7 +1319,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
     paddingVertical: 12,
     borderRadius: 10,
     marginBottom: 16,
@@ -1119,7 +1388,7 @@ const styles = StyleSheet.create({
   quantityLabel: {
     fontSize: 12,
     fontFamily: 'GIP-Medium',
-    color: '#059669',
+    color: '#e17100',
     marginBottom: 6,
   },
   quantityControls: {
@@ -1146,8 +1415,8 @@ const styles = StyleSheet.create({
     borderColor: '#E5E7EB',
   },
   quantityValueFull: {
-    backgroundColor: '#D1FAE5',
-    borderColor: '#059669',
+    backgroundColor: '#FEF3C7',
+    borderColor: '#e17100',
   },
   quantityValueReturn: {
     backgroundColor: '#FEE2E2',
@@ -1159,7 +1428,7 @@ const styles = StyleSheet.create({
     color: '#111827',
   },
   quantityValueTextFull: {
-    color: '#059669',
+    color: '#e17100',
   },
   quantityValueTextReturn: {
     color: '#DC2626',
@@ -1214,7 +1483,7 @@ const styles = StyleSheet.create({
   summaryTotalValue: {
     fontSize: 18,
     fontFamily: 'GIP-Bold',
-    color: '#059669',
+    color: '#e17100',
   },
   sectionLabel: {
     fontSize: 14,
@@ -1240,6 +1509,27 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'GIP-Bold',
     color: '#1E40AF',
+  },
+  corporateIdCard: {
+    backgroundColor: '#FEF3C7',
+    borderRadius: 12,
+    padding: 14,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: '#F59E0B',
+  },
+  corporateIdLabel: {
+    fontSize: 13,
+    fontFamily: 'GIP-Medium',
+    color: '#92400E',
+  },
+  corporateIdValue: {
+    fontSize: 16,
+    fontFamily: 'GIP-Bold',
+    color: '#92400E',
   },
   paymentMethods: {
     flexDirection: 'row',
@@ -1438,7 +1728,9 @@ const styles = StyleSheet.create({
   },
   bottomNav: {
     flexDirection: 'row',
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 16,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
@@ -1448,10 +1740,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 14,
+    paddingVertical: 16,
     paddingHorizontal: 20,
     backgroundColor: '#F3F4F6',
-    borderRadius: 10,
+    borderRadius: 12,
     gap: 6,
   },
   prevButtonText: {
@@ -1464,10 +1756,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 14,
-    backgroundColor: '#059669',
-    borderRadius: 10,
+    paddingVertical: 16,
+    backgroundColor: '#e17100',
+    borderRadius: 12,
     gap: 8,
+  },
+  nextButtonFull: {
+    flex: 1,
   },
   completeButton: {
     backgroundColor: '#2563EB',
@@ -1523,5 +1818,144 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'GIP-SemiBold',
     color: '#6B7280',
+  },
+  // Numpad Modal Styles
+  numpadModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  numpadModalContent: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 20,
+    paddingBottom: 40,
+  },
+  numpadHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+  },
+  numpadProductName: {
+    flex: 1,
+    fontSize: 16,
+    fontFamily: 'GIP-SemiBold',
+    color: '#111827',
+    marginRight: 12,
+  },
+  numpadInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  numpadInfoText: {
+    fontSize: 14,
+    fontFamily: 'GIP-Regular',
+    color: '#6B7280',
+  },
+  numpadInfoBold: {
+    fontFamily: 'GIP-SemiBold',
+    color: '#111827',
+  },
+  numpadFieldLabel: {
+    fontSize: 14,
+    fontFamily: 'GIP-SemiBold',
+    color: '#e17100',
+  },
+  numpadValueDisplay: {
+    backgroundColor: '#F0FDF4',
+    borderRadius: 16,
+    paddingVertical: 20,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    marginBottom: 20,
+    borderWidth: 2,
+    borderColor: '#e17100',
+  },
+  numpadValueDisplayReturn: {
+    backgroundColor: '#FEF2F2',
+    borderColor: '#DC2626',
+  },
+  numpadValueText: {
+    fontSize: 48,
+    fontFamily: 'GIP-Bold',
+    color: '#e17100',
+  },
+  numpadValueTextReturn: {
+    color: '#DC2626',
+  },
+  numpadGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  numpadKey: {
+    width: (SCREEN_WIDTH - 60) / 3 - 8,
+    height: 60,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  numpadKeyClear: {
+    backgroundColor: '#FEF3C7',
+  },
+  numpadKeyBackspace: {
+    backgroundColor: '#FEE2E2',
+  },
+  numpadKeyText: {
+    fontSize: 28,
+    fontFamily: 'GIP-SemiBold',
+    color: '#111827',
+  },
+  numpadKeyClearText: {
+    fontSize: 24,
+    fontFamily: 'GIP-Bold',
+    color: '#B45309',
+  },
+  numpadQuickButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  numpadQuickButton: {
+    flex: 1,
+    paddingVertical: 12,
+    backgroundColor: '#FEE2E2',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  numpadQuickButtonFull: {
+    backgroundColor: '#FEF3C7',
+  },
+  numpadQuickText: {
+    fontSize: 13,
+    fontFamily: 'GIP-SemiBold',
+    color: '#DC2626',
+  },
+  numpadQuickTextFull: {
+    color: '#e17100',
+  },
+  numpadConfirmButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#e17100',
+    paddingVertical: 16,
+    borderRadius: 12,
+  },
+  numpadConfirmButtonReturn: {
+    backgroundColor: '#DC2626',
+  },
+  numpadConfirmText: {
+    fontSize: 16,
+    fontFamily: 'GIP-SemiBold',
+    color: '#FFFFFF',
   },
 });

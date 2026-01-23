@@ -644,7 +644,7 @@ const styles = StyleSheet.create({
   productStock: {
     fontSize: 12,
     fontFamily: 'GIP-Medium',
-    color: '#059669',
+    color: '#e17100',
   },
   // StockType Selection
   stockTypeSection: {

@@ -133,6 +133,14 @@ export default function OrderDetailScreen() {
     fetchPackageOrders();
   }, [fetchOrderDetail, fetchPackageOrders]);
 
+  // Auto-redirect to shop screen for delivery_pending orders
+  useEffect(() => {
+    if (order && order.delivery_status === DELIVERY_PENDING_STATUS) {
+      // Navigate to shop delivery screen
+      router.replace(`/order/${id}/shop` as any);
+    }
+  }, [order, id]);
+
   // Navigation helpers
   const hasPrevOrder = currentOrderIndex > 0;
   const hasNextOrder = currentOrderIndex >= 0 && currentOrderIndex < packageOrders.length - 1;
@@ -321,7 +329,7 @@ export default function OrderDetailScreen() {
             <Text style={[styles.navButtonText, styles.navButtonTextNext, !hasNextOrder && styles.navButtonTextDisabled]}>
               Дараах
             </Text>
-            <ChevronRight size={20} color={hasNextOrder ? "#059669" : "#D1D5DB"} />
+            <ChevronRight size={20} color={hasNextOrder ? "#e17100" : "#D1D5DB"} />
           </TouchableOpacity>
         </View>
       )}
@@ -431,7 +439,7 @@ export default function OrderDetailScreen() {
               onPress={() => setCheckerType('driver')}
               activeOpacity={0.7}
             >
-              <Truck size={18} color={checkerType === 'driver' ? '#FFFFFF' : '#059669'} />
+              <Truck size={18} color={checkerType === 'driver' ? '#FFFFFF' : '#e17100'} />
               <Text style={[
                 styles.checkerButtonText,
                 checkerType === 'driver' && styles.checkerButtonTextActive
@@ -461,7 +469,7 @@ export default function OrderDetailScreen() {
                 </Text>
               </View>
               <View style={styles.checkProgressRow}>
-                <Truck size={14} color="#059669" />
+                <Truck size={14} color="#e17100" />
                 <Text style={styles.checkProgressLabel}>Түгээгч:</Text>
                 <View style={styles.checkProgressBarSmall}>
                   <View 
@@ -566,13 +574,13 @@ export default function OrderDetailScreen() {
                           {showCheckingUI && (
                           <HStack style={{ marginTop: 4, gap: 12 }}>
                             <View style={styles.checkStatusItem}>
-                              <WarehouseIcon size={11} color={isWarehouseChecked ? "#059669" : "#9CA3AF"} />
+                              <WarehouseIcon size={11} color={isWarehouseChecked ? "#e17100" : "#9CA3AF"} />
                               <Text style={[styles.checkStatusTextSmall, isWarehouseChecked && styles.checkStatusChecked]}>
                                 {isWarehouseChecked ? '✓' : '-'}
                               </Text>
                             </View>
                             <View style={styles.checkStatusItem}>
-                              <Truck size={11} color={isDriverChecked ? "#059669" : "#9CA3AF"} />
+                              <Truck size={11} color={isDriverChecked ? "#e17100" : "#9CA3AF"} />
                               <Text style={[styles.checkStatusTextSmall, isDriverChecked && styles.checkStatusChecked]}>
                                 {isDriverChecked ? '✓' : '-'}
                               </Text>
@@ -671,13 +679,13 @@ export default function OrderDetailScreen() {
                       {showCheckingUI && (
                       <View style={styles.productCheckStatusRow}>
                         <View style={styles.checkStatusItem}>
-                          <WarehouseIcon size={12} color={isWarehouseChecked ? "#059669" : "#9CA3AF"} />
+                          <WarehouseIcon size={12} color={isWarehouseChecked ? "#e17100" : "#9CA3AF"} />
                           <Text style={[styles.checkStatusText, isWarehouseChecked && styles.checkStatusChecked]}>
                             Нярав {isWarehouseChecked ? '✓' : '-'}
                           </Text>
                         </View>
                         <View style={styles.checkStatusItem}>
-                          <Truck size={12} color={isDriverChecked ? "#059669" : "#9CA3AF"} />
+                          <Truck size={12} color={isDriverChecked ? "#e17100" : "#9CA3AF"} />
                           <Text style={[styles.checkStatusText, isDriverChecked && styles.checkStatusChecked]}>
                             Түгээгч {isDriverChecked ? '✓' : '-'}
                           </Text>
@@ -790,7 +798,7 @@ const styles = StyleSheet.create({
     color: '#2563EB',
   },
   navButtonTextNext: {
-    color: '#059669',
+    color: '#e17100',
   },
   navButtonTextDisabled: {
     color: '#9CA3AF',
@@ -889,7 +897,7 @@ const styles = StyleSheet.create({
   sectionSubtitle: {
     fontSize: 12,
     fontFamily: 'GIP-Regular',
-    color: '#10B981',
+    color: '#f59e0b',
     marginTop: 2,
   },
   discountTable: {
@@ -1088,7 +1096,7 @@ const styles = StyleSheet.create({
   productTotalText: {
     fontSize: 12,
     fontFamily: 'GIP-Bold',
-    color: '#10B981',
+    color: '#f59e0b',
   },
   quantitySummary: {
     marginTop: 6,
@@ -1225,7 +1233,7 @@ const styles = StyleSheet.create({
   productListTotalValue: {
     fontSize: 12,
     fontFamily: 'GIP-Bold',
-    color: '#10B981',
+    color: '#f59e0b',
   },
   // Check button styles
   productCheckBtn: {
@@ -1238,7 +1246,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   productCheckBtnChecked: {
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
   },
   productCheckBtnLarge: {
     width: 48,
@@ -1249,7 +1257,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   productCheckBtnLargeChecked: {
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
   },
   productIndexBadge: {
     width: 48,
@@ -1273,7 +1281,7 @@ const styles = StyleSheet.create({
     borderColor: '#BBF7D0',
   },
   textCompleted: {
-    color: '#059669',
+    color: '#e17100',
   },
   productCheckStatusRow: {
     flexDirection: 'row',
@@ -1300,7 +1308,7 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
   },
   checkStatusChecked: {
-    color: '#059669',
+    color: '#e17100',
   },
   // Checker Selector Styles
   checkerSelectorCard: {
@@ -1340,8 +1348,8 @@ const styles = StyleSheet.create({
     borderColor: '#2563EB',
   },
   checkerButtonActiveDriver: {
-    backgroundColor: '#059669',
-    borderColor: '#059669',
+    backgroundColor: '#e17100',
+    borderColor: '#e17100',
   },
   checkerButtonText: {
     fontSize: 14,
@@ -1384,7 +1392,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2563EB',
   },
   checkProgressFillDriver: {
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
   },
   checkProgressCount: {
     fontSize: 12,
@@ -1415,7 +1423,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
     paddingVertical: 16,
     borderRadius: 12,
     gap: 10,

@@ -501,7 +501,7 @@ export default function CheckoutScreen() {
               styles.iconBox,
               { backgroundColor: userLocation ? '#DCFCE7' : '#FEE2E2' }
             ]}>
-              <MapPin size={20} color={userLocation ? '#059669' : '#DC2626'} />
+              <MapPin size={20} color={userLocation ? '#e17100' : '#DC2626'} />
             </View>
             <VStack style={{ flex: 1 }}>
               {userLocation ? (
@@ -668,7 +668,7 @@ export default function CheckoutScreen() {
                 {/* Location */}
                 <HStack style={{ alignItems: 'center', gap: 12 }}>
                   <View style={[styles.iconBox, { backgroundColor: '#DCFCE7' }]}>
-                    <MapPin size={18} color="#059669" />
+                    <MapPin size={18} color="#e17100" />
                   </View>
                   <VStack style={{ flex: 1 }}>
                     <Text style={styles.infoTitle}>Байршил (Finish)</Text>
@@ -696,7 +696,7 @@ export default function CheckoutScreen() {
                   </View>
                   <VStack style={{ flex: 1 }}>
                     <Text style={styles.infoTitle}>Төлбөр шалгах (paymentcheck)</Text>
-                    <Text style={[styles.infoSubtitle, { color: '#059669', fontFamily: 'GIP-SemiBold' }]}>true</Text>
+                    <Text style={[styles.infoSubtitle, { color: '#e17100', fontFamily: 'GIP-SemiBold' }]}>true</Text>
                   </VStack>
                 </HStack>
 
@@ -726,7 +726,7 @@ export default function CheckoutScreen() {
   const renderSuccessStep = () => (
     <View style={styles.successContent}>
       <View style={styles.successIcon}>
-        <CheckCircle size={80} color="#059669" />
+        <CheckCircle size={80} color="#e17100" />
       </View>
       <Text style={styles.successTitle}>🎉 Баяр хүргэе!</Text>
       <Text style={styles.successSubtitle}>
@@ -737,7 +737,7 @@ export default function CheckoutScreen() {
       <View style={[styles.confirmSummary, { marginTop: 24 }]}>
         <HStack style={styles.summaryRow}>
           <Text style={styles.summaryLabel}>Захиалгын дугаар</Text>
-          <Text style={[styles.summaryValue, { color: '#059669', fontFamily: 'GIP-Bold' }]}>{createdOrderCode}</Text>
+          <Text style={[styles.summaryValue, { color: '#e17100', fontFamily: 'GIP-Bold' }]}>{createdOrderCode}</Text>
         </HStack>
         <HStack style={styles.summaryRow}>
           <Text style={styles.summaryLabel}>Харилцагч</Text>
@@ -940,7 +940,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2563EB',
   },
   stepCircleCompleted: {
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
   },
   stepLine: {
     width: 60,
@@ -948,7 +948,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5E7EB',
   },
   stepLineCompleted: {
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
   },
   // Content
   scrollContent: {
@@ -1067,7 +1067,7 @@ const styles = StyleSheet.create({
   summaryTotalValue: {
     fontSize: 16,
     fontFamily: 'GIP-Bold',
-    color: '#059669',
+    color: '#e17100',
   },
   // Payment Options
   paymentOptions: {
@@ -1229,7 +1229,7 @@ const styles = StyleSheet.create({
   successTitle: {
     fontSize: 24,
     fontFamily: 'GIP-Bold',
-    color: '#059669',
+    color: '#e17100',
   },
   successSubtitle: {
     fontSize: 16,
@@ -1316,7 +1316,7 @@ const styles = StyleSheet.create({
   productListPrice: {
     fontSize: 13,
     fontFamily: 'GIP-Bold',
-    color: '#059669',
+    color: '#e17100',
   },
   productPromoPointBadge: {
     flexDirection: 'row',

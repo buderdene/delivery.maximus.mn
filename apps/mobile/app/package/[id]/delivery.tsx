@@ -43,6 +43,8 @@ import {
   Grid3X3,
   Route,
   Map,
+  Timer,
+  Lock,
 } from 'lucide-react-native';
 import * as Location from 'expo-location';
 import { useAuthStore } from '../../../stores/delivery-auth-store';
@@ -51,7 +53,7 @@ import { getPackageOrders, DeliveryOrder, PackageOrdersData, optimizeRoute } fro
 // Delivery related statuses (after warehouse check completed)
 const DELIVERY_STATUSES = 'loaded,in_progress,delivered,failed';
 
-type FilterStatus = 'all' | 'loaded' | 'in_progress' | 'delivered' | 'failed';
+type FilterStatus = 'loaded' | 'in_progress' | 'delivered' | 'failed';
 
 export default function PackageDeliveryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -60,7 +62,7 @@ export default function PackageDeliveryScreen() {
   const [data, setData] = useState<PackageOrdersData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>('loaded');
   const [optimizing, setOptimizing] = useState(false);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
@@ -205,7 +207,6 @@ export default function PackageDeliveryScreen() {
   };
 
   const filteredOrders = data?.orders.filter((order) => {
-    if (filterStatus === 'all') return true;
     return order.delivery_status === filterStatus;
   }) || [];
 
@@ -213,7 +214,7 @@ export default function PackageDeliveryScreen() {
     switch (status) {
       case 'loaded': return '#8B5CF6';
       case 'in_progress': return '#3B82F6';
-      case 'delivered': return '#10B981';
+      case 'delivered': return '#f59e0b';
       case 'failed': return '#EF4444';
       case 'returned': return '#F59E0B';
       default: return '#6B7280';
@@ -242,78 +243,113 @@ export default function PackageDeliveryScreen() {
     }
   };
 
-  const renderOrderItem = ({ item: order, index }: { item: DeliveryOrder; index: number }) => (
-    <TouchableOpacity
-      style={styles.orderCard}
-      onPress={() => router.push(`/order/${order.uuid}` as any)}
-      activeOpacity={0.7}
-    >
-      <View style={styles.orderHeader}>
-        <View style={styles.orderCodeContainer}>
-          <View style={styles.sortBadge}>
-            <Text style={styles.sortText}>#{order.sort_order || index + 1}</Text>
+  const renderOrderItem = ({ item: order, index }: { item: DeliveryOrder; index: number }) => {
+    // Check if order is locked (delivered with confirmed eBarimt)
+    const isLocked = order.delivery_status === 'delivered' && order.ebarimt_status === 'SUCCESS';
+    
+    const handlePress = () => {
+      if (isLocked) {
+        Alert.alert(
+          'Баталгаажсан',
+          'И-Баримт баталгаажсан захиалгыг засах боломжгүй.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+      router.push(`/order/${order.uuid}/shop` as any);
+    };
+    
+    return (
+      <TouchableOpacity
+        style={[styles.orderCard, isLocked && styles.orderCardLocked]}
+        onPress={handlePress}
+        activeOpacity={isLocked ? 1 : 0.7}
+      >
+        <View style={styles.orderHeader}>
+          <View style={styles.orderCodeContainer}>
+            <View style={styles.sortBadge}>
+              <Text style={styles.sortText}>#{order.sort_order || index + 1}</Text>
+            </View>
+            <Text style={styles.orderCode}>{order.order_code}</Text>
           </View>
-          <Text style={styles.orderCode}>{order.order_code}</Text>
-        </View>
-        <View style={[styles.statusBadge, { backgroundColor: `${getStatusColor(order.delivery_status)}15` }]}>
-          {getStatusIcon(order.delivery_status)}
-          <Text style={[styles.statusText, { color: getStatusColor(order.delivery_status) }]}>
-            {getStatusLabel(order.delivery_status)}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.customerSection}>
-        <Text style={styles.customerName} numberOfLines={1}>
-          {order.customer?.name || 'Хэрэглэгч'}
-        </Text>
-        
-        {order.customer?.address && (
-          <View style={styles.infoRow}>
-            <MapPin size={14} color="#6B7280" />
-            <Text style={styles.infoText} numberOfLines={2}>
-              {order.customer.address}
+          <View style={[styles.statusBadge, { backgroundColor: `${getStatusColor(order.delivery_status)}15` }]}>
+            {getStatusIcon(order.delivery_status)}
+            <Text style={[styles.statusText, { color: getStatusColor(order.delivery_status) }]}>
+              {getStatusLabel(order.delivery_status)}
             </Text>
           </View>
-        )}
-        
-        {order.customer?.phone && (
-          <View style={styles.infoRow}>
-            <Phone size={14} color="#6B7280" />
-            <Text style={styles.infoText}>{order.customer.phone}</Text>
-          </View>
-        )}
-        
-        {/* Distance and What3Words */}
-        <View style={styles.locationInfoRow}>
-          {order.distance_km !== null && order.distance_km !== undefined && (
-            <TouchableOpacity 
-              style={styles.distanceBadge}
-              onPress={() => openInMaps(order)}
-              activeOpacity={0.7}
-            >
-              <Navigation size={12} color="#2563EB" />
-              <Text style={styles.distanceText}>{order.distance_km.toFixed(1)} км</Text>
-            </TouchableOpacity>
-          )}
-          {order.customer?.what3words && (
-            <View style={styles.w3wBadge}>
-              <Grid3X3 size={12} color="#E11D48" />
-              <Text style={styles.w3wText}>{order.customer.what3words}</Text>
+        </View>
+
+        <View style={styles.customerSection}>
+          <Text style={styles.customerName} numberOfLines={1}>
+            {order.customer?.name || 'Хэрэглэгч'}
+          </Text>
+          
+          {order.customer?.address && (
+            <View style={styles.infoRow}>
+              <MapPin size={14} color="#6B7280" />
+              <Text style={styles.infoText} numberOfLines={2}>
+                {order.customer.address}
+              </Text>
             </View>
           )}
+          
+          {order.customer?.phone && (
+            <View style={styles.infoRow}>
+              <Phone size={14} color="#6B7280" />
+              <Text style={styles.infoText}>{order.customer.phone}</Text>
+            </View>
+          )}
+          
+          {/* Distance and What3Words */}
+          <View style={styles.locationInfoRow}>
+            {order.distance_km !== null && order.distance_km !== undefined && (
+              <TouchableOpacity 
+                style={styles.distanceBadge}
+                onPress={() => openInMaps(order)}
+                activeOpacity={0.7}
+              >
+                <Navigation size={12} color="#2563EB" />
+                <Text style={styles.distanceText}>{order.distance_km.toFixed(1)} км</Text>
+              </TouchableOpacity>
+            )}
+            {order.customer?.what3words && (
+              <View style={styles.w3wBadge}>
+                <Grid3X3 size={12} color="#E11D48" />
+                <Text style={styles.w3wText}>{order.customer.what3words}</Text>
+              </View>
+            )}
+          </View>
         </View>
-      </View>
 
-      <View style={styles.orderFooter}>
-        <View style={styles.amountContainer}>
-          <Text style={styles.amountLabel}>Нийт:</Text>
-          <Text style={styles.amountValue}>{order.total_amount_formatted || '0₮'}</Text>
+        <View style={styles.orderFooter}>
+          <View style={styles.amountContainer}>
+            <Text style={styles.amountLabel}>Нийт:</Text>
+            <Text style={styles.amountValue}>{order.total_amount_formatted || '0₮'}</Text>
+          </View>
+          
+          {/* Delivery duration for delivered orders */}
+          {order.delivery_status === 'delivered' && order.delivery_duration_minutes && (
+            <View style={styles.durationBadge}>
+              <Timer size={12} color="#e17100" />
+              <Text style={styles.durationText}>
+                {order.delivery_duration_minutes < 60 
+                  ? `${order.delivery_duration_minutes} мин`
+                  : `${Math.floor(order.delivery_duration_minutes / 60)}ц ${order.delivery_duration_minutes % 60}м`
+                }
+              </Text>
+            </View>
+          )}
+          
+          {isLocked ? (
+            <Lock size={20} color="#f59e0b" />
+          ) : (
+            <ChevronRight size={20} color="#9CA3AF" />
+          )}
         </View>
-        <ChevronRight size={20} color="#9CA3AF" />
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  };
 
   const FilterButton = ({ status, label, count }: { status: FilterStatus; label: string; count?: number }) => (
     <TouchableOpacity
@@ -336,14 +372,13 @@ export default function PackageDeliveryScreen() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#059669" />
+        <ActivityIndicator size="large" color="#e17100" />
         <Text style={styles.loadingText}>Захиалгууд уншиж байна...</Text>
       </View>
     );
   }
 
   const statusCounts: StatusCounts = data?.status_counts || {};
-  const allCount = filteredOrders.length;
 
   return (
     <View style={styles.container}>
@@ -362,12 +397,12 @@ export default function PackageDeliveryScreen() {
       <View style={styles.summaryHeader}>
         <View style={styles.summaryRow}>
           <View style={styles.summaryItem}>
-            <Package size={20} color="#059669" />
+            <Package size={20} color="#e17100" />
             <Text style={styles.summaryValue}>{data?.total_count || 0}</Text>
             <Text style={styles.summaryLabel}>Нийт</Text>
           </View>
           <View style={styles.summaryItem}>
-            <CheckCircle2 size={20} color="#10B981" />
+            <CheckCircle2 size={20} color="#f59e0b" />
             <Text style={styles.summaryValue}>{statusCounts.delivered || 0}</Text>
             <Text style={styles.summaryLabel}>Хүргэсэн</Text>
           </View>
@@ -406,7 +441,6 @@ export default function PackageDeliveryScreen() {
           horizontal
           showsHorizontalScrollIndicator={false}
           data={[
-            { status: 'all' as FilterStatus, label: 'Бүгд', count: allCount },
             { status: 'loaded' as FilterStatus, label: 'Ачигдсан', count: statusCounts.loaded },
             { status: 'in_progress' as FilterStatus, label: 'Хүргэж буй', count: statusCounts.in_progress },
             { status: 'delivered' as FilterStatus, label: 'Хүргэсэн', count: statusCounts.delivered },
@@ -430,12 +464,12 @@ export default function PackageDeliveryScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={['#059669']}
+            colors={['#e17100']}
           />
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <CheckCircle2 size={64} color="#10B981" />
+            <CheckCircle2 size={64} color="#f59e0b" />
             <Text style={styles.emptyText}>Захиалга байхгүй</Text>
             <Text style={styles.emptySubtext}>Энэ шүүлтүүрээр захиалга олдсонгүй</Text>
           </View>
@@ -496,7 +530,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
@@ -528,7 +562,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   filterButtonActive: {
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
   },
   filterButtonText: {
     fontSize: 13,
@@ -571,6 +605,12 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  orderCardLocked: {
+    backgroundColor: '#FEF3C7',
+    borderWidth: 1,
+    borderColor: '#F59E0B',
+    opacity: 0.9,
+  },
   orderHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -583,7 +623,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   sortBadge: {
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
@@ -689,6 +729,20 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: 'GIP-Bold',
     color: '#1F2937',
+  },
+  durationBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FEF3C7',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    gap: 4,
+  },
+  durationText: {
+    fontSize: 11,
+    fontFamily: 'GIP-SemiBold',
+    color: '#e17100',
   },
   emptyContainer: {
     flex: 1,

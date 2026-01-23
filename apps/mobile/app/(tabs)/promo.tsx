@@ -33,7 +33,7 @@ export default function PromoScreen() {
       case 'discount':
         return <Percent size={24} color="#2563EB" />;
       case 'bundle':
-        return <Tag size={24} color="#059669" />;
+        return <Tag size={24} color="#e17100" />;
       case 'gift':
         return <Gift size={24} color="#D97706" />;
       default:

@@ -69,16 +69,16 @@ function LocationStatus({
   return (
     <View style={[
       styles.locationCard, 
-      { borderColor: isInRange ? '#10B981' : '#EF4444' }
+      { borderColor: isInRange ? '#f59e0b' : '#EF4444' }
     ]}>
       <HStack className="items-center justify-between">
         <HStack space="md" className="items-center flex-1">
           <View style={[
             styles.locationIcon,
-            { backgroundColor: isInRange ? '#D1FAE5' : '#FEE2E2' }
+            { backgroundColor: isInRange ? '#FEF3C7' : '#FEE2E2' }
           ]}>
             {isInRange ? (
-              <MapPin size={24} color="#10B981" />
+              <MapPin size={24} color="#f59e0b" />
             ) : (
               <Navigation size={24} color="#EF4444" />
             )}
@@ -90,7 +90,7 @@ function LocationStatus({
             <HStack space="xs" className="items-center">
               {isInRange ? (
                 <>
-                  <CheckCircle2 size={14} color="#10B981" />
+                  <CheckCircle2 size={14} color="#f59e0b" />
                   <Text size="sm" className="text-success-600">
                     Бүсэд байна
                   </Text>
@@ -107,7 +107,7 @@ function LocationStatus({
           </VStack>
         </HStack>
         <View style={styles.wifiStatus}>
-          <Wifi size={18} color="#10B981" />
+          <Wifi size={18} color="#f59e0b" />
         </View>
       </HStack>
     </View>
@@ -127,7 +127,7 @@ function CheckButton({
   disabled: boolean;
 }) {
   const isCheckIn = type === 'in';
-  const baseColor = isCheckIn ? '#10B981' : '#EF4444';
+  const baseColor = isCheckIn ? '#f59e0b' : '#EF4444';
   const Icon = isCheckIn ? LogIn : LogOut;
   const label = isCheckIn ? 'ИРСЭН' : 'ЯВСАН';
   
@@ -181,8 +181,8 @@ function TodayRecord({
       
       <HStack className="justify-between">
         <VStack className="items-center flex-1">
-          <View style={[styles.timeBox, { backgroundColor: '#D1FAE5' }]}>
-            <LogIn size={18} color="#10B981" />
+          <View style={[styles.timeBox, { backgroundColor: '#FEF3C7' }]}>
+            <LogIn size={18} color="#f59e0b" />
           </View>
           <Text size="xs" className="text-typography-500 mt-2">Ирсэн</Text>
           <Text size="lg" className="text-typography-900 font-bold">
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#D1FAE5',
+    backgroundColor: '#FEF3C7',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -15,
     right: -15,
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
     borderRadius: 12,
     padding: 2,
   },
@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   dayPresent: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#f59e0b',
   },
   dayToday: {
     backgroundColor: '#2563EB',

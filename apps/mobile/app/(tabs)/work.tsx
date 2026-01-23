@@ -26,13 +26,13 @@ function TaskItem({
   const statusColors = {
     pending: { bg: '#FEF3C7', text: '#D97706', label: 'Хүлээгдэж буй' },
     in_progress: { bg: '#DBEAFE', text: '#2563EB', label: 'Хийгдэж буй' },
-    completed: { bg: '#D1FAE5', text: '#059669', label: 'Дууссан' },
+    completed: { bg: '#FEF3C7', text: '#e17100', label: 'Дууссан' },
   };
 
   const priorityColors = {
     high: '#EF4444',
     medium: '#F59E0B',
-    low: '#10B981',
+    low: '#f59e0b',
   };
 
   const statusInfo = statusColors[status];

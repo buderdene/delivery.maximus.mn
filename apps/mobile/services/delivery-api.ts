@@ -1,16 +1,85 @@
 /**
- * Delivery App API Service
+ * =====================================================
+ * DELIVERY APP API SERVICE
+ * =====================================================
+ * 
  * REST API for delivery mobile app
  * 
- * Base URL: https://cloud.local.maximus.mn/api/delivery
+ * Base URL (Local): http://cloud.local.maximus.mn/api/delivery
+ * Base URL (Production): https://cloud.maximus.mn/api/delivery
  * 
- * Modules:
- * - Auth: Login, Logout, Refresh, Me
- * - Worker: Profile, Orders, Location
- * - Orders: Detail, Products, Status updates
- * - Warehouse: Product checking (Нярав/Жолооч тулгалт)
- * - Shop: Delivery completion, Payment
- * - Statuses: Reference data
+ * =====================================================
+ * API ENDPOINTS SUMMARY (Бүх endpoint-ууд)
+ * =====================================================
+ * 
+ * WORKER MODULE (Ажилтан):
+ * ────────────────────────
+ * GET  /worker/profile              → getWorkerProfile()      Профайл + өнөөдрийн статистик
+ * GET  /worker/packages             → getWorkerPackages()     Багцуудын жагсаалт
+ * GET  /worker/packages/:id/orders  → getPackageOrders()      Багцын захиалгууд
+ * GET  /worker/packages/:id/products→ getPackageProducts()    Багцын бараанууд (хайрцаг тулгалт)
+ * POST /worker/packages/:id/complete-checking → completePackageChecking() Тулгалт дуусгах
+ * POST /worker/packages/:id/optimize-route → optimizeRoute()  Маршрут оновчлох
+ * POST /worker/orders/update-sort-order → updateOrderSortOrder() Дараалал солих
+ * GET  /worker/orders               → getWorkerOrders()       Захиалгуудын жагсаалт
+ * GET  /worker/delivery-summary     → getDeliverySummary()    Хураангуй статистик
+ * POST /worker/location             → updateWorkerLocation()  GPS байршил шинэчлэх
+ * 
+ * ORDERS MODULE (Захиалга):
+ * ─────────────────────────
+ * GET  /orders/:uuid                → getOrderDetail()        Захиалгын дэлгэрэнгүй
+ * GET  /orders/:uuid/products       → getOrderProducts()      Захиалгын бараанууд
+ * POST /orders/:uuid/status         → updateOrderStatus()     Төлөв шинэчлэх
+ * POST /orders/:uuid/start          → startDelivery()         Хүргэлт эхлэх (in_progress)
+ * POST /orders/:uuid/complete       → completeDelivery()      Хүргэлт дуусгах (delivered)
+ * POST /orders/:uuid/fail           → failDelivery()          Амжилтгүй (failed)
+ * 
+ * WAREHOUSE MODULE (Агуулах тулгалт):
+ * ───────────────────────────────────
+ * POST /warehouse/toggle-check      → toggleProductCheck()    Нэг бараа тулгах
+ * POST /warehouse/bulk-check        → bulkToggleCheck()       Олон бараа тулгах
+ * 
+ * SHOP MODULE (Дэлгүүр дээрх хүргэлт):
+ * ────────────────────────────────────
+ * GET  /shop/return-reasons         → getReturnReasons()      Буцаалтын шалтгаанууд
+ * POST /shop/update-product         → updateProductDelivery() Бараа хүлээлгэх
+ * POST /shop/bulk-deliver           → bulkDeliverProducts()   Бүгдийг хүлээлгэх
+ * POST /shop/save-payment           → savePayment()           Төлбөр хадгалах
+ * POST /shop/ebarimt                → createEbarimt()         И-Баримт үүсгэх
+ * POST /shop/start-delivery/:uuid   → startDelivery()         Хүргэлт эхлэх (цаг бүртгэх)
+ * POST /shop/complete-order/:uuid   → completeOrderDelivery() Хүргэлт дуусгах (GPS+signature)
+ * 
+ * REFERENCE DATA (Лавлах):
+ * ────────────────────────
+ * GET  /statuses                    → getDeliveryStatuses()   Боломжит төлвүүд
+ * 
+ * =====================================================
+ * DATABASE FIELDS (Хадгалагдах талбарууд)
+ * =====================================================
+ * 
+ * ErpOrder table:
+ * - delivery_started_at      : Хүргэлт эхэлсэн цаг (startDelivery)
+ * - delivered_at             : Хүргэлт дууссан цаг (completeOrderDelivery)
+ * - delivery_duration_minutes: Зарцуулсан хугацаа = delivered_at - started_at
+ * - delivery_latitude        : GPS өргөрөг (completeOrderDelivery)
+ * - delivery_longitude       : GPS уртраг (completeOrderDelivery)
+ * - signature_path           : Гарын үсгийн зураг
+ * - delivery_photo_path      : Хүргэлтийн зураг
+ * - payment_type/method/amount : Төлбөрийн мэдээлэл
+ * - ebarimt_type/phone/registry : И-Баримтын мэдээлэл
+ * 
+ * ErpOrderProduct table:
+ * - warehouse_checked        : Нярав тулгасан эсэх
+ * - warehouse_checked_quantity : Нярав тулгасан тоо
+ * - driver_checked           : Жолооч тулгасан эсэх  
+ * - driver_checked_quantity  : Жолооч тулгасан тоо
+ * - delivered_quantity       : Хүлээлгэсэн тоо
+ * - returned_quantity        : Буцаасан тоо
+ * - return_reason_id         : Буцаалтын шалтгаан
+ * 
+ * @package delivery.maximus.mn
+ * @author MAXIMUS Development Team
+ * @version 2.0
  */
 
 import { useAuthStore } from '../stores/delivery-auth-store';
@@ -18,7 +87,7 @@ import { useAuthStore } from '../stores/delivery-auth-store';
 const API_BASE_URL = 'http://cloud.local.maximus.mn/api/delivery';
 
 // ==========================================================================
-// TYPES
+// TYPES - Өгөгдлийн төрлүүд
 // ==========================================================================
 
 export interface Customer {
@@ -61,6 +130,8 @@ export interface DeliveryOrder {
   delivery_status_color: string;
   assigned_at: string | null;
   delivered_at: string | null;
+  delivery_started_at: string | null;
+  delivery_duration_minutes: number | null;
   registry_number?: string;
   payment_check?: boolean;
   total_discount_point?: boolean;
@@ -68,6 +139,12 @@ export interface DeliveryOrder {
   total_promo_amount?: string;
   delivery_notes?: string | null;
   check_summary?: OrderCheckSummary;
+  corporate_id?: string | null;  // Гүйлгээний утга
+  // eBarimt info
+  ebarimt_status?: string | null;  // SUCCESS, ERROR, SKIPPED, null
+  ebarimt_bill_id?: string | null;
+  ebarimt_qr_data?: string | null;
+  ebarimt_lottery?: string | null;
 }
 
 export interface OrderProduct {
@@ -118,6 +195,22 @@ export interface TodayStats {
   failed: number;
   total_amount: number;
   delivered_amount: number;
+}
+
+/**
+ * Today Report Data - Өнөөдрийн тайлан
+ */
+export interface TodayReportData {
+  total_orders: number;
+  pending: number;
+  in_progress: number;
+  delivered: number;
+  failed: number;
+  total_amount: number;
+  delivered_amount: number;
+  cash_amount: number;
+  card_amount: number;
+  avg_delivery_minutes?: number;
 }
 
 export interface WorkerProfile {
@@ -248,11 +341,20 @@ async function apiRequest<T>(
 }
 
 // ==========================================================================
-// WORKER MODULE
+// WORKER MODULE - Ажилтны модуль
 // ==========================================================================
 
 /**
- * Get worker profile and today's stats
+ * GET /worker/profile
+ * 
+ * Ажилтны профайл болон өнөөдрийн статистик авах
+ * 
+ * БУЦААХ МЭДЭЭЛЭЛ:
+ * - worker: { id, name, phone, avatar, worker_type }
+ * - car: { id, plate, brand, model } | null
+ * - today_stats: { total_orders, pending, delivered, failed, ... }
+ * 
+ * @param workerId - Ажилтны ID (optional, JWT token-оос авна)
  */
 export async function getWorkerProfile(workerId?: number): Promise<{ success: boolean; data?: WorkerProfile; message?: string }> {
   const params = workerId ? `?worker_id=${workerId}` : '';
@@ -347,7 +449,18 @@ export interface PackageProductsData {
 }
 
 /**
- * Get worker's packages list (Багцуудын жагсаалт)
+ * GET /worker/packages
+ * 
+ * Ажилтанд хувиарлагдсан багцуудын жагсаалт
+ * 
+ * БУЦААХ МЭДЭЭЛЭЛ:
+ * - packages[]: { id, name, delivery_date, total_orders, warehouse_pending, delivery_pending, delivered }
+ * 
+ * ХЭРЭГЛЭЭ:
+ * - Warehouse tab: warehouse_pending > 0 байвал агуулах тулгалт хийгдээгүй
+ * - Delivery tab: delivery_pending > 0 байвал хүргэлт хийгдээгүй
+ * 
+ * @param workerId - Ажилтны ID
  */
 export async function getWorkerPackages(workerId?: number): Promise<{ success: boolean; data?: PackagesListData; message?: string }> {
   const params = workerId ? `?worker_id=${workerId}` : '';
@@ -355,9 +468,22 @@ export async function getWorkerPackages(workerId?: number): Promise<{ success: b
 }
 
 /**
- * Get orders for a specific package (Тухайн багцын захиалгууд)
- * @param startLatitude User's current latitude for distance calculation
- * @param startLongitude User's current longitude for distance calculation
+ * GET /worker/packages/:id/orders
+ * 
+ * Тухайн багцын захиалгуудын жагсаалт
+ * 
+ * ПАРАМЕТРҮҮД:
+ * - packageId: Багцын ID
+ * - status: Төлөв шүүлт (comma-separated: "loaded,in_progress")
+ * - startLatitude/startLongitude: Хэрэглэгчийн байршил (зай тооцоолоход)
+ * 
+ * БУЦААХ МЭДЭЭЛЭЛ:
+ * - package: { id, name, delivery_date }
+ * - status_counts: { loaded, in_progress, delivered, failed, ... }
+ * - orders[]: Захиалгуудын жагсаалт distance_km-тэй
+ * 
+ * @param params.startLatitude - GPS өргөрөг (зай тооцоолоход)
+ * @param params.startLongitude - GPS уртраг
  */
 export async function getPackageOrders(params: {
   packageId: number;
@@ -377,8 +503,20 @@ export async function getPackageOrders(params: {
 }
 
 /**
- * Get consolidated products for a package (Хайрцагаар тулгах)
- * Багцын бүх захиалгуудын бараануудыг нэгтгэж буцаах
+ * GET /worker/packages/:id/products
+ * 
+ * Багцын бүх бараануудыг нэгтгэж буцаах (Хайрцаг тулгалт)
+ * Ижил бараануудыг нэгтгэж, захиалга бүрийн тоог харуулна
+ * 
+ * БУЦААХ МЭДЭЭЛЭЛ:
+ * - summary: { total_products, total_quantity, warehouse_checked_quantity, driver_checked_quantity }
+ * - products_with_serial[]: Серийн дугаартай бараанууд
+ * - products_without_serial[]: Серийн дугааргүй бараанууд
+ * - all_products[]: Бүх бараанууд (нэгтгэсэн)
+ * 
+ * ХЭРЭГЛЭЭ:
+ * - box.tsx: Хайрцагаар тулгалт хийх дэлгэц
+ * - Нэг бараа олон захиалгад байвал нэг мөрөнд харуулна
  */
 export async function getPackageProducts(params: {
   packageId: number;
@@ -415,9 +553,36 @@ export interface OptimizeRouteResponse {
   optimized_orders: OptimizedOrder[];
 }
 
+// Complete checking response types
+export interface CompleteCheckingResponse {
+  package_id: number;
+  package_name: string;
+  updated_orders_count: number;
+  new_status: string;
+  new_status_label: string;
+}
+
+export interface UncheckedOrder {
+  order_code: string;
+  customer_name: string;
+  total_quantity: number;
+  checked_quantity: number;
+}
+
 /**
- * Optimize delivery route based on coordinates
- * Coordinate дээр тулгуурлаж захиалгуудын дарааллыг оновчлох
+ * POST /worker/packages/:id/optimize-route
+ * 
+ * Хүргэлтийн маршрутыг GPS координатад тулгуурлан оновчлох
+ * Nearest Neighbor алгоритм ашиглана
+ * 
+ * ЛОГИК:
+ * 1. Эхлэх цэг = Түгээгчийн одоогийн байршил
+ * 2. Хамгийн ойр захиалгыг олж 1-р дараалалд
+ * 3. Тэр захиалгаас дараагийн хамгийн ойрыг олно
+ * 4. delivery_sort_order талбарыг шинэчлэнэ
+ * 
+ * @param params.startLatitude - Эхлэх цэгийн өргөрөг
+ * @param params.startLongitude - Эхлэх цэгийн уртраг
  */
 export async function optimizeRoute(params: {
   packageId: number;
@@ -435,8 +600,13 @@ export async function optimizeRoute(params: {
 }
 
 /**
- * Update single order's sort position
- * Гараар дарааллын байрлал солих
+ * POST /worker/orders/update-sort-order
+ * 
+ * Гараар захиалгын дарааллыг солих
+ * 
+ * ХЭРЭГЛЭЭ:
+ * - Түгээгч өөрөө дарааллыг засах үед
+ * - Drag & drop үйлдлээр
  */
 export async function updateOrderSortOrder(params: {
   orderUuid: string;
@@ -452,24 +622,18 @@ export async function updateOrderSortOrder(params: {
 }
 
 /**
- * Complete package checking and move to LOADED status
- * Багцын тулгалтыг дуусгаж "Ачигдсан" төлөвт шилжүүлэх
+ * POST /worker/packages/:id/complete-checking
+ * 
+ * Багцын тулгалтыг дуусгаж бүх захиалгыг "loaded" төлөвт шилжүүлэх
+ * 
+ * ЛОГИК:
+ * 1. Бүх бараа тулгагдсан эсэхийг шалгана
+ * 2. Тулгагдаагүй байвал unchecked_orders буцаана
+ * 3. force=true бол тулгагдаагүй ч дуусгана
+ * 4. Амжилттай бол delivery_status = "loaded" болно
+ * 
+ * @param params.force - Тулгагдаагүй ч дуусгах эсэх
  */
-export interface CompleteCheckingResponse {
-  package_id: number;
-  package_name: string;
-  updated_orders_count: number;
-  new_status: string;
-  new_status_label: string;
-}
-
-export interface UncheckedOrder {
-  order_code: string;
-  customer_name: string;
-  total_quantity: number;
-  checked_quantity: number;
-}
-
 export async function completePackageChecking(params: {
   packageId: number;
   workerId?: number;
@@ -567,7 +731,9 @@ export async function getOrderProducts(orderUuid: string): Promise<{
 }
 
 /**
- * Update order delivery status
+ * POST /orders/:uuid/status
+ * 
+ * Захиалгын төлөв шинэчлэх (ерөнхий)
  */
 export async function updateOrderStatus(orderUuid: string, status: string, notes?: string): Promise<{ success: boolean; message?: string }> {
   return apiRequest(`/orders/${orderUuid}/status`, {
@@ -577,21 +743,29 @@ export async function updateOrderStatus(orderUuid: string, status: string, notes
 }
 
 /**
- * Start delivery (set status to in_progress)
+ * POST /orders/:uuid/start
+ * 
+ * Хүргэлт эхлэх (in_progress төлөвт шилжүүлэх)
+ * ТЭМДЭГЛЭЛ: shop/start-delivery/:uuid ашиглахыг зөвлөж байна
  */
-export async function startDelivery(orderUuid: string): Promise<{ success: boolean; message?: string }> {
+export async function startDeliveryStatus(orderUuid: string): Promise<{ success: boolean; message?: string }> {
   return apiRequest(`/orders/${orderUuid}/start`, { method: 'POST' });
 }
 
 /**
- * Complete delivery (set status to delivered)
+ * POST /orders/:uuid/complete
+ * 
+ * Хүргэлт дуусгах (delivered төлөвт шилжүүлэх)
+ * ТЭМДЭГЛЭЛ: shop/complete-order/:uuid ашиглахыг зөвлөж байна
  */
-export async function completeDelivery(orderUuid: string): Promise<{ success: boolean; message?: string }> {
+export async function completeDeliveryStatus(orderUuid: string): Promise<{ success: boolean; message?: string }> {
   return apiRequest(`/orders/${orderUuid}/complete`, { method: 'POST' });
 }
 
 /**
- * Fail delivery with reason
+ * POST /orders/:uuid/fail
+ * 
+ * Хүргэлт амжилтгүй (failed төлөвт шилжүүлэх)
  */
 export async function failDelivery(orderUuid: string, reason: string): Promise<{ success: boolean; message?: string }> {
   return apiRequest(`/orders/${orderUuid}/fail`, {
@@ -601,11 +775,25 @@ export async function failDelivery(orderUuid: string, reason: string): Promise<{
 }
 
 // ==========================================================================
-// WAREHOUSE MODULE (Нярав/Жолооч тулгалт)
+// WAREHOUSE MODULE - Агуулах тулгалт (Нярав/Жолооч)
 // ==========================================================================
 
 /**
- * Toggle product check (warehouse or driver)
+ * POST /warehouse/toggle-check
+ * 
+ * Нэг барааны тулгалт хийх (Нярав эсвэл Жолооч)
+ * 
+ * ТУЛГАЛТЫН ТӨРӨЛ (checker_type):
+ * - warehouse: Няравын тулгалт → warehouse_checked = true
+ * - driver: Жолоочийн тулгалт → driver_checked = true
+ * 
+ * ХАДГАЛАГДАХ ТАЛБАРУУД:
+ * - warehouse_checked / driver_checked : boolean
+ * - warehouse_checked_at / driver_checked_at : datetime
+ * - warehouse_checked_quantity / driver_checked_quantity : number
+ * 
+ * @param data.checker_type - "warehouse" | "driver"
+ * @param data.quantity - Тулгасан тоо (default: бараа бүрэн тоо)
  */
 export async function toggleProductCheck(data: {
   order_uuid: string;
@@ -630,7 +818,13 @@ export async function toggleProductCheck(data: {
 }
 
 /**
- * Bulk check multiple products
+ * POST /warehouse/bulk-check
+ * 
+ * Олон барааг нэг дор тулгах
+ * 
+ * ХЭРЭГЛЭЭ:
+ * - "Бүгдийг тулгах" товч дарахад
+ * - Хайрцаг бүтнээр тулгахад
  */
 export async function bulkToggleCheck(data: {
   order_uuid: string;
@@ -645,7 +839,15 @@ export async function bulkToggleCheck(data: {
 }
 
 // ==========================================================================
-// SHOP MODULE (Дэлгүүр дээрх хүргэлт)
+// SHOP MODULE - Дэлгүүр дээрх хүргэлт
+// ==========================================================================
+//
+// Түгээгч дэлгүүрт очоод хийх үйлдлүүд:
+// 1. startDelivery() - Дэлгэц нээгдэхэд эхлэх цаг бүртгэх
+// 2. updateProductDelivery() - Бараа хүлээлгэх (delivered/returned qty)
+// 3. savePayment() - Төлбөр хадгалах
+// 4. createEbarimt() - И-Баримт үүсгэх
+// 5. completeOrderDelivery() - Хүргэлт дуусгах (GPS, signature, photo)
 // ==========================================================================
 
 // Return reasons list
@@ -656,14 +858,34 @@ export interface ReturnReason {
 }
 
 /**
- * Get list of return reasons (Буцаалтын шалтгаанууд)
+ * GET /shop/return-reasons
+ * 
+ * Буцаалтын шалтгаануудын жагсаалт
+ * 
+ * ЖИШЭЭ ШАЛТГААНУУД:
+ * - Бараа гэмтсэн
+ * - Буруу бараа
+ * - Хүсээгүй
+ * - Хугацаа хэтэрсэн
  */
 export async function getReturnReasons(): Promise<{ success: boolean; data?: ReturnReason[]; message?: string }> {
   return apiRequest('/shop/return-reasons');
 }
 
 /**
- * Update product delivery details
+ * POST /shop/update-product
+ * 
+ * Барааны хүргэлтийн мэдээлэл бүртгэх
+ * 
+ * ХАДГАЛАГДАХ ТАЛБАРУУД:
+ * - delivered_quantity : Хүлээлгэсэн тоо
+ * - returned_quantity  : Буцаасан тоо
+ * - return_reason_id   : Буцаалтын шалтгаан
+ * - delivery_notes     : Тэмдэглэл
+ * 
+ * ТООЦООЛОЛ:
+ * - Захиалсан тоо = delivered_quantity + returned_quantity
+ * - Жишээ: 10ш = 8ш хүлээлгэсэн + 2ш буцаасан
  */
 export async function updateProductDelivery(data: {
   order_uuid: string;
@@ -680,7 +902,13 @@ export async function updateProductDelivery(data: {
 }
 
 /**
- * Bulk update all products - Бүгдийг хүлээлгэх
+ * POST /shop/bulk-deliver
+ * 
+ * Бүх барааг бүрэн хүлээлгэх
+ * 
+ * ЛОГИК:
+ * - deliver_all = true үед бүх барааны delivered_quantity = quantity
+ * - returned_quantity = 0 болно
  */
 export async function bulkDeliverProducts(data: {
   order_uuid: string;
@@ -693,7 +921,22 @@ export async function bulkDeliverProducts(data: {
 }
 
 /**
- * Save payment information
+ * POST /shop/save-payment
+ * 
+ * Төлбөрийн мэдээлэл хадгалах
+ * 
+ * ТӨЛБӨРИЙН ТӨРӨЛ (payment_type):
+ * - full    : Бүрэн төлсөн
+ * - partial : Хэсэгчлэн төлсөн
+ * - unpaid  : Төлөөгүй
+ * - credit  : Зээлээр
+ * 
+ * ТӨЛБӨРИЙН АРГА (payment_method):
+ * - cash     : Бэлэн мөнгө
+ * - card     : Карт (POS)
+ * - qpay     : QPay
+ * - transfer : Шилжүүлэг
+ * - mixed    : Холимог (cash + card)
  */
 export interface PaymentData {
   order_uuid: string;
@@ -716,7 +959,7 @@ export async function savePayment(data: PaymentData): Promise<{ success: boolean
 }
 
 // ==========================================================================
-// E-BARIMT MODULE
+// E-BARIMT MODULE - И-Баримт
 // ==========================================================================
 
 export type EbarimtType = 'person' | 'organization' | 'none';
@@ -724,24 +967,39 @@ export type EbarimtType = 'person' | 'organization' | 'none';
 export interface EbarimtData {
   order_uuid: string;
   ebarimt_type: EbarimtType;
-  phone_number?: string;       // For person
-  registry_number?: string;    // For organization
-  company_name?: string;       // For organization
+  phone_number?: string;       // For person (8 digit) - DDan руу илгээх
+  registry_number?: string;    // For organization - Байгууллагын регистр
+  payment_code?: 'CASH' | 'PAYMENT_CARD'; // Төлбөрийн хэлбэр
 }
 
 export interface EbarimtResponse {
   success: boolean;
   data?: {
-    lottery_number?: string;
-    qr_data?: string;
-    bill_id?: string;
-    date?: string;
+    bill_id?: string;          // Баримтын ID (037900846788001095130002210005702)
+    qr_data?: string;          // QR код дата
+    lottery?: string;          // Сугалааны дугаар (XA 96268009)
+    date?: string;             // Огноо
+    total_amount?: number;     // Нийт дүн
+    total_vat?: number;        // НӨАТ дүн
+    skipped?: boolean;         // Баримт үүсгэхгүй сонгосон эсэх
+    // Буцаалтын баримт (хэрэв буцаалттай бол)
+    return_bill_id?: string;
+    return_qr_data?: string;
+    return_lottery?: string;
+    return_amount?: number;
   };
   message?: string;
 }
 
 /**
- * Create E-Barimt for an order
+ * POST /shop/ebarimt
+ * 
+ * И-Баримт үүсгэх
+ * 
+ * ТӨРЛҮҮД (ebarimt_type):
+ * - person       : Хувь хүн (8 оронтой утасны дугаар)
+ * - organization : Байгууллага (7 оронтой регистр)
+ * - none         : И-Баримтгүй
  */
 export async function createEbarimt(data: EbarimtData): Promise<EbarimtResponse> {
   return apiRequest('/shop/ebarimt', {
@@ -750,27 +1008,82 @@ export async function createEbarimt(data: EbarimtData): Promise<EbarimtResponse>
   });
 }
 
-/**
- * Complete order with signature and photo
- */
+// ==========================================================================
+// DELIVERY COMPLETION - Хүргэлт дуусгах
+// ==========================================================================
+
 export interface CompleteDeliveryData {
   delivery_notes?: string;
-  signature_image?: string; // base64
-  delivery_photo?: string;  // base64
+  signature_image?: string;    // base64 encoded image
+  delivery_photo?: string;     // base64 encoded image
   ebarimt_type?: EbarimtType;
   ebarimt_phone?: string;
   ebarimt_registry?: string;
   payment_type?: string;
   payment_method?: string;
   payment_amount?: number;
+  latitude?: number;           // GPS өргөрөг (device location)
+  longitude?: number;          // GPS уртраг (device location)
 }
 
+/**
+ * POST /shop/start-delivery/:uuid
+ * 
+ * Хүргэлт эхэлсэн хугацаа бүртгэх
+ * 
+ * ДУУДАГДАХ ҮЕ:
+ * - shop.tsx дэлгэц нээгдэхэд автоматаар дуудагдана
+ * - Зөвхөн 1 удаа бүртгэгдэнэ (дахин дуудахад солигдохгүй)
+ * 
+ * ХАДГАЛАГДАХ ТАЛБАР:
+ * - delivery_started_at : datetime
+ * 
+ * ХЭРЭГЛЭЭ:
+ * - Хүргэлтийн хугацааг тооцоолоход (delivery_duration_minutes)
+ */
+export async function startDelivery(orderUuid: string): Promise<{ 
+  success: boolean; 
+  data?: {
+    order_uuid: string;
+    delivery_started_at: string;
+  };
+  message?: string 
+}> {
+  return apiRequest(`/shop/start-delivery/${orderUuid}`, {
+    method: 'POST',
+  });
+}
+
+/**
+ * POST /shop/complete-order/:uuid
+ * 
+ * Хүргэлт бүрэн дуусгах (Гарын үсэг, Зураг, GPS)
+ * 
+ * ХАДГАЛАГДАХ ТАЛБАРУУД:
+ * - delivery_status = "delivered"
+ * - delivered_at : Дууссан datetime
+ * - delivery_duration_minutes = delivered_at - delivery_started_at
+ * - delivery_latitude/longitude : GPS координат
+ * - signature_path : Гарын үсгийн зураг
+ * - delivery_photo_path : Хүргэлтийн зураг
+ * 
+ * GPS КООРДИНАТ:
+ * - Хүргэлт зөв газарт хийгдсэн эсэхийг баталгаажуулна
+ * - Маргаантай тохиолдолд нотлох баримт болно
+ * 
+ * ХУГАЦААНЫ ТООЦООЛОЛ:
+ * - delivery_duration_minutes = diffInMinutes(delivery_started_at, delivered_at)
+ * - Жишээ: 14:30 эхэлсэн → 15:00 дууссан = 30 минут
+ */
 export async function completeOrderDelivery(orderUuid: string, data: CompleteDeliveryData): Promise<{ 
   success: boolean; 
   data?: {
     order_uuid: string;
     status: string;
     delivered_at: string;
+    delivery_duration_minutes?: number;
+    delivery_latitude?: number;
+    delivery_longitude?: number;
     ebarimt?: {
       lottery_number?: string;
       qr_data?: string;
@@ -785,12 +1098,32 @@ export async function completeOrderDelivery(orderUuid: string, data: CompleteDel
 }
 
 // ==========================================================================
-// REFERENCE DATA
+// REFERENCE DATA - Лавлах мэдээлэл
 // ==========================================================================
 
 /**
- * Get all delivery statuses
+ * GET /statuses
+ * 
+ * Бүх боломжит хүргэлтийн төлвүүдийн жагсаалт
+ * 
+ * ТӨЛВҮҮД:
+ * - pending, assigned_to_driver, warehouse_checking, warehouse_checked
+ * - driver_checking, loaded, in_progress, delivery_pending
+ * - delivered, failed, cancelled
  */
 export async function getDeliveryStatuses(): Promise<{ success: boolean; data?: DeliveryStatus[]; message?: string }> {
   return apiRequest('/statuses');
+}
+
+/**
+ * GET /worker/today-report
+ * 
+ * Өнөөдрийн хүргэлтийн тайлан
+ * - Хүргэлтийн статистик
+ * - Дүнгийн мэдээлэл
+ * - Төлбөрийн мэдээлэл
+ * - Дундаж хүргэлтийн хугацаа
+ */
+export async function getTodayReport(): Promise<{ success: boolean; data?: TodayReportData; message?: string }> {
+  return apiRequest('/worker/today-report');
 }

@@ -661,7 +661,7 @@ export default function PackageBoxCheckingScreen() {
                           styles.dualProgressLabel,
                           checkerType === 'warehouse' && styles.dualProgressLabelActive
                         ]}>Нярав {checkerType === 'warehouse' ? '✓' : ''}</Text>
-                        <Text style={[styles.dualProgressValue, { color: '#059669' }]}>
+                        <Text style={[styles.dualProgressValue, { color: '#e17100' }]}>
                           {data.summary.warehouse_checked_quantity}/{data.summary.total_quantity}
                         </Text>
                       </View>
@@ -678,7 +678,7 @@ export default function PackageBoxCheckingScreen() {
                           ]} 
                         />
                       </View>
-                      <Text style={[styles.dualProgressPercent, { color: '#059669' }]}>
+                      <Text style={[styles.dualProgressPercent, { color: '#e17100' }]}>
                         {data.summary.total_quantity > 0 
                           ? Math.round((data.summary.warehouse_checked_quantity / data.summary.total_quantity) * 100)
                           : 0}%
@@ -887,7 +887,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   progressFillWarehouse: {
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
   },
   progressFillDriver: {
     backgroundColor: '#2563EB',
@@ -1212,11 +1212,11 @@ const styles = StyleSheet.create({
     borderColor: '#3B82F6',
   },
   dualCheckItemDriverComplete: {
-    backgroundColor: '#D1FAE5',
-    borderColor: '#10B981',
+    backgroundColor: '#FEF3C7',
+    borderColor: '#f59e0b',
   },
   dualCheckItemComplete: {
-    backgroundColor: '#D1FAE5',
+    backgroundColor: '#FEF3C7',
   },
   dualCheckLabel: {
     fontSize: 9,
@@ -1227,7 +1227,7 @@ const styles = StyleSheet.create({
     color: '#2563EB',
   },
   dualCheckLabelDriver: {
-    color: '#059669',
+    color: '#e17100',
   },
   dualCheckValue: {
     fontSize: 10,
@@ -1244,10 +1244,10 @@ const styles = StyleSheet.create({
     color: '#1D4ED8',
   },
   dualCheckValueDriverComplete: {
-    color: '#059669',
+    color: '#e17100',
   },
   dualCheckValueComplete: {
-    color: '#059669',
+    color: '#e17100',
   },
   // Order detail completed
   orderDetailRowCompleted: {
@@ -1298,8 +1298,8 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   productCheckButtonChecked: {
-    backgroundColor: '#059669',
-    borderColor: '#059669',
+    backgroundColor: '#e17100',
+    borderColor: '#e17100',
   },
   productCheckButtonLoading: {
     backgroundColor: '#EFF6FF',
@@ -1328,8 +1328,8 @@ const styles = StyleSheet.create({
     borderColor: '#E5E7EB',
   },
   checkButtonChecked: {
-    backgroundColor: '#059669',
-    borderColor: '#059669',
+    backgroundColor: '#e17100',
+    borderColor: '#e17100',
   },
   checkButtonLoading: {
     backgroundColor: '#EFF6FF',

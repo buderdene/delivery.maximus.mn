@@ -282,7 +282,7 @@ export default function ProductsTabScreen() {
       <View style={styles.section}>
         <HStack style={{ alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
           <HStack style={{ alignItems: 'center' }}>
-            <TrendingUp size={20} color="#10B981" />
+            <TrendingUp size={20} color="#f59e0b" />
             <Text style={styles.sectionTitle}>Сүүлийн бараа</Text>
           </HStack>
           <TouchableOpacity 
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
   productPrice: {
     fontSize: 13,
     fontFamily: 'GIP-Bold',
-    color: '#059669',
+    color: '#e17100',
   },
   stockBadge: {
     backgroundColor: '#F3F4F6',

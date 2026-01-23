@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+// @ts-ignore - expo-router exports router in v6
 import { router } from 'expo-router';
 import { 
   Truck, 
@@ -37,12 +38,9 @@ export default function DeliveryScreen() {
       ]);
       
       if (packagesResult.success && packagesResult.data) {
-        // Filter: Only packages with warehouse_pending=0 (completed warehouse check)
-        // and delivery_pending > 0 (still has orders to deliver)
-        const deliveryPackages = packagesResult.data.packages.filter(
-          (pkg) => pkg.warehouse_pending === 0 && pkg.delivery_pending > 0
-        );
-        setPackages(deliveryPackages);
+        // Show all packages for delivery view
+        // Packages with delivery_pending > 0 or delivered > 0 are relevant
+        setPackages(packagesResult.data.packages);
       }
       
       if (profileResult.success && profileResult.data) {
@@ -74,7 +72,7 @@ export default function DeliveryScreen() {
     switch (status) {
       case 'loaded': return '#8B5CF6';
       case 'in_progress': return '#3B82F6';
-      case 'delivered': return '#10B981';
+      case 'delivered': return '#f59e0b';
       case 'failed': return '#EF4444';
       case 'returned': return '#F59E0B';
       default: return '#6B7280';
@@ -108,15 +106,21 @@ export default function DeliveryScreen() {
     const deliveredOrders = item.delivered || 0;
     const pendingOrders = item.delivery_pending || 0;
     const progress = totalOrders > 0 ? Math.round((deliveredOrders / totalOrders) * 100) : 0;
+    const isCompleted = progress === 100 && totalOrders > 0;
+    const hasPending = pendingOrders > 0;
     
     return (
       <TouchableOpacity
-        style={styles.packageCard}
+        style={[
+          styles.packageCard,
+          isCompleted && styles.packageCardCompleted,
+          hasPending && styles.packageCardPending,
+        ]}
         onPress={() => goToPackageDelivery(item.id)}
         activeOpacity={0.7}
       >
-        <View style={styles.packageIconContainer}>
-          <Truck size={28} color="#059669" />
+        <View style={[styles.packageIconContainer, isCompleted && { backgroundColor: '#D1FAE5' }]}>
+          <Truck size={28} color={isCompleted ? '#10B981' : '#e17100'} />
         </View>
         
         <View style={styles.packageInfo}>
@@ -129,8 +133,8 @@ export default function DeliveryScreen() {
               <Text style={styles.packageStatText}>{totalOrders} падаан</Text>
             </View>
             <View style={[styles.packageStatItem, { marginLeft: 12 }]}>
-              <CheckCircle2 size={14} color="#059669" />
-              <Text style={[styles.packageStatText, { color: '#059669' }]}>{deliveredOrders}</Text>
+              <CheckCircle2 size={14} color="#e17100" />
+              <Text style={[styles.packageStatText, { color: '#e17100' }]}>{deliveredOrders}</Text>
             </View>
             {pendingOrders > 0 && (
               <View style={[styles.packageStatItem, { marginLeft: 12 }]}>
@@ -157,7 +161,7 @@ export default function DeliveryScreen() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#059669" />
+        <ActivityIndicator size="large" color="#e17100" />
         <Text style={styles.loadingText}>Уншиж байна...</Text>
       </View>
     );
@@ -167,7 +171,7 @@ export default function DeliveryScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerIconRow}>
-          <Truck size={24} color="#059669" />
+          <Truck size={24} color="#e17100" />
           <Text style={styles.headerTitle}>Түгээлт</Text>
         </View>
         <Text style={styles.headerSubtitle}>
@@ -186,9 +190,9 @@ export default function DeliveryScreen() {
               <Text style={[styles.statValue, { color: '#2563EB' }]}>{stats.total_orders}</Text>
               <Text style={styles.statLabel}>Нийт</Text>
             </View>
-            <View style={[styles.statCard, { backgroundColor: '#D1FAE5' }]}>
-              <CheckCircle2 size={20} color="#059669" />
-              <Text style={[styles.statValue, { color: '#059669' }]}>{stats.delivered}</Text>
+            <View style={[styles.statCard, { backgroundColor: '#FEF3C7' }]}>
+              <CheckCircle2 size={20} color="#e17100" />
+              <Text style={[styles.statValue, { color: '#e17100' }]}>{stats.delivered}</Text>
               <Text style={styles.statLabel}>Хүргэсэн</Text>
             </View>
             <View style={[styles.statCard, { backgroundColor: '#FEF3C7' }]}>
@@ -214,12 +218,12 @@ export default function DeliveryScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={['#059669']}
+            colors={['#e17100']}
           />
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <CheckCircle2 size={64} color="#10B981" />
+            <CheckCircle2 size={64} color="#f59e0b" />
             <Text style={styles.emptyText}>Хүргэлтийн багц алга</Text>
             <Text style={styles.emptySubtext}>Агуулах хэсэгт тулгалт хийнэ үү</Text>
           </View>
@@ -315,11 +319,20 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  packageCardCompleted: {
+    backgroundColor: '#ECFDF5',
+    borderWidth: 2,
+    borderColor: '#10B981',
+  },
+  packageCardPending: {
+    borderWidth: 2,
+    borderColor: '#F59E0B',
+  },
   packageIconContainer: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#D1FAE5',
+    backgroundColor: '#FEF3C7',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -369,13 +382,13 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
     borderRadius: 3,
   },
   progressText: {
     fontSize: 12,
     fontFamily: 'GIP-SemiBold',
-    color: '#059669',
+    color: '#e17100',
     minWidth: 36,
   },
   emptyContainer: {

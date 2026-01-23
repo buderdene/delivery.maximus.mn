@@ -384,7 +384,7 @@ export default function OrdersScreen() {
                   {visitor.latitude && visitor.longitude && (
                     <View style={styles.visitorInfoRow}>
                       <View style={styles.visitorInfoItemFull}>
-                        <MapPin size={14} color="#10B981" />
+                        <MapPin size={14} color="#f59e0b" />
                         <Text style={styles.visitorLocationText}>
                           {visitor.latitude}, {visitor.longitude}
                         </Text>
@@ -718,7 +718,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#10B981',
+    backgroundColor: '#f59e0b',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
@@ -747,12 +747,12 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#10B981',
+    borderColor: '#f59e0b',
   },
   visitorStatusText: {
     fontSize: 11,
     fontFamily: 'GIP-Medium',
-    color: '#10B981',
+    color: '#f59e0b',
   },
   visitorInfoContainer: {
     gap: 8,

@@ -253,7 +253,7 @@ export default function PackageCheckingMethodScreen() {
             activeOpacity={0.7}
           >
             <View style={[styles.methodIconContainer, { backgroundColor: '#ECFDF5' }]}>
-              <Boxes size={32} color="#059669" />
+              <Boxes size={32} color="#e17100" />
             </View>
             <View style={styles.methodContent}>
               <Text style={styles.methodTitle}>Хайрцагаар тулгах</Text>
@@ -291,7 +291,7 @@ export default function PackageCheckingMethodScreen() {
                   {/* Driver Progress */}
                   <View style={styles.checkProgressRow}>
                     <View style={styles.checkProgressLabel}>
-                      <Truck size={12} color="#059669" />
+                      <Truck size={12} color="#e17100" />
                       <Text style={[styles.checkProgressLabelText, styles.checkProgressLabelDriver]}>Түгээгч</Text>
                     </View>
                     <View style={styles.progressBarContainer}>
@@ -343,7 +343,7 @@ export default function PackageCheckingMethodScreen() {
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <View style={styles.statIconRow}>
-                <Truck size={16} color="#059669" />
+                <Truck size={16} color="#e17100" />
               </View>
               <Text style={[styles.statValue, styles.statValueDriver]}>
                 {productsSummary.driver_checked_quantity}/{productsSummary.total_quantity}
@@ -583,7 +583,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   statValueDriver: {
-    color: '#059669',
+    color: '#e17100',
     fontSize: 18,
   },
   statValueRemaining: {
@@ -641,7 +641,7 @@ const styles = StyleSheet.create({
     color: '#2563EB',
   },
   orderStatValueGreen: {
-    color: '#059669',
+    color: '#e17100',
   },
   orderStatLabel: {
     fontSize: 10,
@@ -675,7 +675,7 @@ const styles = StyleSheet.create({
     color: '#2563EB',
   },
   checkProgressLabelDriver: {
-    color: '#059669',
+    color: '#e17100',
   },
   progressBarContainer: {
     flex: 1,
@@ -692,7 +692,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2563EB',
   },
   progressBarDriver: {
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
   },
   checkProgressCount: {
     fontSize: 10,
@@ -708,13 +708,13 @@ const styles = StyleSheet.create({
     color: '#047857',
   },
   checkProgressComplete: {
-    color: '#059669',
+    color: '#e17100',
   },
   checkProgressCompleteWarehouse: {
     color: '#1D4ED8',
   },
   checkProgressCompleteDriver: {
-    color: '#059669',
+    color: '#e17100',
   },
   // Complete Checking Button
   completeButtonContainer: {
@@ -738,8 +738,8 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   completeButtonReady: {
-    backgroundColor: '#059669',
-    shadowColor: '#059669',
+    backgroundColor: '#e17100',
+    shadowColor: '#e17100',
   },
   completeButtonDisabled: {
     opacity: 0.7,

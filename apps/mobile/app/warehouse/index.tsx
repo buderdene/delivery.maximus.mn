@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
     color: '#1E40AF',
   },
   defaultBadge: {
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,

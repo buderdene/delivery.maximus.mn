@@ -112,7 +112,7 @@ export default function DashboardScreen() {
       title: 'Захиалга',
       subtitle: 'Бүх захиалга',
       icon: ShoppingCart,
-      color: '#059669',
+      color: '#e17100',
       bgColor: '#ECFDF5',
       route: '/(tabs)',
       badge: 5,
@@ -211,7 +211,7 @@ export default function DashboardScreen() {
   const getTaskStatusIcon = (status: TodayTask['status']) => {
     switch (status) {
       case 'completed':
-        return <CheckCircle2 size={18} color="#10B981" />;
+        return <CheckCircle2 size={18} color="#f59e0b" />;
       case 'pending':
         return <Clock size={18} color="#F59E0B" />;
       case 'overdue':
@@ -294,7 +294,7 @@ export default function DashboardScreen() {
               <Text style={styles.mainStatValue}>{formatCurrency(stats.monthSales)}</Text>
             </View>
             <View style={styles.growthBadge}>
-              <TrendingUp size={14} color="#10B981" />
+              <TrendingUp size={14} color="#f59e0b" />
               <Text style={styles.growthText}>+{stats.salesGrowth}%</Text>
             </View>
           </View>
@@ -348,8 +348,8 @@ export default function DashboardScreen() {
           </View>
           
           <View style={[styles.statCard, { backgroundColor: '#ECFDF5' }]}>
-            <View style={[styles.statIconBox, { backgroundColor: '#D1FAE5' }]}>
-              <Users size={20} color="#059669" />
+            <View style={[styles.statIconBox, { backgroundColor: '#FEF3C7' }]}>
+              <Users size={20} color="#e17100" />
             </View>
             <Text style={styles.statCardValue}>{stats.todayNewPartners}</Text>
             <Text style={styles.statCardLabel}>Шинэ харилцагч</Text>
@@ -611,7 +611,7 @@ const styles = StyleSheet.create({
   growthText: {
     fontSize: 13,
     fontFamily: 'GIP-SemiBold',
-    color: '#10B981',
+    color: '#f59e0b',
   },
   progressSection: {
     marginTop: 20,
@@ -639,7 +639,7 @@ const styles = StyleSheet.create({
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#10B981',
+    backgroundColor: '#f59e0b',
     borderRadius: 4,
   },
   mainStatBottom: {

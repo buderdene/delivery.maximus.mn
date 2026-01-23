@@ -215,7 +215,7 @@ export default function HomeScreen() {
               title="Нийт дүн"
               value={formatAmount(todayStats.totalAmount)}
               icon={Wallet}
-              color="#10B981"
+              color="#f59e0b"
               subtitle="Борлуулалт"
             />
             <TodayStatCard
@@ -266,14 +266,14 @@ export default function HomeScreen() {
           ) : (
             recentOrders.map((order, index) => (
               <View key={order.uuid || index} style={styles.activityItem}>
-                <View style={[styles.activityDot, { backgroundColor: order.status === 'Pending' ? '#F59E0B' : '#10B981' }]} />
+                <View style={[styles.activityDot, { backgroundColor: order.status === 'Pending' ? '#F59E0B' : '#f59e0b' }]} />
                 <VStack className="flex-1 ml-3">
                   <HStack style={{ alignItems: 'center', gap: 8 }}>
                     <Text size="sm" style={{ fontFamily: 'GIP-SemiBold', color: '#111827' }}>
                       {order.orderCode}
                     </Text>
                     <View style={{ 
-                      backgroundColor: order.status === 'Pending' ? '#FEF3C7' : '#D1FAE5', 
+                      backgroundColor: order.status === 'Pending' ? '#FEF3C7' : '#FEF3C7', 
                       paddingHorizontal: 6, 
                       paddingVertical: 2, 
                       borderRadius: 4 
@@ -290,7 +290,7 @@ export default function HomeScreen() {
                     {order.companyName}
                   </Text>
                 </VStack>
-                <Text size="sm" style={{ fontFamily: 'GIP-SemiBold', color: '#10B981' }}>
+                <Text size="sm" style={{ fontFamily: 'GIP-SemiBold', color: '#f59e0b' }}>
                   ₮{order.totalAmount?.toLocaleString()}
                 </Text>
               </View>
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#10B981',
+    backgroundColor: '#f59e0b',
   },
   emptyState: {
     alignItems: 'center',

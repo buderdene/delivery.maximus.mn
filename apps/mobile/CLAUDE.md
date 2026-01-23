@@ -178,7 +178,7 @@ app/package/[id]/
 3. **Styling**
    - Use `StyleSheet.create()` at bottom of file
    - Font family: 'GIP-Regular', 'GIP-Medium', 'GIP-SemiBold', 'GIP-Bold'
-   - Colors: Follow existing color scheme (primary: #2563EB, success: #059669)
+   - Colors: Follow existing color scheme (primary: #e17100 (orange), secondary: #f59e0b)
 
 4. **TypeScript**
    - Define interfaces for all data types

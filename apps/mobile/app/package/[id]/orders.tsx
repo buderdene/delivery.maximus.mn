@@ -41,7 +41,7 @@ import { getPackageOrders, DeliveryOrder, PackageOrdersData, optimizeRoute } fro
 // Warehouse related statuses
 const WAREHOUSE_STATUSES = 'assigned_to_driver,warehouse_checking,warehouse_checked,driver_checking';
 
-type FilterStatus = 'all' | 'assigned_to_driver' | 'warehouse_checking' | 'warehouse_checked' | 'driver_checking';
+type FilterStatus = 'assigned_to_driver' | 'warehouse_checking' | 'warehouse_checked' | 'driver_checking';
 
 export default function PackageOrdersScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -50,7 +50,7 @@ export default function PackageOrdersScreen() {
   const [data, setData] = useState<PackageOrdersData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>('assigned_to_driver');
   const [optimizing, setOptimizing] = useState(false);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
@@ -181,7 +181,6 @@ export default function PackageOrdersScreen() {
   };
 
   const filteredOrders = data?.orders.filter((order) => {
-    if (filterStatus === 'all') return true;
     return order.delivery_status === filterStatus;
   }) || [];
 
@@ -190,8 +189,8 @@ export default function PackageOrdersScreen() {
       case 'assigned_to_driver': return '#F59E0B';
       case 'warehouse_checking': return '#3B82F6';
       case 'warehouse_checked': return '#8B5CF6';
-      case 'driver_checking': return '#10B981';
-      case 'loaded': return '#059669';
+      case 'driver_checking': return '#f59e0b';
+      case 'loaded': return '#e17100';
       default: return '#6B7280';
     }
   };
@@ -272,7 +271,7 @@ export default function PackageOrdersScreen() {
           {/* Distance badge */}
           {item.distance_km !== null && (
             <View style={styles.distanceBadge}>
-              <Navigation size={12} color="#059669" />
+              <Navigation size={12} color="#e17100" />
               <Text style={styles.distanceText}>{item.distance_km} км</Text>
             </View>
           )}
@@ -290,7 +289,7 @@ export default function PackageOrdersScreen() {
 
         <View style={styles.orderBody}>
           <View style={styles.orderCodeRow}>
-            <Package size={14} color={isBothFullyChecked ? "#059669" : "#6B7280"} />
+            <Package size={14} color={isBothFullyChecked ? "#e17100" : "#6B7280"} />
             <Text style={[styles.orderCodeSecondary, isBothFullyChecked && styles.textCompleted]}>{item.order_code}</Text>
           </View>
           <Text style={[styles.customerAddress, isBothFullyChecked && styles.textCompleted]} numberOfLines={1}>
@@ -337,7 +336,7 @@ export default function PackageOrdersScreen() {
                 </Text>
               </View>
               <View style={styles.circleProgressLabelRow}>
-                <Truck size={12} color="#059669" />
+                <Truck size={12} color="#e17100" />
                 <Text style={[styles.circleProgressLabel, styles.circleProgressLabelDriver]}>Түгээгч</Text>
               </View>
             </View>
@@ -460,12 +459,12 @@ export default function PackageOrdersScreen() {
               {/* Filter Buttons - 2x2 Grid */}
               <View style={styles.filterGrid}>
                 <View style={styles.filterRow}>
-                  {renderFilterButton('all', 'Бүгд', <Box size={16} color={filterStatus === 'all' ? '#2563EB' : '#6B7280'} />)}
                   {renderFilterButton('assigned_to_driver', 'Хүлээгдэж', <Circle size={16} color={filterStatus === 'assigned_to_driver' ? '#F59E0B' : '#6B7280'} />)}
+                  {renderFilterButton('warehouse_checked', 'Шалгасан', <ClipboardCheck size={16} color={filterStatus === 'warehouse_checked' ? '#8B5CF6' : '#6B7280'} />)}
                 </View>
                 <View style={styles.filterRow}>
-                  {renderFilterButton('warehouse_checked', 'Шалгасан', <ClipboardCheck size={16} color={filterStatus === 'warehouse_checked' ? '#8B5CF6' : '#6B7280'} />)}
-                  {renderFilterButton('driver_checking', 'Тулгаж', <Eye size={16} color={filterStatus === 'driver_checking' ? '#10B981' : '#6B7280'} />)}
+                  {renderFilterButton('warehouse_checking', 'Шалгаж буй', <Eye size={16} color={filterStatus === 'warehouse_checking' ? '#3B82F6' : '#6B7280'} />)}
+                  {renderFilterButton('driver_checking', 'Тулгаж', <Eye size={16} color={filterStatus === 'driver_checking' ? '#f59e0b' : '#6B7280'} />)}
                 </View>
               </View>
 
@@ -570,7 +569,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
     paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 8,
@@ -697,7 +696,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sortOrderBadgeCompleted: {
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
   },
   sortOrderText: {
     fontSize: 12,
@@ -705,7 +704,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   textCompleted: {
-    color: '#059669',
+    color: '#e17100',
   },
   distanceBadge: {
     flexDirection: 'row',
@@ -720,7 +719,7 @@ const styles = StyleSheet.create({
   distanceText: {
     fontSize: 12,
     fontFamily: 'GIP-SemiBold',
-    color: '#059669',
+    color: '#e17100',
   },
   orderHeader: {
     flexDirection: 'row',
@@ -794,7 +793,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2563EB',
   },
   orderProgressBarDriver: {
-    backgroundColor: '#059669',
+    backgroundColor: '#e17100',
   },
   orderCheckCount: {
     fontSize: 11,
@@ -804,7 +803,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   orderCheckComplete: {
-    color: '#059669',
+    color: '#e17100',
   },
   // Circle Progress Styles
   orderCheckCircles: {
@@ -834,19 +833,19 @@ const styles = StyleSheet.create({
     borderColor: '#3B82F6',
   },
   circleProgressDriver: {
-    borderColor: '#10B981',
+    borderColor: '#f59e0b',
   },
   circleProgressWarehouseComplete: {
     backgroundColor: '#DBEAFE',
     borderColor: '#2563EB',
   },
   circleProgressDriverComplete: {
-    backgroundColor: '#D1FAE5',
-    borderColor: '#059669',
+    backgroundColor: '#FEF3C7',
+    borderColor: '#e17100',
   },
   circleProgressComplete: {
     backgroundColor: '#ECFDF5',
-    borderColor: '#059669',
+    borderColor: '#e17100',
   },
   circleProgressPercent: {
     fontSize: 12,
@@ -863,10 +862,10 @@ const styles = StyleSheet.create({
     color: '#1D4ED8',
   },
   circleProgressPercentDriverComplete: {
-    color: '#059669',
+    color: '#e17100',
   },
   circleProgressPercentComplete: {
-    color: '#059669',
+    color: '#e17100',
   },
   circleProgressLabelRow: {
     flexDirection: 'row',
@@ -882,7 +881,7 @@ const styles = StyleSheet.create({
     color: '#2563EB',
   },
   circleProgressLabelDriver: {
-    color: '#059669',
+    color: '#e17100',
   },
   locationActions: {
     flexDirection: 'row',

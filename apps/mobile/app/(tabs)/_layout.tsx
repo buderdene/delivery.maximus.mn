@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Tabs, useRouter } from 'expo-router';
 import { View, TouchableOpacity, StyleSheet, Image, Platform, Text as RNText, ScrollView, Alert } from 'react-native';
-import { Warehouse, Truck, Menu, X, User, Settings, LogOut, ChevronRight, MapPin } from 'lucide-react-native';
+import { Warehouse, Truck, Menu, X, User, Settings, LogOut, ChevronRight, MapPin, BarChart3, Home } from 'lucide-react-native';
 import * as Application from 'expo-application';
 import { version as appVersion } from '../../package.json';
 import { useAuthStore } from '../../stores/delivery-auth-store';
@@ -27,7 +27,7 @@ function DrawerMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
 
   const menuItems = [
     { icon: User, label: 'Профайл', route: '/profile', color: '#2563EB' },
-    { icon: MapPin, label: 'Байршил', route: '/location', color: '#059669' },
+    { icon: MapPin, label: 'Байршил', route: '/location', color: '#e17100' },
     { icon: Settings, label: 'Тохиргоо', route: '/settings', color: '#6B7280' },
   ];
 
@@ -183,6 +183,16 @@ export default function TabsLayout() {
           ),
         }}
       >
+        {/* Нүүр Tab - Dashboard */}
+        <Tabs.Screen
+          name="home"
+          options={{
+            title: 'Нүүр',
+            headerTitle: 'Өнөөдрийн тойм',
+            tabBarIcon: ({ color, size }) => <Home size={size} color={color} />,
+          }}
+        />
+
         {/* Агуулах Tab - Warehouse checking */}
         <Tabs.Screen
           name="warehouse"
@@ -200,6 +210,16 @@ export default function TabsLayout() {
             title: 'Түгээлт',
             headerTitle: 'Түгээлт',
             tabBarIcon: ({ color, size }) => <Truck size={size} color={color} />,
+          }}
+        />
+
+        {/* Тайлан Tab - Today's report */}
+        <Tabs.Screen
+          name="report"
+          options={{
+            title: 'Тайлан',
+            headerTitle: 'Өнөөдрийн тайлан',
+            tabBarIcon: ({ color, size }) => <BarChart3 size={size} color={color} />,
           }}
         />
 

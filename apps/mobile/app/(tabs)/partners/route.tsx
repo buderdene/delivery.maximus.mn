@@ -173,8 +173,8 @@ function PartnerCard({ partner, onPress, routeRangeKm, index }: { partner: Partn
           
           {partner.balance !== null && partner.balance !== 0 && (
             <HStack style={{ gap: 4, alignItems: 'center' }}>
-              <Wallet size={12} color="#059669" />
-              <Text size="xs" style={{ fontFamily: 'GIP-Medium', color: '#059669' }}>
+              <Wallet size={12} color="#e17100" />
+              <Text size="xs" style={{ fontFamily: 'GIP-Medium', color: '#e17100' }}>
                 {formatBalance(partner.balance)}
               </Text>
             </HStack>

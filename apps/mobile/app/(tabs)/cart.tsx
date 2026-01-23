@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   statValueLarge: {
     fontSize: 18,
     fontFamily: 'GIP-Bold',
-    color: '#059669',
+    color: '#e17100',
   },
   statLabel: {
     fontSize: 12,

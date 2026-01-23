@@ -527,7 +527,7 @@ const styles = StyleSheet.create({
   itemPrice: {
     fontSize: 16,
     fontFamily: 'GIP-Bold',
-    color: '#059669',
+    color: '#e17100',
   },
   itemQty: {
     fontSize: 12,
