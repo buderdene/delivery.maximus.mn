@@ -365,7 +365,7 @@ export default function PackageBoxCheckingScreen() {
           <View style={styles.productImageContainer}>
             {item.image_url ? (
               <Image
-                source={{ uri: item.image_url.replace('https://cloud.local.maximus.mn.test', 'http://cloud.local.maximus.mn') }}
+                source={{ uri: item.image_url.replace('https://cloud.local.maximus.mn.test', 'https://cloud.maximus.mn') }}
                 style={styles.productImage}
                 resizeMode="cover"
               />

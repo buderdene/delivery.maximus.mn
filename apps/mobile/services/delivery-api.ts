@@ -5,7 +5,7 @@
  * 
  * REST API for delivery mobile app
  * 
- * Base URL (Local): http://cloud.local.maximus.mn/api/delivery
+ * Base URL (Local): https://cloud.maximus.mn/api/delivery
  * Base URL (Production): https://cloud.maximus.mn/api/delivery
  * 
  * =====================================================
@@ -84,13 +84,13 @@
 
 import { useAuthStore } from '../stores/delivery-auth-store';
 
-const API_BASE_URL = 'http://cloud.local.maximus.mn/api/delivery';
+const API_BASE_URL = 'https://cloud.maximus.mn/api/delivery';
 
 // Transform image URLs from HTTPS .test domain to HTTP
 export const transformImageUrl = (url: string | null): string | null => {
   if (!url) return null;
-  // Replace https://cloud.local.maximus.mn.test with http://cloud.local.maximus.mn
-  return url.replace('https://cloud.local.maximus.mn.test', 'http://cloud.local.maximus.mn');
+  // Replace https://cloud.local.maximus.mn.test with https://cloud.maximus.mn
+  return url.replace('https://cloud.local.maximus.mn.test', 'https://cloud.maximus.mn');
 };
 
 // ==========================================================================

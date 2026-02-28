@@ -21,7 +21,7 @@
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true,
           "NSExceptionDomains": {
-            "cloud.local.maximus.mn": {
+            "cloud.maximus.mn": {
               "NSExceptionAllowsInsecureHTTPLoads": true,
               "NSTemporaryExceptionAllowsInsecureHTTPLoads": true,
               "NSIncludesSubdomains": true
