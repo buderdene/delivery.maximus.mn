@@ -50,10 +50,7 @@ import * as Location from 'expo-location';
 import { useAuthStore } from '../../../stores/delivery-auth-store';
 import { getPackageOrders, DeliveryOrder, PackageOrdersData, optimizeRoute } from '../../../services/delivery-api';
 
-// Delivery related statuses (after warehouse check completed)
-const DELIVERY_STATUSES = 'loaded,in_progress,delivered,failed';
-
-type FilterStatus = 'loaded' | 'in_progress' | 'delivered' | 'failed';
+type FilterStatus = 'all' | 'loaded' | 'in_progress' | 'delivered' | 'failed';
 
 export default function PackageDeliveryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -62,7 +59,7 @@ export default function PackageDeliveryScreen() {
   const [data, setData] = useState<PackageOrdersData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [filterStatus, setFilterStatus] = useState<FilterStatus>('loaded');
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [optimizing, setOptimizing] = useState(false);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
@@ -120,7 +117,6 @@ export default function PackageDeliveryScreen() {
       const result = await getPackageOrders({
         packageId: parseInt(id),
         workerId: worker?.id,
-        status: DELIVERY_STATUSES,
         startLatitude: location?.latitude,
         startLongitude: location?.longitude,
       });
@@ -207,7 +203,9 @@ export default function PackageDeliveryScreen() {
   };
 
   const filteredOrders = data?.orders?.filter((order) => {
-    return order && order.delivery_status === filterStatus;
+    if (!order) return false;
+    if (filterStatus === 'all') return true;
+    return order.delivery_status === filterStatus;
   }) || [];
 
   const getStatusColor = (status: string) => {
@@ -223,12 +221,14 @@ export default function PackageDeliveryScreen() {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
+      case 'assigned_to_driver': return 'Оноогдсон';
+      case 'driver_checking': return 'Тулгаж байна';
       case 'loaded': return 'Ачигдсан';
       case 'in_progress': return 'Хүргэж байна';
       case 'delivered': return 'Хүргэгдсэн';
       case 'failed': return 'Амжилтгүй';
       case 'returned': return 'Буцаагдсан';
-      default: return status;
+      default: return status || 'Хүлээгдэж буй';
     }
   };
 
@@ -413,7 +413,7 @@ export default function PackageDeliveryScreen() {
           </View>
           <View style={styles.summaryItem}>
             <Clock size={20} color="#F59E0B" />
-            <Text style={styles.summaryValue}>{(statusCounts.loaded || 0) + (statusCounts.in_progress || 0)}</Text>
+            <Text style={styles.summaryValue}>{(data?.total_count || 0) - (statusCounts.delivered || 0) - (statusCounts.failed || 0)}</Text>
             <Text style={styles.summaryLabel}>Үлдсэн</Text>
           </View>
           <View style={styles.summaryItem}>
@@ -430,6 +430,7 @@ export default function PackageDeliveryScreen() {
           horizontal
           showsHorizontalScrollIndicator={false}
           data={[
+            { status: 'all' as FilterStatus, label: 'Бүгд', count: data?.total_count },
             { status: 'loaded' as FilterStatus, label: 'Ачигдсан', count: statusCounts.loaded },
             { status: 'in_progress' as FilterStatus, label: 'Хүргэж буй', count: statusCounts.in_progress },
             { status: 'delivered' as FilterStatus, label: 'Хүргэсэн', count: statusCounts.delivered },
