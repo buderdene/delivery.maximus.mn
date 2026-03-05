@@ -290,7 +290,7 @@ export default function PackageDeliveryScreen() {
             {order.customer?.name || 'Хэрэглэгч'}
           </Text>
           
-          {order.customer?.address && (
+          {!!order.customer?.address && (
             <View style={styles.infoRow}>
               <MapPin size={14} color="#6B7280" />
               <Text style={styles.infoText} numberOfLines={2}>
@@ -299,7 +299,7 @@ export default function PackageDeliveryScreen() {
             </View>
           )}
           
-          {order.customer?.phone && (
+          {!!order.customer?.phone && (
             <View style={styles.infoRow}>
               <Phone size={14} color="#6B7280" />
               <Text style={styles.infoText}>{order.customer.phone}</Text>
@@ -318,7 +318,7 @@ export default function PackageDeliveryScreen() {
                 <Text style={styles.distanceText}>{order.distance_km.toFixed(1)} км</Text>
               </TouchableOpacity>
             )}
-            {order.customer?.what3words && order.customer.what3words !== 'location_no_check' && (
+            {!!order.customer?.what3words && order.customer.what3words !== 'location_no_check' && (
               <TouchableOpacity
                 style={styles.w3wBadge}
                 onPress={(e) => {

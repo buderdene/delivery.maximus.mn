@@ -6,3 +6,4 @@ ignoredBuiltDependencies:
   - better-sqlite3
   - sharp
   - unrs-resolver
+#npx expo start --ios --port 8086
