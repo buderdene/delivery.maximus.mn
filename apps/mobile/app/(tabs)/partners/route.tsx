@@ -17,7 +17,8 @@
  */
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { FlatList, TextInput, StyleSheet, TouchableOpacity, RefreshControl, ActivityIndicator, Linking, Image, SafeAreaView } from 'react-native';
+import { FlatList, TextInput, StyleSheet, TouchableOpacity, RefreshControl, ActivityIndicator, Linking, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Location from 'expo-location';
 import { 

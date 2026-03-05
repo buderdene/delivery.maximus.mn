@@ -231,6 +231,8 @@ export interface WorkerProfile {
     worker_type: string;
     worker_type_label: string;
     is_available: boolean;
+    license_number?: string | null;
+    license_expiry?: string | null;
   };
   car: {
     id: number;
@@ -239,6 +241,52 @@ export interface WorkerProfile {
     model: string;
   } | null;
   today_stats: TodayStats;
+}
+
+/**
+ * Car Detail — Машины дэлгэрэнгүй мэдээлэл
+ */
+export interface CarDetail {
+  id: number;
+  plate: string;
+  brand: string;
+  model: string;
+  year: number | null;
+  color: string | null;
+  max_cbm: number;
+  fuel_type: string | null;
+  status: string;
+  status_label: string;
+  status_color: string;
+  image_url: string | null;
+  driver: CoworkerInfo | null;
+  deliverer: CoworkerInfo | null;
+  workers_count: number;
+  zones: Array<{ id: number; name: string }>;
+}
+
+/**
+ * Coworker — Хамт ажиллагч мэдээлэл
+ */
+export interface CoworkerInfo {
+  id: number;
+  employee_id?: number;
+  name: string;
+  phone: string | null;
+  avatar: string | null;
+  worker_type?: string;
+  worker_type_label?: string;
+  is_available?: boolean;
+  license_number?: string | null;
+}
+
+/**
+ * Coworkers Response
+ */
+export interface CoworkersData {
+  car: { id: number; plate: string; brand: string; model: string } | null;
+  coworkers: CoworkerInfo[];
+  total: number;
 }
 
 // New types for delivery summary with package info
@@ -368,6 +416,27 @@ async function apiRequest<T>(
 export async function getWorkerProfile(workerId?: number): Promise<{ success: boolean; data?: WorkerProfile; message?: string }> {
   const params = workerId ? `?worker_id=${workerId}` : '';
   return apiRequest<WorkerProfile>(`/worker/profile${params}`);
+}
+
+/**
+ * МАШИНЫ ДЭЛГЭРЭНГҮЙ МЭДЭЭЛЭЛ
+ * GET /worker/car
+ *
+ * Тухайн ажилтанд хуваарилагдсан машины бүрэн мэдээлэл:
+ * plate, brand, model, year, color, max_cbm, fuel_type, status, zones, driver, deliverer
+ */
+export async function getCarDetail(): Promise<{ success: boolean; data?: CarDetail | null; message?: string }> {
+  return apiRequest<CarDetail | null>('/worker/car');
+}
+
+/**
+ * ХАМТ АЖИЛЛАХ АЖИЛЧДЫН ЖАГСААЛТ
+ * GET /worker/coworkers
+ *
+ * Мөн машинд хуваарилагдсан бусад ажилчдын мэдээлэл
+ */
+export async function getCoworkers(): Promise<{ success: boolean; data?: CoworkersData; message?: string }> {
+  return apiRequest<CoworkersData>('/worker/coworkers');
 }
 
 // Package list item type

@@ -282,6 +282,20 @@ export default function TabsLayout() {
             href: null,
           }}
         />
+        <Tabs.Screen
+          name="car"
+          options={{
+            href: null,
+            headerTitle: 'Машины мэдээлэл',
+          }}
+        />
+        <Tabs.Screen
+          name="coworkers"
+          options={{
+            href: null,
+            headerTitle: 'Хамт ажиллагчид',
+          }}
+        />
       </Tabs>
 
       <DrawerMenu isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />

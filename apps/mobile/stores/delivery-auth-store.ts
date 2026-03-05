@@ -78,6 +78,46 @@ export interface Car {
   model: string;
 }
 
+export interface CarDetail {
+  id: number;
+  plate: string;
+  brand: string;
+  model: string;
+  year: number | null;
+  color: string | null;
+  max_cbm: number;
+  fuel_type: string | null;
+  status: string;
+  status_label: string;
+  status_color: string;
+  image_url: string | null;
+  zones: Array<{ id: number; name: string }>;
+}
+
+export interface Coworker {
+  id: number;
+  name: string;
+  phone: string | null;
+  avatar: string | null;
+  worker_type: string;
+  worker_type_label: string;
+  is_available: boolean;
+}
+
+export interface DeliveryInfo {
+  worker: {
+    id: number;
+    employee_id: number;
+    worker_type: string;
+    worker_type_label: string;
+    is_available: boolean;
+    license_number: string | null;
+    license_expiry: string | null;
+  };
+  car: CarDetail | null;
+  coworkers: Coworker[];
+}
+
 export interface TodayStats {
   total_orders: number;
   pending: number;
@@ -93,6 +133,7 @@ interface AuthState {
   token: string | null;
   erpRoutes: ErpRoute[] | null;
   employeeDetail: EmployeeDetail | null;
+  deliveryInfo: DeliveryInfo | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -111,6 +152,7 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       erpRoutes: null,
       employeeDetail: null,
+      deliveryInfo: null,
       isAuthenticated: false,
       isLoading: false,
       error: null,
@@ -176,11 +218,16 @@ export const useAuthStore = create<AuthState>()(
             };
 
             console.log('Delivery Auth: Login successful, worker:', worker.name, 'dept:', departmentName, 'job:', jobName);
+            if (data.delivery_info) {
+              console.log('Delivery Auth: Car:', data.delivery_info.car?.plate, data.delivery_info.car?.brand, data.delivery_info.car?.model);
+              console.log('Delivery Auth: Coworkers:', data.delivery_info.coworkers?.length || 0);
+            }
             set({
               worker,
               token: data.access_token,
               erpRoutes: data.erp_details || null,
               employeeDetail: data.employee_detail || null,
+              deliveryInfo: data.delivery_info || null,
               isAuthenticated: true,
               isLoading: false,
               error: null,
@@ -239,6 +286,7 @@ export const useAuthStore = create<AuthState>()(
           token: null,
           erpRoutes: null,
           employeeDetail: null,
+          deliveryInfo: null,
           isAuthenticated: false,
           error: null,
         });
@@ -260,6 +308,7 @@ export const useAuthStore = create<AuthState>()(
         token: state.token, 
         erpRoutes: state.erpRoutes,
         employeeDetail: state.employeeDetail,
+        deliveryInfo: state.deliveryInfo,
         isAuthenticated: state.isAuthenticated 
       }),
     }

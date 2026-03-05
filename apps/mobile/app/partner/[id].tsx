@@ -28,7 +28,8 @@
  */
 
 import React, { useEffect, useState, useRef } from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity, Linking, Platform, ActivityIndicator, Alert, SafeAreaView, Animated, Dimensions } from 'react-native';
+import { View, ScrollView, StyleSheet, TouchableOpacity, Linking, Platform, ActivityIndicator, Alert, Animated, Dimensions } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import * as Location from 'expo-location';
 import {

@@ -15,8 +15,9 @@ import {
   TouchableOpacity,
   RefreshControl,
   ActivityIndicator,
-  Alert,
   ScrollView,
+  Linking,
+  Image,
 } from 'react-native';
 // @ts-ignore - expo-router exports router in v6
 import { router } from 'expo-router';
@@ -34,8 +35,10 @@ import {
   BarChart3,
   Banknote,
   XCircle,
+  Phone,
+  Circle,
 } from 'lucide-react-native';
-import { useAuthStore } from '../../stores/delivery-auth-store';
+import { useAuthStore, type Coworker } from '../../stores/delivery-auth-store';
 import { 
   getWorkerPackages, 
   getWorkerProfile, 
@@ -46,7 +49,7 @@ import {
 } from '../../services/delivery-api';
 
 export default function HomeScreen() {
-  const { worker } = useAuthStore();
+  const { worker, deliveryInfo } = useAuthStore();
   
   const [profile, setProfile] = useState<WorkerProfile | null>(null);
   const [report, setReport] = useState<TodayReportData | null>(null);
@@ -58,12 +61,12 @@ export default function HomeScreen() {
   const fetchData = useCallback(async () => {
     try {
       const [packagesResult, profileResult, reportResult] = await Promise.all([
-        getWorkerPackages(worker?.id),
-        getWorkerProfile(worker?.id),
-        getTodayReport(),
+        getWorkerPackages(worker?.id).catch(() => ({ success: false as const })),
+        getWorkerProfile(worker?.id).catch(() => ({ success: false as const })),
+        getTodayReport().catch(() => ({ success: false as const })),
       ]);
       
-      if (packagesResult.success && packagesResult.data) {
+      if (packagesResult.success && 'data' in packagesResult && packagesResult.data) {
         // Count warehouse pending packages
         const warehousePackages = packagesResult.data.packages.filter(
           (pkg) => pkg.warehouse_pending > 0
@@ -77,15 +80,15 @@ export default function HomeScreen() {
         setDeliveryPending(deliveryPackages.length);
       }
       
-      if (profileResult.success && profileResult.data) {
+      if (profileResult.success && 'data' in profileResult && profileResult.data) {
         setProfile(profileResult.data);
       }
 
-      if (reportResult.success && reportResult.data) {
+      if (reportResult.success && 'data' in reportResult && reportResult.data) {
         setReport(reportResult.data);
       }
     } catch (error) {
-      Alert.alert('Алдаа', 'Сүлжээний алдаа гарлаа');
+      console.warn('Dashboard fetch error:', error);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -127,27 +130,70 @@ export default function HomeScreen() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#2563EB']} />
       }
     >
-      {/* Worker Info Card */}
-      <View style={styles.workerCard}>
-        <View style={styles.workerHeader}>
-          <View style={styles.avatarContainer}>
-            <User size={28} color="#2563EB" />
+      {/* Team Card — Өөрийн мэдээлэл + Хамтрагчид */}
+      <View style={styles.teamCard}>
+        {/* Self */}
+        <View style={styles.teamMemberRow}>
+          <View style={[styles.teamAvatar, { backgroundColor: '#EFF6FF' }]}>  
+            {(worker?.avatar || profile?.worker?.avatar) ? (
+              <Image source={{ uri: worker?.avatar || profile?.worker?.avatar! }} style={styles.teamAvatarImage} />
+            ) : (
+              <User size={22} color="#2563EB" />
+            )}
           </View>
-          <View style={styles.workerInfo}>
-            <Text style={styles.workerName}>{worker?.name || profile?.worker?.name || 'Ажилтан'}</Text>
-            <Text style={styles.workerType}>
-              {profile?.worker?.worker_type_label || 'Жолооч'}
+          <View style={styles.teamMemberInfo}>
+            <Text style={styles.teamMemberName}>{worker?.name || profile?.worker?.name || 'Ажилтан'}</Text>
+            <Text style={styles.teamMemberRole}>
+              {deliveryInfo?.worker?.worker_type_label || profile?.worker?.worker_type_label || 'Жолооч'} • Би
             </Text>
           </View>
+          <Circle
+            size={8}
+            color={deliveryInfo?.worker?.is_available ? '#16A34A' : '#D1D5DB'}
+            fill={deliveryInfo?.worker?.is_available ? '#16A34A' : '#D1D5DB'}
+          />
         </View>
-        
-        {profile?.car && (
-          <View style={styles.carInfo}>
-            <Car size={16} color="#6B7280" />
-            <Text style={styles.carText}>
-              {profile.car.brand} {profile.car.model} • {profile.car.plate}
-            </Text>
-          </View>
+
+        {/* Coworkers */}
+        {deliveryInfo?.coworkers && deliveryInfo.coworkers.length > 0 && (
+          <>
+            {deliveryInfo.coworkers.map((cw: Coworker) => (
+              <View key={cw.id} style={styles.teamMemberRow}>
+                <View style={[styles.teamAvatar, { 
+                  backgroundColor: cw.worker_type === 'driver' ? '#EFF6FF' 
+                    : cw.worker_type === 'deliverer' ? '#F0FDF4' 
+                    : '#FEF3C7' 
+                }]}>
+                  {cw.avatar ? (
+                    <Image source={{ uri: cw.avatar }} style={styles.teamAvatarImage} />
+                  ) : (
+                    <User size={18} color={
+                      cw.worker_type === 'driver' ? '#2563EB' 
+                      : cw.worker_type === 'deliverer' ? '#16A34A' 
+                      : '#D97706'
+                    } />
+                  )}
+                </View>
+                <View style={styles.teamMemberInfo}>
+                  <Text style={styles.teamMemberName}>{cw.name}</Text>
+                  <Text style={styles.teamMemberRole}>{cw.worker_type_label}</Text>
+                </View>
+                <Circle
+                  size={8}
+                  color={cw.is_available ? '#16A34A' : '#D1D5DB'}
+                  fill={cw.is_available ? '#16A34A' : '#D1D5DB'}
+                />
+                {cw.phone && (
+                  <TouchableOpacity
+                    style={styles.teamCallBtn}
+                    onPress={() => Linking.openURL(`tel:${cw.phone}`)}
+                  >
+                    <Phone size={14} color="#FFFFFF" />
+                  </TouchableOpacity>
+                )}
+              </View>
+            ))}
+          </>
         )}
 
         {/* Today's Date */}
@@ -163,6 +209,43 @@ export default function HomeScreen() {
           </Text>
         </View>
       </View>
+
+      {/* Car Card — Автомашины мэдээлэл */}
+      {(profile?.car || deliveryInfo?.car) && (
+        <TouchableOpacity
+          style={styles.carCard}
+          activeOpacity={0.7}
+          onPress={() => router.push('/(tabs)/car' as any)}
+        >
+          <View style={styles.carCardIcon}>
+            <Car size={24} color="#2563EB" />
+          </View>
+          <View style={styles.carCardInfo}>
+            <Text style={styles.carCardPlate}>
+              {deliveryInfo?.car?.plate || profile?.car?.plate}
+            </Text>
+            <Text style={styles.carCardName}>
+              {deliveryInfo?.car
+                ? `${deliveryInfo.car.brand} ${deliveryInfo.car.model}`
+                : `${profile!.car!.brand} ${profile!.car!.model}`
+              }
+            </Text>
+          </View>
+          {deliveryInfo?.car?.status_label && (
+            <View style={[styles.carStatusBadge, {
+              backgroundColor: deliveryInfo.car.status === 'active' ? '#D1FAE5'
+                : deliveryInfo.car.status === 'in_use' ? '#DBEAFE' : '#FEF3C7'
+            }]}>
+              <Text style={[styles.carStatusText, {
+                color: deliveryInfo.car.status === 'active' ? '#059669'
+                  : deliveryInfo.car.status === 'in_use' ? '#2563EB' : '#D97706'
+              }]}>
+                {deliveryInfo.car.status_label}
+              </Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      )}
 
       {/* Today Stats Overview */}
       {todayStats && (
@@ -278,6 +361,8 @@ export default function HomeScreen() {
             <Text style={styles.quickActionText}>Байршил</Text>
           </TouchableOpacity>
         </View>
+
+
       </View>
 
     </ScrollView>
@@ -306,8 +391,66 @@ const styles = StyleSheet.create({
     color: '#6B7280',
   },
   
-  // Worker Card
-  workerCard: {
+  // Team Card
+  teamCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  teamMemberRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+    gap: 10,
+  },
+  teamAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  teamAvatarImage: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+  },
+  teamMemberInfo: {
+    flex: 1,
+  },
+  teamMemberName: {
+    fontSize: 15,
+    fontFamily: 'GIP-SemiBold',
+    color: '#1F2937',
+  },
+  teamMemberRole: {
+    fontSize: 12,
+    fontFamily: 'GIP-Medium',
+    color: '#6B7280',
+    marginTop: 1,
+  },
+  teamCallBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#2563EB',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  // Car Card
+  carCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     padding: 16,
@@ -318,46 +461,38 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  workerHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  avatarContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+  carCardIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: '#EFF6FF',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  workerInfo: {
-    marginLeft: 14,
+  carCardInfo: {
     flex: 1,
+    marginLeft: 12,
   },
-  workerName: {
-    fontSize: 18,
+  carCardPlate: {
+    fontSize: 17,
     fontFamily: 'GIP-Bold',
     color: '#1F2937',
+    letterSpacing: 1,
   },
-  workerType: {
-    fontSize: 14,
+  carCardName: {
+    fontSize: 13,
     fontFamily: 'GIP-Medium',
     color: '#6B7280',
     marginTop: 2,
   },
-  carInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#F3F4F6',
+  carStatusBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
   },
-  carText: {
-    fontSize: 14,
-    fontFamily: 'GIP-Medium',
-    color: '#4B5563',
+  carStatusText: {
+    fontSize: 12,
+    fontFamily: 'GIP-SemiBold',
   },
   todayDateRow: {
     flexDirection: 'row',
@@ -537,4 +672,5 @@ const styles = StyleSheet.create({
     fontFamily: 'GIP-Bold',
     color: '#FFFFFF',
   },
+
 });

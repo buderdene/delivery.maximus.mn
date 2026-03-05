@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Users, Route, ChevronRight } from 'lucide-react-native';
 import { Box, VStack, HStack, Text, Heading } from '../../../components/ui';
