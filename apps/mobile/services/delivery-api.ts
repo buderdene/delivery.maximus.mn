@@ -269,6 +269,27 @@ export interface TodayReportData {
   packages: PackageSummary[];
 }
 
+export interface EmployeeInfo {
+  employee_code: string;
+  last_name: string | null;
+  first_name: string | null;
+  register: string | null;
+  gender: string | null;
+  birthday: string | null;
+  mobile_phone: string | null;
+  work_phone: string | null;
+  work_email: string | null;
+  department: string | null;
+  job_position: string | null;
+  work_location: string | null;
+  employment_start_date: string | null;
+  employment_duration: string | null;
+  avatar: string | null;
+  is_active: boolean;
+  emergency_contact: string | null;
+  emergency_phone: string | null;
+}
+
 export interface WorkerProfile {
   worker: {
     id: number;
@@ -278,15 +299,13 @@ export interface WorkerProfile {
     worker_type: string;
     worker_type_label: string;
     is_available: boolean;
+    employee_id?: number;
     license_number?: string | null;
     license_expiry?: string | null;
   };
-  car: {
-    id: number;
-    plate: string;
-    brand: string;
-    model: string;
-  } | null;
+  employee: EmployeeInfo;
+  car: CarDetail | null;
+  coworkers: CoworkerInfo[];
   today_stats: TodayStats;
 }
 

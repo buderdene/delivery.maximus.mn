@@ -290,6 +290,13 @@ export default function TabsLayout() {
           }}
         />
         <Tabs.Screen
+          name="profile"
+          options={{
+            href: null,
+            headerTitle: 'Профайл',
+          }}
+        />
+        <Tabs.Screen
           name="coworkers"
           options={{
             href: null,
