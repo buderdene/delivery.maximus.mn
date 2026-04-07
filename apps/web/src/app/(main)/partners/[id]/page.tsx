@@ -56,6 +56,9 @@ import { getCustomerDetail, type CustomerDetail } from '@/services/api'
 import { getRouteId } from '@/lib/auth'
 import type { Partner } from '@/types'
 
+// Number of characters to show for pricing policy UUID preview
+const PRICING_POLICY_PREVIEW_LENGTH = 8
+
 // Format currency
 const formatCurrency = (value: number | null) => {
   if (value === null || value === undefined) return '-'
@@ -211,7 +214,9 @@ function CollapsibleDetailsSection({ partner, customerDetail }: { partner: Partn
     {
       icon: CreditCard,
       title: 'Санхүүгийн мэдээлэл',
-      subtitle: pricingPolicy ? `Үнийн бодлого: ${pricingPolicy.slice(0, 8)}...` : formatCurrency(partner.balance),
+      subtitle: pricingPolicy
+        ? `${formatCurrency(partner.balance)} · Үнийн бодлого: ${pricingPolicy.length > PRICING_POLICY_PREVIEW_LENGTH ? `${pricingPolicy.slice(0, PRICING_POLICY_PREVIEW_LENGTH)}...` : pricingPolicy}`
+        : formatCurrency(partner.balance),
       content: (
         <div className="space-y-1">
           <DetailRow label="Үлдэгдэл" value={formatCurrency(partner.balance)} icon={Wallet} />
@@ -373,6 +378,8 @@ export default function PartnerDetailPage() {
       getCustomerDetail(partnerId, routeId).then((result) => {
         if (result.success && result.data) {
           setCustomerDetail(result.data)
+        } else if (!result.success) {
+          console.error('[PartnerDetail] Failed to fetch customer detail:', result.error)
         }
       })
     }

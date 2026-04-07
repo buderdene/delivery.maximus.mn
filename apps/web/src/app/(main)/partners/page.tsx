@@ -167,6 +167,7 @@ export default function PartnersPage() {
   const [searchInput, setSearchInput] = useState('');
   const [selectedDay, setSelectedDay] = useState('monday');
   const [subFilter, setSubFilter] = useState('all');
+  // Default sort by name (asc) for consistent, readable partner lists
   const [sortField, setSortField] = useState<'name' | 'companyCode' | null>('name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
@@ -219,8 +220,8 @@ export default function PartnersPage() {
   const sortedPartners = useMemo(() => {
     if (!sortField) return partners;
     return [...partners].sort((a, b) => {
-      const aVal = (a[sortField] || '').toLowerCase();
-      const bVal = (b[sortField] || '').toLowerCase();
+      const aVal = (a[sortField] != null ? a[sortField]! : '').toLowerCase();
+      const bVal = (b[sortField] != null ? b[sortField]! : '').toLowerCase();
       if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
       if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
       return 0;

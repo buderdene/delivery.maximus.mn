@@ -453,6 +453,7 @@ export async function getPartner(
 export interface CustomerContract {
   contractId: string | null;
   priceTypeId: string | null;
+  /** Loan condition description returned as a human-readable string by the ERP (e.g. "Зээл биш") */
   isLoan: string | null;
 }
 
