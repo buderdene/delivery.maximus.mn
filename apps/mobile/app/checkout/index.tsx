@@ -180,6 +180,10 @@ export default function CheckoutScreen() {
       const now = new Date();
       const datetime = now.toISOString().slice(0, 19).replace('T', ' ');
 
+      // БИЗНЕС ЛОГИК: Харилцагчийн гэрээний үнийн төрөл байвал тэрийг ашиглана,
+      // байхгүй бол агуулахын үнийн төрөлийг ашиглана
+      const effectivePriceTypeId = selectedPartner.priceTypeId || selectedWarehouse.priceTypeId || '';
+
       // Build order products for ERP format
       const orderProducts = items.map((item) => ({
         productId: item.productId,
@@ -187,7 +191,7 @@ export default function CheckoutScreen() {
           typeId: s.typeId,
           count: s.count,
         })),
-        priceType: selectedPartner.priceTypeId || selectedWarehouse.priceTypeId,
+        priceType: effectivePriceTypeId,
         sale: 0,
         promotions: [],
       }));
@@ -207,12 +211,12 @@ export default function CheckoutScreen() {
         deliveryAdditionalInfo: '',
         description: note || '',
         orderProducts,
-        priceTypeId: selectedPartner.priceTypeId || selectedWarehouse.priceTypeId,
+        priceTypeId: effectivePriceTypeId,
         paymentcheck: false, // Step 1 = false (Draft)
         latitude: userLocation.latitude,
         longitude: userLocation.longitude,
         useDiscount: true,
-        customerPriceTypeId: selectedPartner.priceTypeId || selectedWarehouse.priceTypeId,
+        customerPriceTypeId: effectivePriceTypeId,
         deliveryDate: null,
         isSale: selectedWarehouse.isSale || false,
         start_date: datetime,
@@ -276,6 +280,10 @@ export default function CheckoutScreen() {
       const now = new Date();
       const endDatetime = now.toISOString().slice(0, 19).replace('T', ' ');
 
+      // БИЗНЕС ЛОГИК: Харилцагчийн гэрээний үнийн төрөл байвал тэрийг ашиглана,
+      // байхгүй бол агуулахын үнийн төрөлийг ашиглана
+      const effectivePriceTypeId = selectedPartner.priceTypeId || selectedWarehouse.priceTypeId || '';
+
       // Build order products for ERP format
       const orderProducts = items.map((item) => ({
         productId: item.productId,
@@ -283,7 +291,7 @@ export default function CheckoutScreen() {
           typeId: s.typeId,
           count: s.count,
         })),
-        priceType: selectedPartner.priceTypeId || selectedWarehouse.priceTypeId,
+        priceType: effectivePriceTypeId,
         sale: 0,
         promotions: [],
       }));
@@ -305,8 +313,8 @@ export default function CheckoutScreen() {
         deliveryAdditionalInfo: '',
         description: note || '',
         orderProducts,
-        priceTypeId: selectedPartner.priceTypeId || selectedWarehouse.priceTypeId,
-        customerPriceTypeId: selectedPartner.priceTypeId || selectedWarehouse.priceTypeId,
+        priceTypeId: effectivePriceTypeId,
+        customerPriceTypeId: effectivePriceTypeId,
         deliveryDate: null,
         isSale: selectedWarehouse.isSale || false,
         start_date: endDatetime,
