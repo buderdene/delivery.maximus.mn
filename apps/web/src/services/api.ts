@@ -447,6 +447,64 @@ export async function getPartner(
 }
 
 // ============================================================================
+// Customer Detail API (ERP - 1C) - /cd/Companies/:companyId
+// ============================================================================
+
+export interface CustomerContract {
+  contractId: string | null;
+  priceTypeId: string | null;
+  /** Loan condition description returned as a human-readable string by the ERP (e.g. "Зээл биш") */
+  isLoan: string | null;
+}
+
+export interface CustomerDetail {
+  commonName: string | null;
+  name: string | null;
+  registryNumber: string | null;
+  promotionPoint: string | null;
+  salesChannel: string | null;
+  businessRegion: string | null;
+  deliveryRegion: string | null;
+  email: string | null;
+  address: string | null;
+  phoneNumbers: string | null;
+  companyType: string | null;
+  taxPayerType: boolean | null;
+  deactived: boolean | null;
+  contract: CustomerContract | null;
+  bankAccounts: unknown[];
+}
+
+export async function getCustomerDetail(
+  companyId: string,
+  routeId: string
+): Promise<{
+  success: boolean;
+  data?: CustomerDetail;
+  error?: string;
+}> {
+  try {
+    const params = new URLSearchParams({ routeId });
+    const response = await fetch(`${ERP_URL}/cd/Companies/${companyId}?${params}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      return { success: false, error: `HTTP ${response.status}: ${response.statusText}` };
+    }
+
+    const data: CustomerDetail = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : 'Сүлжээний алдаа' };
+  }
+}
+
+// ============================================================================
 // Product Images API (GraphQL - cloud.maximus.mn)
 // ============================================================================
 

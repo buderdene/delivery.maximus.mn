@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Users, Search, Phone, Mail, MapPin, Loader2, Building2 } from 'lucide-react';
+import { Users, Search, Phone, Mail, MapPin, Loader2, Building2, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -167,6 +167,9 @@ export default function PartnersPage() {
   const [searchInput, setSearchInput] = useState('');
   const [selectedDay, setSelectedDay] = useState('monday');
   const [subFilter, setSubFilter] = useState('all');
+  // Default sort by name (asc) for consistent, readable partner lists
+  const [sortField, setSortField] = useState<'name' | 'companyCode' | null>('name');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   // Weekday config with translations
   const WEEKDAYS = WEEKDAY_IDS.map(id => ({
@@ -204,6 +207,26 @@ export default function PartnersPage() {
     e.preventDefault();
     setSearch(searchInput);
   };
+
+  const handleSort = (field: 'name' | 'companyCode') => {
+    if (sortField === field) {
+      setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const sortedPartners = useMemo(() => {
+    if (!sortField) return partners;
+    return [...partners].sort((a, b) => {
+      const aVal = (a[sortField] != null ? a[sortField]! : '').toLowerCase();
+      const bVal = (b[sortField] != null ? b[sortField]! : '').toLowerCase();
+      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [partners, sortField, sortDirection]);
 
   const handleAddCustomer = (data: CustomerFormData) => {
     console.log('New customer data:', data);
@@ -305,7 +328,23 @@ export default function PartnersPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('partners.name')}</TableHead>
+                  <TableHead
+                    className="cursor-pointer select-none"
+                    onClick={() => handleSort('name')}
+                  >
+                    <div className="flex items-center gap-1">
+                      {t('partners.name')}
+                      {sortField === 'name' ? (
+                        sortDirection === 'asc' ? (
+                          <ArrowUp className="h-4 w-4" />
+                        ) : (
+                          <ArrowDown className="h-4 w-4" />
+                        )
+                      ) : (
+                        <ArrowUpDown className="h-4 w-4 opacity-40" />
+                      )}
+                    </div>
+                  </TableHead>
                   <TableHead>{t('partners.phone')}</TableHead>
                   <TableHead>{t('partners.email')}</TableHead>
                   <TableHead>{t('partners.address')}</TableHead>
@@ -313,7 +352,7 @@ export default function PartnersPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {partners.map((partner) => (
+                {sortedPartners.map((partner) => (
                   <PartnerRow 
                     key={partner.id} 
                     partner={partner} 

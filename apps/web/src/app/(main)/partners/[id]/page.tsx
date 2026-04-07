@@ -52,7 +52,12 @@ import { AccordionIconSubtitle } from '@/components/shadcn-studio/accordion/acco
 
 import { usePartnerStore } from '@/stores/partner-store'
 import { useCartStore } from '@/stores/cart-store'
+import { getCustomerDetail, type CustomerDetail } from '@/services/api'
+import { getRouteId } from '@/lib/auth'
 import type { Partner } from '@/types'
+
+// Number of characters to show for pricing policy UUID preview
+const PRICING_POLICY_PREVIEW_LENGTH = 8
 
 // Format currency
 const formatCurrency = (value: number | null) => {
@@ -151,7 +156,12 @@ function CategorySection({ partner }: { partner: Partner }) {
 }
 
 // Collapsible Details using AccordionIconSubtitle
-function CollapsibleDetailsSection({ partner }: { partner: Partner }) {
+function CollapsibleDetailsSection({ partner, customerDetail }: { partner: Partner; customerDetail: CustomerDetail | null }) {
+  const pricingPolicy = customerDetail?.contract?.priceTypeId || null
+  const isLoan = customerDetail?.contract?.isLoan || null
+  const companyType = customerDetail?.companyType || null
+  const registryNumber = customerDetail?.registryNumber || null
+
   const accordionItems = [
     {
       icon: Building2,
@@ -161,10 +171,11 @@ function CollapsibleDetailsSection({ partner }: { partner: Partner }) {
         <div className="space-y-1">
           <DetailRow label="Байгууллагын нэр" value={partner.name} icon={Building2} />
           <DetailRow label="Толгой компани" value={partner.headCompanyName} icon={User} />
-          <DetailRow label="Регистр" value={partner.headCompanyRegister} icon={Hash} />
+          <DetailRow label="Регистр" value={partner.headCompanyRegister || registryNumber} icon={Hash} />
           <DetailRow label="Компаны код" value={partner.companyCode} icon={Hash} />
           <DetailRow label="ERP UUID" value={partner.erp_uuid} icon={Globe} />
           <DetailRow label="ID" value={partner.id} icon={Hash} />
+          {companyType && <DetailRow label="Компаний төрөл" value={companyType} icon={Building2} />}
         </div>
       )
     },
@@ -203,13 +214,17 @@ function CollapsibleDetailsSection({ partner }: { partner: Partner }) {
     {
       icon: CreditCard,
       title: 'Санхүүгийн мэдээлэл',
-      subtitle: formatCurrency(partner.balance),
+      subtitle: pricingPolicy
+        ? `${formatCurrency(partner.balance)} · Үнийн бодлого: ${pricingPolicy.length > PRICING_POLICY_PREVIEW_LENGTH ? `${pricingPolicy.slice(0, PRICING_POLICY_PREVIEW_LENGTH)}...` : pricingPolicy}`
+        : formatCurrency(partner.balance),
       content: (
         <div className="space-y-1">
           <DetailRow label="Үлдэгдэл" value={formatCurrency(partner.balance)} icon={Wallet} />
           <DetailRow label="Зээлийн лимит" value={formatCurrency(partner.debtLimit)} icon={CreditCard} />
           <DetailRow label="Зээлийн хоног" value={partner.debtDays ? `${partner.debtDays} хоног` : null} icon={Clock} />
           <DetailRow label="Борлуулалтын лимит" value={formatCurrency(partner.salesLimit)} icon={BarChart3} />
+          {pricingPolicy && <DetailRow label="Үнийн бодлого (priceTypeId)" value={pricingPolicy} icon={DollarSign} />}
+          {isLoan && <DetailRow label="Зээлийн нөхцөл" value={isLoan} icon={CreditCard} />}
         </div>
       )
     },
@@ -304,7 +319,7 @@ function ActionButtons({
 }
 
 // Main Tab Content
-function MainTabContent({ partner }: { partner: Partner }) {
+function MainTabContent({ partner, customerDetail }: { partner: Partner; customerDetail: CustomerDetail | null }) {
   return (
     <div className="pb-32 space-y-4">
       <div className="p-4">
@@ -313,7 +328,7 @@ function MainTabContent({ partner }: { partner: Partner }) {
       <Separator />
       <CategorySection partner={partner} />
       <Separator />
-      <CollapsibleDetailsSection partner={partner} />
+      <CollapsibleDetailsSection partner={partner} customerDetail={customerDetail} />
     </div>
   )
 }
@@ -347,6 +362,7 @@ export default function PartnerDetailPage() {
   const { partners, fetchPartners, isLoading } = usePartnerStore()
   const { setSelectedPartner, selectedPartner, totalItems, clearCart } = useCartStore()
   const [showChangeConfirm, setShowChangeConfirm] = useState(false)
+  const [customerDetail, setCustomerDetail] = useState<CustomerDetail | null>(null)
 
   useEffect(() => {
     // If partners not loaded, fetch them
@@ -354,6 +370,20 @@ export default function PartnerDetailPage() {
       fetchPartners()
     }
   }, [partners.length, fetchPartners])
+
+  useEffect(() => {
+    // Fetch detailed customer info (including pricing policy/contract)
+    const routeId = getRouteId()
+    if (partnerId && routeId) {
+      getCustomerDetail(partnerId, routeId).then((result) => {
+        if (result.success && result.data) {
+          setCustomerDetail(result.data)
+        } else if (!result.success) {
+          console.error('[PartnerDetail] Failed to fetch customer detail:', result.error)
+        }
+      })
+    }
+  }, [partnerId])
 
   // Find the partner from the store
   const partner = partners.find(p => p.id === partnerId) || null
@@ -437,7 +467,7 @@ export default function PartnerDetailPage() {
             content: isLoading || !partner ? (
               <PartnerDetailSkeleton />
             ) : (
-              <MainTabContent partner={partner} />
+              <MainTabContent partner={partner} customerDetail={customerDetail} />
             )
           },
           {
