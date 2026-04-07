@@ -409,6 +409,8 @@ export default function PartnerDetailScreen() {
       longitude: partnerDetail.longitude || null,
       coordinateRange: partnerDetail.coordinateRange || null,
       totalDiscountAmount: partnerDetail.totalDiscountAmount || null,
+      priceTypeId: partnerDetail.contract?.priceTypeId || null,
+      contract: partnerDetail.contract || null,
     };
 
     setCartPartner(partner);
@@ -831,6 +833,55 @@ export default function PartnerDetailScreen() {
               </VStack>
             )}
 
+            {/* Contract Section - Үнийн бодлого */}
+            {partnerDetail.contract && (
+              <VStack space="sm">
+                <Text style={styles.sectionTitle}>Гэрээ / Үнийн бодлого</Text>
+                <View style={styles.card}>
+                  {/* Price Type - НОМИН ҮНЭ гэх мэт */}
+                  <View style={styles.listItem}>
+                    <View style={[styles.iconBox, { backgroundColor: '#E0E7FF' }]}>
+                      <CreditCard size={18} color="#4F46E5" />
+                    </View>
+                    <VStack className="flex-1 ml-3">
+                      <Text size="xs" className="text-typography-500">Үнийн төрөл</Text>
+                      <Text size="sm" className="text-primary-600 font-medium">
+                        {partnerDetail.contract.priceTypeId || '-'}
+                      </Text>
+                    </VStack>
+                  </View>
+
+                  {/* Contract ID */}
+                  {partnerDetail.contract.contractId && (
+                    <View style={styles.listItem}>
+                      <View style={[styles.iconBox, { backgroundColor: '#FEF3C7' }]}>
+                        <FileText size={18} color="#D97706" />
+                      </View>
+                      <VStack className="flex-1 ml-3">
+                        <Text size="xs" className="text-typography-500">Гэрээний дугаар</Text>
+                        <Text size="sm" className="text-typography-800 font-medium" numberOfLines={1}>
+                          {partnerDetail.contract.contractId}
+                        </Text>
+                      </VStack>
+                    </View>
+                  )}
+
+                  {/* isLoan - Зээлийн мэдээлэл */}
+                  <View style={styles.listItem}>
+                    <View style={[styles.iconBox, { backgroundColor: partnerDetail.contract.isLoan === 'true' || partnerDetail.contract.isLoan === '1' ? '#DCFCE7' : '#F3F4F6' }]}>
+                      <Wallet size={18} color={partnerDetail.contract.isLoan === 'true' || partnerDetail.contract.isLoan === '1' ? '#16A34A' : '#9CA3AF'} />
+                    </View>
+                    <VStack className="flex-1 ml-3">
+                      <Text size="xs" className="text-typography-500">Зээлийн төлбөр</Text>
+                      <Text size="sm" className={`font-medium ${partnerDetail.contract.isLoan === 'true' || partnerDetail.contract.isLoan === '1' ? 'text-success-600' : 'text-typography-500'}`}>
+                        {partnerDetail.contract.isLoan === 'true' || partnerDetail.contract.isLoan === '1' ? 'Зөвшөөрөгдсөн' : 'Зөвшөөрөгдөөгүй'}
+                      </Text>
+                    </VStack>
+                  </View>
+                </View>
+              </VStack>
+            )}
+
           </VStack>
         );
 
@@ -1023,6 +1074,8 @@ export default function PartnerDetailScreen() {
                       longitude: partnerDetail.longitude || null,
                       coordinateRange: partnerDetail.coordinateRange || null,
                       totalDiscountAmount: partnerDetail.totalDiscountAmount || null,
+                      priceTypeId: partnerDetail.contract?.priceTypeId || null,
+                      contract: partnerDetail.contract || null,
                     };
                     setCartPartner(partner);
                     router.push('/products?mode=template');
@@ -1154,6 +1207,8 @@ export default function PartnerDetailScreen() {
                           longitude: partnerDetail.longitude || null,
                           coordinateRange: partnerDetail.coordinateRange || null,
                           totalDiscountAmount: partnerDetail.totalDiscountAmount || null,
+                          priceTypeId: partnerDetail.contract?.priceTypeId || null,
+                          contract: partnerDetail.contract || null,
                         };
                         setCartPartner(partner);
                       }

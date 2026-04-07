@@ -123,6 +123,8 @@ export interface CartItem {
  * БИЗНЕС ЛОГИК:
  * - Сагслахын өмнө заавал сонгосон байх
  * - coordinateRange: GPS шалгалтын радиус (= 1 бол шалгахгүй)
+ * - priceTypeId: Харилцагчийн гэрээний үнийн төрөл (Products API-д ашиглана)
+ * - contract: Харилцагчийн гэрээний мэдээлэл (contractId, priceTypeId, isLoan)
  */
 export interface SelectedPartner {
   id: string;
@@ -133,6 +135,12 @@ export interface SelectedPartner {
   longitude: number | null;
   coordinateRange: number | null;
   totalDiscountAmount: number | null; // Урамшууллын үлдэгдэл оноо
+  priceTypeId: string | null;        // Харилцагчийн гэрээний үнийн төрөл
+  contract: {
+    contractId: string;
+    priceTypeId: string;
+    isLoan: string;
+  } | null;                          // Харилцагчийн гэрээний мэдээлэл
 }
 
 /**

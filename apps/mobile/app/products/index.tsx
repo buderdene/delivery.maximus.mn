@@ -145,7 +145,9 @@ export default function ProductsScreen() {
   // Get warehouse and route info from erpDetails or selected warehouse
   const warehouseId = selectedWarehouse?.uuid || erpDetails?.[0]?.warehouses?.[0]?.uuid || '';
   const routeId = erpDetails?.[0]?.routeId || '';
-  const priceTypeId = getSelectedPriceTypeId() || erpDetails?.[0]?.warehouses?.[0]?.priceTypeId || '';
+  // БИЗНЕС ЛОГИК: Харилцагчийн гэрээний үнийн төрөл байвал тэрийг ашиглана (жнь: НОМИН ҮНЭ)
+  // Байхгүй бол агуулахын үнийн төрөлийг ашиглана
+  const priceTypeId = selectedPartner?.priceTypeId || getSelectedPriceTypeId() || erpDetails?.[0]?.warehouses?.[0]?.priceTypeId || '';
 
   // Extract unique categories and brands from all products
   const fetchFiltersFromProducts = useCallback(async () => {
